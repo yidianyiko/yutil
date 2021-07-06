@@ -309,8 +309,14 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 ## **存在问题：**
 
-1. 红黑树的源码好像是基于 Linux 的红黑树源码修改而来的。
+1. 红黑树的源码基于 Linux 的红黑树源码修改而来的，可以选择更好的实现方式。
 
 ## 改进方案
 
-请调研红黑树的实现方法，选择一种较好的实现方式。
+1. 调研常见的红黑树实现分析
+  - Linux rbtree
+  - STL rbtree
+  - ngnix rbtree
+  - ...
+2. 比较并选择较好的红黑树实现
+3. 实现
