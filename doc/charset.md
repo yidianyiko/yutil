@@ -1,9 +1,6 @@
-## charset *-- The charset opreation set.*
+## 字符编码 charset
 
-- include\LCUI\util\charset.h
-- - src\util\charset.c
-
-字符编码转换。
+支持 UTF-8、ANSI 与 Unicode 间的字符编码转换。
 
 ## 函数概要
 
@@ -54,6 +51,8 @@ size_t LCUI_DecodeString(wchar_t *wstr, const char *str, size_t max_len,
   - `TextEdit_SetPlaceHolder(LCUI_Widget w, const char *str)`
 - **src\gui\widget\textview.c** 
   - `TextView_SetText(LCUI_Widget w, const char *utf8_text)`
+- **src\gui\css_fontstyle.c**
+  - `OnComputeContent(LCUI_CSSFontStyle fs, LCUI_Style s)`
 
 ## LCUI_EncodeString
 
@@ -81,7 +80,8 @@ size_t LCUI_EncodeString(char *str, const wchar_t *wstr, size_t max_len,
 
 **存在问题：**
 
-1. 重复：目前的使用场景与标准库提供的 wcstombs() 重复
+1. 重复：目前的使用场景与标准库提供的 wcstombs() 重复；
+2. 多余：Unicode 转 本地编码功能并使用场景。
 
 **改进方案：**
 
@@ -93,5 +93,6 @@ size_t LCUI_EncodeString(char *str, const wchar_t *wstr, size_t max_len,
   - `X11Surface_SetCaptionW(LCUI_Surface surface, const wchar_t *wstr)`
 - **src\util\dirent.c** 
   - `LCUI_OpenDirW(const wchar_t *path, LCUI_Dir *dir)`
-- **test\test_charset.c**
+- **src\util\object.c**
+  - `WString_ToString(LCUI_Object str, LCUI_Object newstr)`
 
