@@ -24,11 +24,11 @@ void LCUITime_Init(void)
 
 **参数说明：**
 
-- 
+- 无
 
 **返回说明：**
 
-- 用int64_t类型来存储时间，时间精度为微秒
+- 用int64_t类型来存储时间，时间精度为毫秒
 
 **存在问题：**
 
@@ -56,7 +56,7 @@ int64_t LCUI_GetTime(void)
 
 **返回说明：**
 
-- 用int64_t类型来存储时间，时间精度为微秒
+- 用int64_t类型来存储时间，时间精度为毫秒
 
 **存在问题：**
 
@@ -78,7 +78,7 @@ int64_t LCUI_GetTimeDelta(int64_t start)
 
 **返回说明：**
 
-- 用int64_t类型来存储时间，时间精度为微秒
+- 用int64_t类型来存储时间，时间精度为毫秒
 
 **存在问题：**
 
@@ -108,7 +108,7 @@ void LCUI_Sleep(unsigned int s);
 void LCUI_MSleep(unsigned int ms);
 ```
 
-将进程挂起一段时间， 单位是微秒。
+将进程挂起一段时间， 单位是毫秒。
 
 **参数说明：**
 

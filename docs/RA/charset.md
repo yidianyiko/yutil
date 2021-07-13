@@ -81,7 +81,6 @@ size_t LCUI_EncodeString(char *str, const wchar_t *wstr, size_t max_len,
 **存在问题：**
 
 1. 重复：目前的使用场景与标准库提供的 wcstombs() 重复；
-2. 多余：Unicode 转 本地编码功能并使用场景。
 
 **改进方案：**
 
