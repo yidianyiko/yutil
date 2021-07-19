@@ -2,6 +2,20 @@
 
 数据结构-链表的相关操作函数。
 
+**存储结构：**
+
+```c
+struct LinkedListNodeRec_ {
+	void *data;
+	LinkedListNode *prev, *next;
+};
+
+struct LinkedListRec_ {
+	size_t length;
+	LinkedListNode head, tail;
+};
+```
+
 
 
 ## LinkedList_Each
@@ -31,46 +45,46 @@
 
 **依赖它的文件：**
 
-- src\util\rect.c
-- src\util\object.c
-- src\util\event.c
-- src\thread\win32\thread.c
-- src\thread\pthread\thread.c
-- src\platform\windows\windows_display.c
-- src\platform\windows\uwp_input.cpp
-- src\platform\linux\linux_x11display.c
-- src\platform\linux\linux_fbdisplay.c
-- src\gui\widget\textview.c
-- src\gui\widget\textedit.c
-- src\gui\widget\canvas.c
-- src\gui\layout\flexbox.c
-- src\gui\layout\block.c
-- src\gui\widget_tree.c
-- src\gui\widget_task.c
-- src\gui\widget_style.c
-- src\gui\widget_status.c
-- src\gui\widget_paint.c
-- src\gui\widget_id.c
-- src\gui\widget_hash.c
-- src\gui\widget_event.c
-- src\gui\widget_diff.c
-- src\gui\widget_class.c
-- src\gui\widget_base.c
-- src\gui\css_library.c
-- src\gui\css_parser.c
-- src\gui\widget_background.c
-- src\display.c
-- src\ime.c
-- src\main.c
-- src\draw\boxshadow.c
-- src\timer.c
-- src\font\textlayer.c
-- src\font\textstyle.c
+- src/util/rect.c
+- src/util/object.c
+- src/util/event.c
+- src/thread/win32/thread.c
+- src/thread/pthread/thread.c
+- src/platform/windows/windows_display.c
+- src/platform/windows/uwp_input.cpp
+- src/platform/linux/linux_x11display.c
+- src/platform/linux/linux_fbdisplay.c
+- src/gui/widget/textview.c
+- src/gui/widget/textedit.c
+- src/gui/widget/canvas.c
+- src/gui/layout/flexbox.c
+- src/gui/layout/block.c
+- src/gui/widget_tree.c
+- src/gui/widget_task.c
+- src/gui/widget_style.c
+- src/gui/widget_status.c
+- src/gui/widget_paint.c
+- src/gui/widget_id.c
+- src/gui/widget_hash.c
+- src/gui/widget_event.c
+- src/gui/widget_diff.c
+- src/gui/widget_class.c
+- src/gui/widget_base.c
+- src/gui/css_library.c
+- src/gui/css_parser.c
+- src/gui/widget_background.c
+- src/display.c
+- src/ime.c
+- src/main.c
+- src/draw/boxshadow.c
+- src/timer.c
+- src/font/textlayer.c
+- src/font/textstyle.c
 
 ## LinkedList_EachReverse
 
 ```c
-#define LinkedList_EachReverse(node, list) \
+#define LinkedList_EachReverse(node, list) 
 ```
 
 遍历上一个节点
@@ -94,14 +108,14 @@
 
 **依赖它的文件：**
 
-- src\gui\widget_style.c
-- src\gui\widget_paint.c
-- src\font\textstyle.c
+- src/gui/widget_style.c
+- src/gui/widget_paint.c
+- src/font/textstyle.c
 
 ## LinkedList_ForEach
 
 ```
-#define LinkedList_ForEach(node, list) \
+#define LinkedList_ForEach(node, list) /
 ```
 
 遍历所有节点
@@ -125,14 +139,14 @@
 
 **依赖它的文件：**
 
-- src\platform\linux\linux_x11display.c
+- src/platform/linux/linux_x11display.c
 
   
 
 ## LinkedList_ForEachReverse
 
 ```
-#define LinkedList_ForEachReverse(node, list) \
+#define LinkedList_ForEachReverse(node, list) /
 ```
 
 反向遍历所有节点
@@ -186,25 +200,23 @@ LinkedListNode *LinkedList_Append(LinkedList *list, void *data);
 
 **依赖它的文件：**
 
-**
-
-- src\util\event.c
-- src\platform\windows\uwp_input.cpp
-- src\platform\linux\linux_x11display.c
-- src\gui\widget\textedit.c
-- src\gui\widget\sidebar.c
-- src\gui\layout\flexbox.c
-- src\gui\layout\block.c
-- src\gui\widget_style.c
-- src\gui\widget_paint.c
-- src\gui\widget_id.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\css_parser.c
-- src\font\textlayer.c
-- src\gui\css_library.c
-- src\worker.c
-- src\display.c
+- src/util/event.c
+- src/platform/windows/uwp_input.cpp
+- src/platform/linux/linux_x11display.c
+- src/gui/widget/textedit.c
+- src/gui/widget/sidebar.c
+- src/gui/layout/flexbox.c
+- src/gui/layout/block.c
+- src/gui/widget_style.c
+- src/gui/widget_paint.c
+- src/gui/widget_id.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/css_parser.c
+- src/font/textlayer.c
+- src/gui/css_library.c
+- src/worker.c
+- src/display.c
 
 ## LinkedList_Insert
 
@@ -235,9 +247,9 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
-- src\font\textstyle.c
-- src\main.c
+- src/gui/css_library.c
+- src/font/textstyle.c
+- src/main.c
 
 ## LinkedList_GetNode
 
@@ -267,11 +279,11 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\util\event.c
-- src\gui\widget_tree.c
-- src\gui\widget_background.c
-- src\worker.c
-- include\LCUI\gui\widget_base.h
+- src/util/event.c
+- src/gui/widget_tree.c
+- src/gui/widget_background.c
+- src/worker.c
+- include/LCUI/gui/widget_base.h
 
 ## LinkedList_GetNodeAtTail
 
@@ -301,7 +313,7 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\gui\widget_tree.c
+- src/gui/widget_tree.c
 
 ## LinkedList_Init
 
@@ -329,41 +341,41 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\util\rect.c
-- src\util\object.c
-- src\util\event.c
-- src\thread\win32\thread.c
-- src\thread\pthread\thread.c
-- src\platform\windows\windows_display.c
-- src\platform\windows\uwp_input.cpp
-- src\platform\linux\linux_x11display.c
-- src\platform\linux\linux_fbdisplay.c
-- src\gui\widget\textview.c
-- src\gui\widget\textedit.c
-- src\gui\widget\canvas.c
-- src\gui\layout\flexbox.c
-- src\gui\layout\block.c
-- src\gui\widget_tree.c
-- src\gui\widget_task.c
-- src\gui\widget_style.c
-- src\gui\widget_status.c
-- src\gui\widget_paint.c
-- src\gui\widget_id.c
-- src\gui\widget_hash.c
-- src\gui\widget_event.c
-- src\gui\widget_diff.c
-- src\gui\widget_class.c
-- src\gui\widget_base.c
-- src\gui\css_library.c
-- src\gui\css_parser.c
-- src\gui\widget_background.c
-- **src\display.c**
-- **src\ime.c**
-- **src\main.c**
-- src\draw\boxshadow.c
-- **src\timer.c**
-- src\font\textlayer.c
-- src\font\textstyle.c
+- src/util/rect.c
+- src/util/object.c
+- src/util/event.c
+- src/thread/win32/thread.c
+- src/thread/pthread/thread.c
+- src/platform/windows/windows_display.c
+- src/platform/windows/uwp_input.cpp
+- src/platform/linux/linux_x11display.c
+- src/platform/linux/linux_fbdisplay.c
+- src/gui/widget/textview.c
+- src/gui/widget/textedit.c
+- src/gui/widget/canvas.c
+- src/gui/layout/flexbox.c
+- src/gui/layout/block.c
+- src/gui/widget_tree.c
+- src/gui/widget_task.c
+- src/gui/widget_style.c
+- src/gui/widget_status.c
+- src/gui/widget_paint.c
+- src/gui/widget_id.c
+- src/gui/widget_hash.c
+- src/gui/widget_event.c
+- src/gui/widget_diff.c
+- src/gui/widget_class.c
+- src/gui/widget_base.c
+- src/gui/css_library.c
+- src/gui/css_parser.c
+- src/gui/widget_background.c
+- **src/display.c**
+- **src/ime.c**
+- **src/main.c**
+- src/draw/boxshadow.c
+- **src/timer.c**
+- src/font/textlayer.c
+- src/font/textstyle.c
 
 ## LinkedList_Get
 
@@ -393,10 +405,10 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\gui\widget_tree.c
-- src\gui\widget_id.c
-- src\gui\css_library.c
-- src\main.c
+- src/gui/widget_tree.c
+- src/gui/widget_id.c
+- src/gui/css_library.c
+- src/main.c
 
 ## LinkedList_Unlink
 
@@ -426,21 +438,21 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\util\object.c
-- src\util\event.c
-- src\thread\win32\thread.c
-- src\thread\pthread\thread.c
-- src\platform\windows\windows_display.c
-- src\platform\linux\linux_x11display.c
-- src\gui\widget\textview.c
-- src\gui\widget\canvas.c
-- src\gui\widget_tree.c
-- src\gui\widget_id.c
-- src\gui\widget_event.c
-- src\gui\widget_base.c
-- src\gui\css_library.c
-- src\worker.c
-- **src\timer.c**
+- src/util/object.c
+- src/util/event.c
+- src/thread/win32/thread.c
+- src/thread/pthread/thread.c
+- src/platform/windows/windows_display.c
+- src/platform/linux/linux_x11display.c
+- src/gui/widget/textview.c
+- src/gui/widget/canvas.c
+- src/gui/widget_tree.c
+- src/gui/widget_id.c
+- src/gui/widget_event.c
+- src/gui/widget_base.c
+- src/gui/css_library.c
+- src/worker.c
+- **src/timer.c**
 
 ## LinkedList_Link
 
@@ -471,9 +483,9 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\gui\widget_tree.c
-- src\gui\widget_base.c
-- src\timer.c
+- src/gui/widget_tree.c
+- src/gui/widget_base.c
+- src/timer.c
 
 ## LinkedList_Delete
 
@@ -503,7 +515,7 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\main.c
+- src/main.c
 
 ## LinkedList_DeleteNode
 
@@ -533,14 +545,14 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\display.c
-- src\font\textstyle.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
-- src\gui\widget\textedit.c
-- src\platform\windows\uwp_input.cpp
-- src\util\event.c
-- src\util\rect.c
+- src/display.c
+- src/font/textstyle.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
+- src/gui/widget/textedit.c
+- src/platform/windows/uwp_input.cpp
+- src/util/event.c
+- src/util/rect.c
 
 ## LinkedList_AppendNode
 
@@ -570,20 +582,20 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\util\object.c
-- src\util\event.c
-- src\thread\win32\thread.c
-- src\thread\pthread\thread.c
-- src\platform\windows\windows_display.c
-- src\platform\linux\linux_x11display.c
-- src\gui\widget\textview.c
-- src\gui\widget\canvas.c
-- src\gui\widget_tree.c
-- src\gui\widget_event.c
-- src\gui\widget_base.c
-- src\gui\css_library.c
-- src\timer.c
-- src\ime.c
+- src/util/object.c
+- src/util/event.c
+- src/thread/win32/thread.c
+- src/thread/pthread/thread.c
+- src/platform/windows/windows_display.c
+- src/platform/linux/linux_x11display.c
+- src/gui/widget/textview.c
+- src/gui/widget/canvas.c
+- src/gui/widget_tree.c
+- src/gui/widget_event.c
+- src/gui/widget_base.c
+- src/gui/css_library.c
+- src/timer.c
+- src/ime.c
 
 ## LinkedList_InsertNode
 
@@ -614,7 +626,7 @@ LinkedListNode *LinkedList_Insert(LinkedList *list, size_t pos, void *data);
 
 **依赖它的文件：**
 
-- src\gui\widget_tree.c
+- src/gui/widget_tree.c
 
 
 
@@ -683,13 +695,11 @@ void LinkedList_Concat(LinkedList *list1, LinkedList *list2)
 
 **依赖它的文件：**
 
-- src\util\rect.c
-- src\gui\widget\textedit.c
-- src\gui\widget_base.c
-- src\font\textlayer.c
-- src\display.c
-
-
+- src/util/rect.c
+- src/gui/widget/textedit.c
+- src/gui/widget_base.c
+- src/font/textlayer.c
+- src/display.c
 
 ## LinkedListNode_Delete
 
@@ -718,13 +728,34 @@ void LinkedList_Concat(LinkedList *list1, LinkedList *list2)
 
 **依赖它的文件：**
 
-- src\gui\widget_id.c
+- src/gui/widget_id.c
 
 
 
+## 使用场景
 
+1. `src/font/textstyle.c`、``使用 LinkedList 作 *StyleTag*文本样式。涉及到以下操作
+   - LinkedList_Clear
+   - LinkedList_EachReverse
+   - LinkedList_Each
+   - LinkedList_DeleteNode
+   - LinkedList_Insert
+2. `include/LCUI/font/textlayer`使用 LinkedList 作` 脏矩形记录`、`样式缓存` 。涉及到以下操作
+   - LinkedList_Init
+   - LinkedList_Clear
+   - LinkedList_Concat
+   - LinkedList_Each
+   - LinkedList_Append
+3. `src/gui/widget/textedit.c`使用 LinkedList 作` *文本块缓冲区*`、`当前处理的标签列表` 。涉及到以下操作
+   - LinkedList_Init
+   - LinkedList_Clear
+   - LinkedList_Concat
+   - LinkedList_Each
+   - LinkedList_Append
+   - LinkedList_DeleteNode
+4. ……
 
-## **改进方案：**
+## **改进方案**
 
 - 请调研 LCUI 中的所有 LinkedList 使用场景，确认哪些场景可以改用这种数据结构，哪些适合使用 array。
 - 调研与其他库的 array 实现方式，验证是否可以将 linkedlist 更名为 array。

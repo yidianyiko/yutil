@@ -42,7 +42,7 @@ int LCUITimer_Set(long int n_ms, TimerCallback callback,
 
 **依赖它的文件：**
 
-- **src\gui\widget\scrollbar.c**
+- **src/gui/widget/scrollbar.c**
 
 ## LCUI_SetTimeout
 
@@ -64,7 +64,7 @@ LCUI_API int LCUI_SetTimeout(long int n_ms, TimerCallback callback, void *arg);
 
 **依赖它的文件：**
 
-- **src\gui\widget\textcaret.c**
+- **src/gui/widget/textcaret.c**
 
 
 
@@ -88,7 +88,7 @@ int LCUI_SetInterval(long int n_ms, TimerCallback callback,
 
 **依赖它的文件：**
 
-- **src\gui\widget\scrollbar.c**
+- **src/gui/widget/scrollbar.c**
 
 
 
@@ -111,8 +111,8 @@ int LCUITimer_Free(int timer_id)
 
 **依赖它的文件：**
 
-- **src\gui\widget\scrollbar.c**
-- **src\gui\widget\textcaret.c**
+- **src/gui/widget/scrollbar.c**
+- **src/gui/widget/textcaret.c**
 
 
 
@@ -177,7 +177,7 @@ int LCUITimer_Continue(int timer_id);
 
 **依赖它的文件：**
 
-- **src\gui\widget\textcaret.c**
+- **src/gui/widget/textcaret.c**
 
 
 
@@ -199,7 +199,7 @@ size_t LCUI_ProcessTimers(void);
 
 **依赖它的文件：**
 
-- **src\main.c**
+- **src/main.c**
 
 ## LCUI_InitTimer
 
@@ -219,7 +219,7 @@ void LCUI_InitTimer(void);
 
 **依赖它的文件：**
 
-- **src\main.c**
+- **src/main.c**
 
 ## LCUI_FreeTimer
 
@@ -239,7 +239,7 @@ void LCUI_FreeTimer(void);
 
 **依赖它的文件：**
 
-- **src\main.c**
+- **src/main.c**
 
 
 

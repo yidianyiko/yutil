@@ -44,9 +44,9 @@ LCUI_BOOL ParseNumber(LCUI_Style var, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\css_parser.c
-- src\gui\css_fontstyle.c
-- src\font\textstyle.c
+- src/gui/css_parser.c
+- src/gui/css_fontstyle.c
+- src/font/textstyle.c
 
 ## ParseRGB
 
@@ -133,9 +133,9 @@ LCUI_BOOL ParseColor(LCUI_Style var, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\css_parser.c
-- src\gui\css_fontstyle.c
-- src\font\textstyle.c
+- src/gui/css_parser.c
+- src/gui/css_fontstyle.c
+- src/font/textstyle.c
 
 ## ParseUrl
 
@@ -165,8 +165,8 @@ LCUI_BOOL ParseUrl(LCUI_Style s, const char *str, const char *dirname)
 
 **依赖它的文件：**
 
-- src\gui\css_rule_font_face.c
-- src\gui\css_parser.c
+- src/gui/css_rule_font_face.c
+- src/gui/css_parser.c
 
 ## ParseFontWeight
 
@@ -196,8 +196,8 @@ LCUI_BOOL ParseFontWeight(const char *str, int *weight)
 
 **依赖它的文件：**
 
-- src\gui\css_fontstyle.c
-- src\gui\css_rule_font_face.c
+- src/gui/css_fontstyle.c
+- src/gui/css_rule_font_face.c
 
 ## ParseFontStyle
 
@@ -226,5 +226,5 @@ LCUI_BOOL ParseColor(LCUI_Style var, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\css_rule_font_face.c
-- src\gui\css_fontstyle.c
+- src/gui/css_rule_font_face.c
+- src/gui/css_fontstyle.c

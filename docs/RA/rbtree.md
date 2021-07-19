@@ -39,13 +39,13 @@ void RBTree_Init(RBTree *rbt);
 
 **依赖它的文件：**
 
-- src\keyboard.c
-- src\font\fontlibrary.c
-- src\gui\builder.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
-- src\gui\widget_paint.c
-- src\util\event.c
+- src/keyboard.c
+- src/font/fontlibrary.c
+- src/gui/builder.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
+- src/gui/widget_paint.c
+- src/util/event.c
 
 ## RBTree_Destroy
 
@@ -65,13 +65,13 @@ void RBTree_Destroy(RBTree *rbt);
 
 **依赖它的文件：**
 
-- src\keyboard.c
-- src\font\fontlibrary.c
-- src\gui\builder.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
-- src\gui\widget_paint.c
-- src\util\event.c
+- src/keyboard.c
+- src/font/fontlibrary.c
+- src/gui/builder.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
+- src/gui/widget_paint.c
+- src/util/event.c
 
 ## RBTree_First
 
@@ -126,11 +126,11 @@ RBTreeNode* RBTree_Search(RBTree* rbt, int key);
 
 **依赖它的文件：**
 
-- src\keyboard.c
-- src\font\fontlibrary.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
-- src\util\event.c
+- src/keyboard.c
+- src/font/fontlibrary.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
+- src/util/event.c
 
 ## RBTree_GetData
 
@@ -151,11 +151,11 @@ void* RBTree_GetData(RBTree* rbt, int key);
 
 **依赖它的文件：**
 
-- src\keyboard.c
-- src\font\fontlibrary.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
-- src\util\event.c
+- src/keyboard.c
+- src/font/fontlibrary.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
+- src/util/event.c
 
 ## RBTree_Insert
 
@@ -177,10 +177,10 @@ RBTreeNode* RBTree_Insert(RBTree *rbt, int key, void *data);
 
 **依赖它的文件：**
 
-- src\keyboard.c
-- src\font\fontlibrary.c
-- src\gui\widget_event.c
-- src\util\event.c
+- src/keyboard.c
+- src/font/fontlibrary.c
+- src/gui/widget_event.c
+- src/util/event.c
 
 ## RBTree_Erase
 
@@ -201,7 +201,7 @@ int RBTree_Erase(RBTree *rbt, int key);
 
 **依赖它的文件：**
 
-- src\util\event.c
+- src/util/event.c
 
 ## RBTree_EraseNode
 
@@ -239,7 +239,7 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 **依赖它的文件：**
 
-- src\gui\widget_background.c
+- src/gui/widget_background.c
 
 ## RBTree_CustomSearch
 
@@ -277,9 +277,9 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 **依赖它的文件：**
 
-- src\gui\builder.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
+- src/gui/builder.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
 
 ## RBTree_CustomInsert
 
@@ -301,9 +301,9 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 **依赖它的文件：**
 
-- src\gui\builder.c
-- src\gui\widget_background.c
-- src\gui\widget_event.c
+- src/gui/builder.c
+- src/gui/widget_background.c
+- src/gui/widget_event.c
 
 
 

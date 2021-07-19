@@ -85,8 +85,8 @@ int Logger_Log(LoggerLevel level, const char* fmt, ...);
 
 **依赖它的文件：**
 
-- src\main.c
-- include\LCUI_Build.h
+- src/main.c
+- include/LCUI_Build.h
 
 ## Logger_LogW
 
@@ -116,7 +116,7 @@ int Logger_LogW(LoggerLevel level, const wchar_t* fmt, ...);
 
 **依赖它的文件：**
 
-- src\main.c
+- src/main.c
 
 ## Logger_SetHandler
 
@@ -146,7 +146,7 @@ void Logger_SetHandler(void (*handler)(const char*));
 
 **依赖它的文件：**
 
-- src\main.c
+- src/main.c
 
 ## Logger_SetHandlerW
 
@@ -174,4 +174,4 @@ void Logger_SetHandlerW(void (*handler)(const wchar_t*));
 
 **依赖它的文件：**
 
-- src\main.c
+- src/main.c
