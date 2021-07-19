@@ -46,12 +46,12 @@ size_t LCUI_DecodeString(wchar_t *wstr, const char *str, size_t max_len,
 
 **依赖它的文件：**
 
-- **LCUI\src\gui\widget\textedit.c** 
+- **LCUI/src/gui/widget/textedit.c** 
   - `TextEdit_SetText(LCUI_Widget widget, const char *utf8_str)`
   - `TextEdit_SetPlaceHolder(LCUI_Widget w, const char *str)`
-- **src\gui\widget\textview.c** 
+- **src/gui/widget/textview.c** 
   - `TextView_SetText(LCUI_Widget w, const char *utf8_text)`
-- **src\gui\css_fontstyle.c**
+- **src/gui/css_fontstyle.c**
   - `OnComputeContent(LCUI_CSSFontStyle fs, LCUI_Style s)`
 
 ## LCUI_EncodeString
@@ -88,10 +88,10 @@ size_t LCUI_EncodeString(char *str, const wchar_t *wstr, size_t max_len,
 
 **依赖它的文件：**
 
-- **src\platform\linux\linux_x11display.c** 
+- **src/platform/linux/linux_x11display.c** 
   - `X11Surface_SetCaptionW(LCUI_Surface surface, const wchar_t *wstr)`
-- **src\util\dirent.c** 
+- **src/util/dirent.c** 
   - `LCUI_OpenDirW(const wchar_t *path, LCUI_Dir *dir)`
-- **src\util\object.c**
+- **src/util/object.c**
   - `WString_ToString(LCUI_Object str, LCUI_Object newstr)`
 

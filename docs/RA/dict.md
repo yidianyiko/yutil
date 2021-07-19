@@ -2,7 +2,59 @@
 
 添加 dict 数据结构操作函数
 
+实现方式：
 
+```c
+/** 哈希表节点结构 */
+typedef struct DictEntry {
+	void *key;
+	union {
+		void *val;
+		uint64_t u64;
+		int64_t s64;
+	} v;
+	struct DictEntry *next; /**< 指向下一个哈希节点(形成链表) */
+} DictEntry;
+
+/** 字典内数据的类型 */
+typedef struct DictType {
+	unsigned int(*hashFunction)(const void *key);
+	void *(*keyDup)(void *privdata, const void *key);
+	void *(*valDup)(void *privdata, const void *obj);
+	int(*keyCompare)(void *privdata, const void *key1, const void *key2);
+	void(*keyDestructor)(void *privdata, void *key);
+	void(*valDestructor)(void *privdata, void *obj);
+} DictType;
+
+/** 哈希表结构 */
+typedef struct DictHashTable {
+	DictEntry **table;	/**< 节点指针数组 */
+	unsigned long size;	/**< 桶的数量 */
+	unsigned long sizemask;	/**< mask 码，用于地址索引计算 */
+	unsigned long used;	/**< 已有节点数量 */
+} DictHashTable;
+
+/** 字典结构 */
+typedef struct Dict {
+	DictType *type;		/**< 为哈希表中不同类型的值所使用的一族函数 */
+	void *privdata;
+	DictHashTable ht[2];	/**< 每个字典使用两个哈希表 */
+	int rehashidx;		/**< rehash 进行到的索引位置，如果没有在 rehash ，就为 -1 */
+	int iterators;		/**< 当前正在使用的 iterator 的数量 */
+} Dict;
+
+/** 用于遍历字典的迭代器 */
+typedef struct DictIterator {
+	Dict *d;		/**< 迭代器所指向的字典 */
+	int table;		/**< 使用的哈希表号码 */
+	int index;		/**< 迭代进行的索引 */
+	int safe;		/**< 是否安全 */
+	DictEntry *entry;	/**< 指向哈希表的当前节点 */
+	DictEntry *next_entry;	/**< 指向哈希表的下个节点 */
+} DictIterator;
+```
+
+**使用场景:**
 
 ## Dict_Create
 
@@ -31,17 +83,17 @@ LCUI_API Dict *Dict_Create(DictType *type, void *privdata);
 
 **依赖它的文件：**
 
-- src\util\strpool.c
-- src\gui\widget_task.c
-- src\gui\widget_prototype.c
-- src\gui\widget_id.c
-- src\gui\widget_helper.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\widget_attribute.c
-- src\gui\css_parser.c
-- src\gui\css_library.c
-- src\font\fontlibrary.c
+- src/util/strpool.c
+- src/gui/widget_task.c
+- src/gui/widget_prototype.c
+- src/gui/widget_id.c
+- src/gui/widget_helper.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/widget_attribute.c
+- src/gui/css_parser.c
+- src/gui/css_library.c
+- src/font/fontlibrary.c
 
 
 
@@ -104,17 +156,17 @@ LCUI_API int Dict_Add(Dict *d, void *key, void *val);
 
 **依赖它的文件：**
 
-- src\util\strpool.c
-- src\gui\widget_task.c
-- src\gui\widget_prototype.c
-- src\gui\widget_id.c
-- src\gui\widget_helper.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\widget_attribute.c
-- src\gui\css_parser.c
-- src\gui\css_library.c
-- src\font\fontlibrary.c
+- src/util/strpool.c
+- src/gui/widget_task.c
+- src/gui/widget_prototype.c
+- src/gui/widget_id.c
+- src/gui/widget_helper.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/widget_attribute.c
+- src/gui/css_parser.c
+- src/gui/css_library.c
+- src/font/fontlibrary.c
 
 ## Dict_AddCopy
 
@@ -144,7 +196,7 @@ LCUI_API int Dict_AddCopy(Dict *d, void *key, const void *val);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_AddRaw
 
@@ -295,16 +347,16 @@ LCUI_API void Dict_Release(Dict *d);
 
 **依赖它的文件：**
 
-- src\util\strpool.c
-- src\gui\widget_prototype.c
-- src\gui\widget_id.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\widget_base.c
-- src\gui\widget_attribute.c
-- src\gui\css_parser.c
-- src\gui\css_library.c
-- src\font\fontlibrary.c
+- src/util/strpool.c
+- src/gui/widget_prototype.c
+- src/gui/widget_id.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/widget_base.c
+- src/gui/widget_attribute.c
+- src/gui/css_parser.c
+- src/gui/css_library.c
+- src/font/fontlibrary.c
 
 ## Dict_Find
 
@@ -336,7 +388,7 @@ LCUI_API DictEntry * Dict_Find(Dict *d, const void *key);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_FetchValue
 
@@ -367,16 +419,16 @@ LCUI_API void *Dict_FetchValue(Dict *d, const void *key);
 
 **依赖它的文件：**
 
-- src\util\strpool.c
-- src\gui\widget_task.c
-- src\gui\widget_prototype.c
-- src\gui\widget_id.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\widget_attribute.c
-- src\gui\css_parser.c
-- src\gui\css_library.c
-- src\font\fontlibrary.c
+- src/util/strpool.c
+- src/gui/widget_task.c
+- src/gui/widget_prototype.c
+- src/gui/widget_id.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/widget_attribute.c
+- src/gui/css_parser.c
+- src/gui/css_library.c
+- src/font/fontlibrary.c
 
 ## Dict_Resize
 
@@ -435,7 +487,7 @@ LCUI_API DictIterator *Dict_GetIterator(Dict *d);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_GetSafeIterator
 
@@ -446,7 +498,7 @@ LCUI_API DictIterator *Dict_GetSafeIterator(Dict *d);
 
  创建一个迭代器，用于遍历哈希表节点。
 
- \* safe 属性指示迭代器是否安全，如果迭代器是安全的，那么它可以在遍历的过程中进行增删操作
+ /* safe 属性指示迭代器是否安全，如果迭代器是安全的，那么它可以在遍历的过程中进行增删操作
 
 **参数说明：**
 
@@ -466,7 +518,7 @@ LCUI_API DictIterator *Dict_GetSafeIterator(Dict *d);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_Next
 
@@ -495,7 +547,7 @@ LCUI_API DictEntry *Dict_Next(DictIterator *iter);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_ReleaseIterator
 
@@ -523,7 +575,7 @@ LCUI_API void Dict_ReleaseIterator(DictIterator *iter);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_GetRandomKey
 
@@ -580,7 +632,7 @@ LCUI_API void Dict_PrintStats(Dict *d);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_GenHashFunction
 
@@ -728,7 +780,7 @@ LCUI_API void Dict_Empty(Dict *d);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 ## Dict_EnableResize
 
@@ -1050,16 +1102,16 @@ void Dict_InitStringKeyType(DictType *t)
 
 **依赖它的文件：**
 
-- src\util\strpool.c
-- src\gui\widget_task.c
-- src\gui\widget_prototype.c
-- src\gui\widget_helper.c
-- src\gui\widget_event.c
-- src\gui\widget_background.c
-- src\gui\widget_attribute.c
-- src\gui\css_parser.c
-- src\gui\css_library.c
-- src\font\fontlibrary.c
+- src/util/strpool.c
+- src/gui/widget_task.c
+- src/gui/widget_prototype.c
+- src/gui/widget_helper.c
+- src/gui/widget_event.c
+- src/gui/widget_background.c
+- src/gui/widget_attribute.c
+- src/gui/css_parser.c
+- src/gui/css_library.c
+- src/font/fontlibrary.c
 
 ## Dict_InitStringCopyKeyType
 
@@ -1088,8 +1140,8 @@ void Dict_InitStringCopyKeyType(DictType *t)
 
 **依赖它的文件：**
 
-- src\gui\widget_id.c
-- src\gui\css_library.c
+- src/gui/widget_id.c
+- src/gui/css_library.c
 
 
 

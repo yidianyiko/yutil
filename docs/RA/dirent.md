@@ -255,7 +255,7 @@ int LCUI_FileIsDirectory(LCUI_DirEntry *entry);
 int LCUI_FileIsRegular(LCUI_DirEntry *entry);
 ```
 
-将entry->dataW.dwFileAttributes和FILE_ATTRIBUTE_DIRECTORY做位的与运算的非运算的来判断所找到的项目是不是常规文件夹
+将`entry->dataW.dwFileAttributes`和`FILE_ATTRIBUTE_DIRECTORY`做位的与运算的非运算的来判断所找到的项目是不是常规文件夹
 
 **参数说明：**
 

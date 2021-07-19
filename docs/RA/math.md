@@ -38,20 +38,20 @@
 
 **依赖它的文件：**
 
-- **src\cursor.c**
-- **src\display.c**
-- **src\draw\background.c**
-- **src\font\textlayer.c**
-- **src\font\textstyle.c**
-- **src\gui\css_fontstyle.c**
-- **src\gui\metrics.c**
-- **src\gui\widget_event.c**
-- **src\gui\widget_paint.c**
-- **src\gui\widget\scrollbar.c**
-- **src\gui\widget\textedit.c**
-- **src\platform\windows\uwp_input.cpp**
-- **src\util\parse.c**
-- **src\util\rect.c**
+- **src/cursor.c**
+- **src/display.c**
+- **src/draw/background.c**
+- **src/font/textlayer.c**
+- **src/font/textstyle.c**
+- **src/gui/css_fontstyle.c**
+- **src/gui/metrics.c**
+- **src/gui/widget_event.c**
+- **src/gui/widget_paint.c**
+- **src/gui/widget/scrollbar.c**
+- **src/gui/widget/textedit.c**
+- **src/platform/windows/uwp_input.cpp**
+- **src/util/parse.c**
+- **src/util/rect.c**
 
 
 ## max

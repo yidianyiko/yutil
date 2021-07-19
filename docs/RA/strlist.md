@@ -42,10 +42,10 @@ int strlist_add(strlist_t *strlist, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\widget_style.c
-- src\gui\widget_status.c
-- src\gui\widget_class.c
-- src\gui\css_library.c
+- src/gui/widget_style.c
+- src/gui/widget_status.c
+- src/gui/widget_class.c
+- src/gui/css_library.c
 
 ## strlist_add_one 
 
@@ -135,8 +135,8 @@ int sortedstrlist_add(strlist_t *strlist, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\widget_style.c
-- src\gui\css_library.c
+- src/gui/widget_style.c
+- src/gui/css_library.c
 
 ## strlist_has
 
@@ -165,8 +165,8 @@ int strlist_has(strlist_t strlist, const char *str)
 
 **依赖它的文件：**
 
-- src\gui\widget_class.c
-- src\gui\widget_status.c
+- src/gui/widget_class.c
+- src/gui/widget_status.c
 
 ## strlist_remove 
 
@@ -196,9 +196,9 @@ int strlist_remove(strlist_t *strlist, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\widget_class.c
+- src/gui/widget_class.c
 
-- src\gui\widget_status.cint sortedstrlist_add(strlist_t *strlist, const char *str)
+- src/gui/widget_status.cint sortedstrlist_add(strlist_t *strlist, const char *str)
 
   向已排序的字符串组添加字符串
 
@@ -234,10 +234,10 @@ int strlist_remove(strlist_t *strlist, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
-- src\gui\widget_class.c
-- src\gui\widget_status.c
-- src\util\string.c
+- src/gui/css_library.c
+- src/gui/widget_class.c
+- src/gui/widget_status.c
+- src/util/string.c
 
 
 

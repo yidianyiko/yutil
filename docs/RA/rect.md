@@ -90,7 +90,7 @@ LCUIRect_IsIncludeRect(a, b)
 
 **依赖它的文件：**
 
-- src\gui\widget_base.c
+- src/gui/widget_base.c
 
 ## LCUIRect_GetCutArea
 
@@ -124,8 +124,8 @@ LCUIRect_IsIncludeRect(a, b)
 
 **依赖它的文件：**
 
-- src\font\fontlibrary.c
-- src\graph.c
+- src/font/fontlibrary.c
+- src/graph.c
 
 ## LCUIRect_HasPoint
 
@@ -153,8 +153,8 @@ LCUIRect_IsIncludeRect(a, b)
 
 **依赖它的文件：**
 
-- src\gui\widget_event.c
-- src\gui\widget_tree.c
+- src/gui/widget_event.c
+- src/gui/widget_tree.c
 
 ## LCUIRect_ValidateArea
 
@@ -185,11 +185,11 @@ LCUI_BOOL LCUIRect_ValidateArea(LCUI_Rect *rect, int box_w, int box_h);
 
 **依赖它的文件：**
 
-- src\platform\windows\uwp_renderer.cpp
-- src\platform\linux\linux_x11display.c
-- src\platform\linux\linux_fbdisplay.c
-- src\graph.c
-- src\font\textlayer.c
+- src/platform/windows/uwp_renderer.cpp
+- src/platform/linux/linux_x11display.c
+- src/platform/linux/linux_fbdisplay.c
+- src/graph.c
+- src/font/textlayer.c
 
 ## LCUIRectF_ValidateArea
 
@@ -219,9 +219,9 @@ LCUI_BOOL LCUIRect_ValidateArea(LCUI_Rect *rect, int box_w, int box_h);
 
 **依赖它的文件：**
 
-- src\gui\widget_task.c
-- src\gui\widget_paint.c
-- src\gui\widget_base.c
+- src/gui/widget_task.c
+- src/gui/widget_paint.c
+- src/gui/widget_base.c
 
 ## LCUIRect_ToRectF
 
@@ -251,10 +251,10 @@ void LCUIRect_ToRectF(const LCUI_Rect *rect, LCUI_RectF *rectf, float scale)
 
 **依赖它的文件：**
 
-- src\gui\widget\textview.c
-- src\gui\widget\textedit.c
-- src\gui\widget_paint.c
-- src\display.c
+- src/gui/widget/textview.c
+- src/gui/widget/textedit.c
+- src/gui/widget_paint.c
+- src/display.c
 
 ## LCUIRect_Scale
 
@@ -408,7 +408,7 @@ LCUI_BOOL LCUIRect_GetOverlayRect(const LCUI_Rect *a,
 
 **依赖它的文件：**
 
-- src\gui\widget_paint.c
+- src/gui/widget_paint.c
 
 ## LCUIRectF_GetOverlayRect
 
@@ -438,8 +438,8 @@ LCUI_BOOL LCUIRectF_GetOverlayRect(const LCUI_RectF *a, const LCUI_RectF *b, LCU
 
 **依赖它的文件：**
 
-- src\gui\widget_task.c
-- src\gui\widget_paint.c
+- src/gui/widget_task.c
+- src/gui/widget_paint.c
 
 ## LCUIRect_MergeRect
 
@@ -471,7 +471,7 @@ void LCUIRect_MergeRect(LCUI_Rect *big, const LCUI_Rect *a,
 
 **依赖它的文件：**
 
-- src\platform\windows\uwp_renderer.cpp
+- src/platform/windows/uwp_renderer.cpp
 
 ## LCUIRectF_MergeRect
 
@@ -502,7 +502,7 @@ void LCUIRectF_MergeRect(LCUI_RectF *big, const LCUI_RectF *a,
 
 **依赖它的文件：**
 
-- src\gui\widget_paint.c
+- src/gui/widget_paint.c
 
 ## LCUIRect_CutFourRect
 
@@ -596,8 +596,8 @@ INLINE LCUI_BOOL LCUIRectF_IsEquals(const LCUI_RectF *a, const LCUI_RectF *b)
 
 **依赖它的文件：**
 
-- test\libtest.c
-- src\gui\widget_diff.c
+- test/libtest.c
+- src/gui/widget_diff.c
 
 ## LCUIRect_IsEquals
 
@@ -626,7 +626,7 @@ INLINE LCUI_BOOL LCUIRect_IsEquals(const LCUI_Rect *a, const LCUI_Rect *b)
 
 **依赖它的文件：**
 
-- test\libtest.c
+- test/libtest.c
 
 ## RectList_AddEx
 
@@ -657,7 +657,7 @@ int RectList_AddEx(LinkedList *list, LCUI_Rect *rect,
 
 **依赖它的文件：**
 
-- src\display.c
+- src/display.c
 
 ## RectList_Add
 
@@ -687,10 +687,10 @@ int RectList_Add(LinkedList *list, LCUI_Rect *rect);
 
 **依赖它的文件：**
 
-- src\display.c
-- src\platform\linux\linux_fbdisplay.c
-- src\font\textlayer.c
-- src\draw\boxshadow.c
+- src/display.c
+- src/platform/linux/linux_fbdisplay.c
+- src/font/textlayer.c
+- src/draw/boxshadow.c
 
 ## RectList_Delete
 
@@ -719,4 +719,4 @@ int RectList_Delete(LinkedList *list, LCUI_Rect *rect);
 
 **依赖它的文件：**
 
-- src\draw\boxshadow.c
+- src/draw/boxshadow.c

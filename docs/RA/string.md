@@ -14,7 +14,6 @@
 | size_t       | `strntolower`<br />将字符串中前面的指定长度的字母转成小写字母。 |
 | size_t       | `strtrim`<br />清除字符串首尾的字符                          |
 | size_t       | `wcstrim`<br />strtrim()的宽字符版本。                       |
-| size_t       | `strntolower`<br />返回输入的字符串的hash值                  |
 | unsigned     | `strhash`<br />返回输入的字符串的hash值                      |
 | size_t       | `strreplace`<br />字符串替换                                 |
 | size_t       | `wcsreplace`<br />宽字符类型字符串替换                       |
@@ -50,20 +49,20 @@ strdup() 的再实现版本，将串拷贝到新建的位置，用于清除编�
 
 **依赖它的文件：**
 
-- src\font\fontlibrary.c
-- src\gui\css_fontstyle.c
-- src\gui\css_library.c
-- src\gui\css_parser.c
-- src\gui\widget_attribute.c
-- src\gui\widget_background.c
-- src\gui\widget_base.c
-- src\gui\widget_event.c
-- src\gui\widget_helper.c
-- src\gui\widget_id.c
-- src\gui\widget_prototype.c
-- src\gui\widget_style.c
-- src\gui\widget\anchor.c
-- src\gui\widget\textview.c
+- src/font/fontlibrary.c
+- src/gui/css_fontstyle.c
+- src/gui/css_library.c
+- src/gui/css_parser.c
+- src/gui/widget_attribute.c
+- src/gui/widget_background.c
+- src/gui/widget_base.c
+- src/gui/widget_event.c
+- src/gui/widget_helper.c
+- src/gui/widget_id.c
+- src/gui/widget_prototype.c
+- src/gui/widget_style.c
+- src/gui/widget/anchor.c
+- src/gui/widget/textview.c
 
 ## wcsdup2 
 
@@ -92,7 +91,7 @@ strdup2() 的宽字符版本，将串拷贝到新建的位置，用于清除编�
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c
 
 
 
@@ -122,10 +121,10 @@ size_t strsize(const char *str);
 
 **依赖它的文件：**
 
-- src\font\fontlibrary.c
-- src\gui\builder.c
-- src\gui\css_rule_font_face.c
-- src\gui\widget\anchor.c
+- src/font/fontlibrary.c
+- src/gui/builder.c
+- src/gui/css_rule_font_face.c
+- src/gui/widget/anchor.c
 
 ## wcssize
 
@@ -153,7 +152,7 @@ size_t wcssize(const wchar_t *str);
 
 **依赖它的文件：**
 
-- src\gui\widget\textview.c
+- src/gui/widget/textview.c
 
 
 
@@ -184,7 +183,7 @@ size_t strtolower(char *outstr, const char *instr);
 
 **依赖它的文件：**
 
-- src\gui\widget\textview.c
+- src/gui/widget/textview.c
 
 ## strntolower
 
@@ -240,9 +239,9 @@ size_t strtrim(char *outstr, const char *instr, const char *charlist);
 
 **依赖它的文件：**
 
-- src\font\fontlibrary.c
-- src\gui\css_rule_font_face.c
-- src\util\parse.c
+- src/font/fontlibrary.c
+- src/gui/css_rule_font_face.c
+- src/util/parse.c
 
 ## wcstrim
 
@@ -276,7 +275,7 @@ unsigned strhash(unsigned hash, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\widget\textview.c
+- src/gui/widget/textview.c
 
 ## strhash
 
@@ -305,8 +304,8 @@ unsigned strhash(unsigned hash, const char *str);
 
 **依赖它的文件：**
 
-- src\gui\widget_hash.c
-- src\util\object.c
+- src/gui/widget_hash.c
+- src/util/object.c
 
 ## strreplace
 
@@ -388,7 +387,7 @@ int cmdsplit(const char *cmd, char ***outargv);
 
 **依赖它的文件：**
 
-- build\windows\LCUIMain\win32_main.c
+- build/windows/LCUIMain/win32_main.c
 
 ## strsplit
 

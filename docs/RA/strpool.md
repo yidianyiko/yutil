@@ -37,8 +37,8 @@ strpool 用于解决大量相同字符串的内存占用问题。
 
 **依赖它的文件：**
 
-- src\util\strlist.c
-- src\gui\css_library.c
+- src/util/strlist.c
+- src/gui/css_library.c
 
 ## strpool_alloc_str 
 
@@ -67,8 +67,8 @@ strpool 用于解决大量相同字符串的内存占用问题。
 
 **依赖它的文件：**
 
-- src\util\strlist.c
-- src\gui\css_library.c
+- src/util/strlist.c
+- src/gui/css_library.c
 
 
 
@@ -126,4 +126,4 @@ void strpool_destroy(strpool_t *pool);
 
 **依赖它的文件：**
 
-- src\gui\css_library.c
+- src/gui/css_library.c

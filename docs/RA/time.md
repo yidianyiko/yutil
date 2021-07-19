@@ -40,7 +40,7 @@ void LCUITime_Init(void)
 
 **依赖它的文件：**
 
-- **src\timer.c**
+- **src/timer.c**
 
 ## LCUI_GetTime
 
