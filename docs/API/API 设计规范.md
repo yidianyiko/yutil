@@ -2,7 +2,9 @@
 
 ## **命名规则**
 
-采用小写+下划线命名风格，不使用库名作为接口的前缀名。
+采用`小写+下划线`命名风格，不使用库名作为接  口的前缀名。
+
+对于 LCUI 及其基础库而言，它们提供的大部分公共 API 是 UI 相关的，通常情况下一个应用程序不会用到两个 UI 库，很少会有命名冲突的情况，所以我们无需为了避免与其它库的 API 冲突而将库的名称作为公共 API 的前缀名。
 
 ### **数据类型**
 
@@ -46,7 +48,7 @@ struct foo_t {
 };
 ```
 
-### **函数命名：**
+### **函数命名**
 
 推荐采用面向对象命名风格，以对象类型名称为前缀，后面接动词或动宾词组，相当于将 `object.doSomething()` 写成 `object_do_something()`。
 函数命名中所使用的动词必须是常见的单词，例如：
@@ -62,7 +64,7 @@ struct foo_t {
 
 示例：
 
-```
+```c
 const char *value;
 foo_t *foo;
 
@@ -72,9 +74,34 @@ foo_get_property(foo, "key", &value);
 foo_destroy(foo);
 ```
 
-## 注释
+### 参数命名
 
-对每个接口，都编写注释，注释规范使用doxygen格式。
+无论是**函数命名**还是**参数命名**都该保证其含义清晰，都不应缩写。
+
+示例：
+
+```c
+//wrong
+void foo_destroy(foo_t *f);
+//correct
+void foo_destroy(foo_t *foo);
+```
+
+
+
+## 实现
+
+### 注释
+
+对每个接口都编写注释，注释规范使用`doxygen`格式。
+
+### 合法性检查
+
+在每个接口实现的开头，都应当进行输入变量的合法性检查。
+
+如果有条件的话，增加异常处理措施可使程序更加可控。
+
+
 
 参考内容：
 
@@ -82,3 +109,4 @@ foo_destroy(foo);
 - LevelDB: https://github.com/google/leveldb/blob/master/include/leveldb/c.h
 - [聊聊tbox的代码风格](https://tboox.org/cn/2016/07/29/code-style/)
 - [LCUI 3.0 development plan](https://github.com/lc-soft/LCUI/issues/239)
+- [API Design Principles - Qt Wiki](https://wiki.qt.io/API_Design_Principles)
