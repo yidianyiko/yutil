@@ -6,18 +6,19 @@
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                                   |
-| :----------- | :----------------------------------------------------------- |
-| int          | `LCUITimer_Set();` <br />设置定时器                          |
-| int          | `LCUI_SetTimeout();`<br />设置一个非重复定时器。             |
-| int          | `LCUI_SetInterval();`<br />设置定时器重复调用`OnInterval()` 的间隔时间 |
-| int          | `LCUITimer_Free();`<br />释放定时器                          |
-| int          | `LCUITimer_Pause();`<br />暂停定时器的倒计时                 |
-| int          | `LCUITimer_Continue();`<br />继续定时器的倒计时              |
-| int          | `LCUITimer_Reset();`<br />重设定时器的等待时间               |
-| size_t       | `LCUI_ProcessTimers();`<br />处理所有定时器                  |
-| void         | `LCUI_InitTimer();`<br />初始化定时器                        |
-| void         | `LCUI_FreeTimer();`<br />释放定时器                          |
+```c
+int    LCUITimer_Set();    //设置定时器                          
+int    LCUI_SetTimeout();    //设置一个非重复定时器。             
+int    LCUI_SetInterval();    //设置定时器重复调用`OnInterval()`的间隔时间 
+int    LCUITimer_Free();    //释放定时器                          
+int    LCUITimer_Pause();    //暂停定时器的倒计时                 
+int    LCUITimer_Continue();    //继续定时器的倒计时              
+int    LCUITimer_Reset();    //重设定时器的等待时间               
+size_t LCUI_ProcessTimers();    //处理所有定时器                  
+void   LCUI_InitTimer();    //初始化定时器                        
+void   LCUI_FreeTimer();    //释放定时器                          
+```
+
 
 
 ## LCUITimer_Set
@@ -134,11 +135,7 @@ int LCUITimer_Pause(int timer_id)
 
 **依赖它的文件：**
 
-- 
-
-
-
-
+- 无
 
 ## LCUITimer_Continue
 
@@ -191,7 +188,7 @@ size_t LCUI_ProcessTimers(void);
 
 **参数说明:**
 
-- 
+- 无
 
 **返回说明：**
 
@@ -211,11 +208,11 @@ void LCUI_InitTimer(void);
 
 **参数说明:**
 
-- 
+- 无
 
 **返回说明：**
 
-- 
+- 无
 
 **依赖它的文件：**
 
@@ -243,24 +240,34 @@ void LCUI_FreeTimer(void);
 
 
 
-**存在问题：**
+## **存在问题：**
 
 1. 全局共用同一个定时器列表
 2. 用到了线程操作、互斥锁、链表、时间相关的函数，依赖项较多，与 util 的依赖少特性不符。
 
-**改进方案：**
+## **改进方案：**
 
 - **重新设计定时器的接口**
 
   改用面向对象模式代替单例模式，示例：
 
-  
-
-  ```
-  // 当前的接口设计LCUI_InitTimer();LCUI_FreeTimer();LCUITimer_Set();LCUITimer_Free();LCUI_ProcessTimers();
-  // 新的接口设计TimerList_New();TimerList_Free();TimerList_Add();TimerList_Remove();TimerList_Process();
+  ```c
+  // 当前的接口设计
+  LCUI_InitTimer();
+  LCUI_FreeTimer();
+  LCUITimer_Set();
+  LCUITimer_Free();
+  LCUI_ProcessTimers();
+  // 新的接口设计
+  TimerList_New();
+  TimerList_Free();
+  TimerList_Add();
+  TimerList_Remove();
+  TimerList_Process();
   ```
 
   在新的设计中，不再是全局共用同一个定时器列表，允许开发者基于定时器接口实现一个定时器线程，以此摆脱 LCUI 主循环对定时器精度的影响。
 
 - 重新设计后的 timer 只需要依赖链表和时间相关函数
+
+- 不依赖事件循环，例如：用一个列表记录定时器，每当处理函数被调用时从列表取出已超时的定时器，然后调用这些定时器的回调函数。

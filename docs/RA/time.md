@@ -1,4 +1,4 @@
-## 时间操作 time
+## time
 
 提供一些高精度时间函数。
 
@@ -116,7 +116,7 @@ void LCUI_MSleep(unsigned int ms);
 
 **返回说明：**
 
-- 
+- 无
 
 **存在问题：**
 

@@ -4,13 +4,13 @@
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                         |
-| :----------- | :------------------------------------------------- |
-| void         | `Logger_SetLevel` <br />设置级别                   |
-| int          | `Logger_Log`<br />日志输出接口                     |
-| int          | `Logger_LogW`<br />宽字符版的日志输出接口          |
-| void         | `Logger_SetHandler`<br />返回给定参数表中的最小值  |
-| void         | `Logger_SetHandlerW`<br />返回给定参数表中的最大值 |
+```c
+ void  Logger_SetLevel()   //设置级别                   
+ int   Logger_Log()    //日志输出接口                     
+ int   Logger_LogW()    //宽字符版的日志输出接口          
+ void  Logger_SetHandler()    //返回给定参数表中的最小值  
+ void  Logger_SetHandlerW()    //返回给定参数表中的最大值 
+```
 
 
 
@@ -130,7 +130,7 @@ void Logger_SetHandler(void (*handler)(const char*));
 
 **参数说明：**
 
-- `handler`：，目标处理器（只允许读）
+- `handler`：目标处理器（只读）
 
 **返回说明：**
 
@@ -158,7 +158,7 @@ void Logger_SetHandlerW(void (*handler)(const wchar_t*));
 
 **参数说明：**
 
-- `handler`：，目标处理器（只允许读）
+- `handler`：，目标处理器（只读）
 
 **返回说明：**
 

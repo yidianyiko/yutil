@@ -4,17 +4,18 @@
 
 ## 函数概要
 
-| 限定符和类型   | 函数和说明                                                   |
-| :------------- | :----------------------------------------------------------- |
-| int            | `LCUI_OpenDirA` <br />用于打开目录                           |
-| LCUI_DirEntry* | `LCUI_OpenDirW` <br />用于打开目录                           |
-| LCUI_DirEntry* | `LCUI_ReadDirA` <br />读取目录，获取目录的详细信息。         |
-| int            | `LCUI_ReadDirW` <br />读取目录，获取目录的详细信息。         |
-| char *         | `LCUI_CloseDir` <br />关闭目录                               |
-| wchar_t *      | `LCUI_GetFileNameA` <br />获取文件名                         |
-| int            | `LCUI_GetFileNameW` <br />获取文件名的宽字符版本             |
-| int            | `LCUI_FileIsDirectory` <br />判断所找到的项目是不是目录      |
-| int            | `LCUI_FileIsRegular` <br />来判断所找到的项目是不是常规文件夹 |
+```c
+int            LCUI_OpenDirA()    //用于打开目录
+
+LCUI_DirEntry* LCUI_OpenDirW()    //用于打开目录
+LCUI_DirEntry* LCUI_ReadDirA()    //读取目录，获取目录的详细信息。      
+int            LCUI_ReadDirW()    //读取目录，获取目录的详细信息。      
+char *         LCUI_CloseDir()    //关闭目录    
+wchar_t *      LCUI_GetFileNameA()    //获取文件名                      
+int            LCUI_GetFileNameW()    //获取文件名的宽字符版本          
+int            LCUI_FileIsDirectory()    //判断所找到的项目是不是目录   
+int            LCUI_FileIsRegular()    //来判断所找到的项目是不是常规文件夹 
+```
 
 
 
@@ -25,7 +26,7 @@ int LCUI_OpenDirA(const char *path, LCUI_Dir *dir);
 
 ```
 
-LCUI_OpenDirA用于打开目录
+打开目录
 
 **参数说明：**
 
@@ -56,7 +57,7 @@ LCUI_OpenDirA用于打开目录
 int LCUI_OpenDirW(const wchar_t *path, LCUI_Dir *dir);
 ```
 
-LCUI_OpenDirW用于打开目录,是LCUI_OpenDirA的宽字符版本
+打开目录,是LCUI_OpenDirA的宽字符版本
 
 **参数说明：**
 
@@ -93,7 +94,7 @@ LCUI_DirEntry *LCUI_ReadDirA(LCUI_Dir *dir);
 
 **返回说明：**
 
-- 成功返回指向目录下文件的开始，LCUI_DirEntry指针，失败返回 NULL
+- 成功返回指向目录下文件的开始，`LCUI_DirEntry`指针，失败返回 NULL
 
 **存在问题：**
 
@@ -175,7 +176,7 @@ LCUI_API char *LCUI_GetFileNameA(LCUI_DirEntry *entry);
 
 **参数说明：**
 
-- `entry`：通过指向目录下文件的开始，LCUI_DirEntry指针输入，获取文件名
+- `entry`：通过指向目录下文件的开始，`LCUI_DirEntry`指针输入，获取文件名
 
 **返回说明：**
 
@@ -203,7 +204,7 @@ wchar_t *LCUI_GetFileNameW(LCUI_DirEntry *entry);
 
 **参数说明：**
 
-- `entry`：通过LCUI_DirEntry指针输入，获取文件名
+- `entry`：通过`LCUI_DirEntry`指针输入，获取文件名
 
 **返回说明：**
 
@@ -223,11 +224,13 @@ wchar_t *LCUI_GetFileNameW(LCUI_DirEntry *entry);
 
 ## LCUI_FileIsDirectory
 
-```
+```c
 int LCUI_FileIsDirectory(LCUI_DirEntry *entry);
 ```
 
-将entry->dataW.dwFileAttributes和FILE_ATTRIBUTE_DIRECTORY做位的与运算来判断所找到的项目是不是目录
+将 entry->dataW.dwFileAttributes 和 FILE_ATTRIBUTE_DIRECTORY 做位的与运算，
+
+来判断所找到的项目是不是目录
 
 **参数说明：**
 
@@ -251,7 +254,7 @@ int LCUI_FileIsDirectory(LCUI_DirEntry *entry);
 
 ## LCUI_FileIsRegular
 
-```
+```c
 int LCUI_FileIsRegular(LCUI_DirEntry *entry);
 ```
 
