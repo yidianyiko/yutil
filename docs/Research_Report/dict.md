@@ -1,5 +1,10 @@
 # dict
 
+字典的主要用途有以下两个：
+
+1. 实现数据库键空间（key space）；
+2. 用作 Hash 类型键的底层实现之一；
+
 
 
 ## LCUI & redis 
@@ -64,41 +69,43 @@ typedef struct DictIterator {
 
 **具体使用场景**见`RA/dict.md`
 
-- Dict_Create
-- Dict_Expand
-- Dict_Add
-- Dict_Addcop
-- Dict Addraw
-- Dict_Replace
-- Dict_Replaceraw
-- Dict_Deletenofree
-- Dict_Release
-- Dict_Find
-- Dict_Fetchvalue
-- Dict_Resize
-- Dict_Getlterator
-- Dict_Getsafelterator
-- Dict_Next
-- Dict_Releaselterator
-- Dict_Getrandomkey
-- Dict_Printstats
-- Dict_Genhashfunction
-- Dict_Genhashfunction
-- Dict _nthashfunction
-- Dict_dentityhashfunction
-- Dict_Empty
-- Dict_Enableresize
-- Dict_Disable Resize
-- Dict_Rehash
-- Dict_Rehashmilliseconds
-- Dict_SethashfunctionSeed
-- Dict_Gethashfunctionseed
-- Stringkeydict_keyhash
-- Stringkey Dict_KeyCompare
-- Stringkeydict_keydup
-- Stringkeydict_keydestructor
-- Dict_initstringkeytype
-- Dict_initstring CopykeyType
+```c
+- Dict_Create //创建一个新字典
+- Dict_Expand //扩展字典大小
+- Dict_Add //将元素添加到目标哈希表中
+- Dict_Addcop //将元素添加到目标哈希表中， 功能与 `Dict_Add()` 相同，但必须指定 `valDup` 才能添加成功
+- Dict Addraw //添加元素的底层实现函数(由 `Dict_Add` 调用)
+- Dict_Replace //获将新元素添加到字典，如果 `key` 已经存在，那么新元素覆盖旧元素。
+- Dict_Replaceraw//添加元素的底层实现函数，获将新元素添加到字典，如果 `key` 已经存在，那么新元素覆盖旧元素。
+- Dict_Deletenofree//删除元素(不释放内存资源)
+- Dict_Release//删除字典，释放内存资源
+- Dict_Find//在字典中按指定的 key 查找
+- Dict_Fetchvalue//查找给定 key 在字典 d 中的值
+- Dict_Resize//重新调整字典的大小，缩减多余空间
+- Dict_Getlterator// 创建一个迭代器，用于遍历哈希表节点。
+- Dict_Getsafelterator// 创建一个迭代器，用于遍历哈希表节点。
+- Dict_Next//迭代器的推进函数。
+- Dict_Releaselterator//删除迭代器
+- Dict_Getrandomkey//从字典中随机获取一项
+- Dict_Printstats//打印字典的统计信息
+- Dict_Genhashfunction//散列函数*(a popular one from Bernstein).*
+- Dict_Genhashfunction//不区分大小写的版本的散列函数
+- Dict _nthashfunction//整形散列函数*(a popular one from Bernstein).*
+- Dict_dentityhashfunction//以整数为键的散列函数*(a popular one from Bernstein).*
+- Dict_Empty//清空字典
+- Dict_Enableresize//设置字典可以重新调整大小
+- Dict_Disable Resize//设置字典是否可以重新调整大小
+- Dict_Rehash//字典的 rehash 函数
+- Dict_Rehashmilliseconds//在指定的时间内完成 rehash 操作
+- Dict_SethashfunctionSeed//设置 Hash Seed 
+- Dict_Gethashfunctionseed//获取 Hash Seed
+- Stringkeydict_keyhash//获取String类型key的hash值
+- Stringkey Dict_KeyCompare//判断两个键是否冲突
+- Stringkeydict_keydup//用新建覆盖掉原key值
+- Stringkeydict_keydestructor//销毁该键值
+- Dict_initstringkeytype//初始化字典类型
+- Dict_initstring CopykeyType//初始化复制字典类型
+```
 
 **参考：**
 
@@ -144,11 +151,9 @@ typedef struct __tb_oc_dictionary_t
 
 ```
 
-
-
 **使用场景**
 
-- 要创建 dictionary，使用 ``tb_oc_dictionary_init() `。
+- 要创建 dictionary，使用 `tb_oc_dictionary_init() `。
 - 返回字典大小，使用`tb_oc_dictionary_size()`
 - 设置引用，使用`tb_oc_dictionary_incr()`
 - 创建迭代器，使用`tb_oc_dictionary_itor();`
@@ -160,7 +165,7 @@ typedef struct __tb_oc_dictionary_t
 
 ### [Hash Tables](https://developer.gnome.org/glib/stable/glib-Hash-Tables.html)
 
-GHashTable 提供键和值之间的关联，这些键和值经过优化后可以在分摊 o (1)中找到、插入或删除关联值。遍历每个元素的所有操作都需要 o (n)时间(列出所有键/值、表调整大小等)。
+`GHashTable` 提供键和值之间的关联，这些键和值经过优化后可以在分摊 o (1)中找到、插入或删除关联值。遍历每个元素的所有操作都需要 o (n)时间(列出所有键/值、表调整大小等)。
 
 **实现方式：**
 
@@ -231,15 +236,14 @@ struct _GHashTableIter
 
 **使用场景**
 
-- 要创建 GHashTable，使用 ``g_hash_table_new ()` 。
-- 若要向 `GHashTable` 中插入键和值，使用 ``g_hash_table_insert ()` 。
-- 若要查找与给定键对应的值，使用 ``g_hash_table_lookup ()`和 `g_hash_table_lookup_extended ()`。
+- 要创建 `GHashTable`，使用 `g_hash_table_new ()` 。
+- 若要向 `GHashTable` 中插入键和值，使用 `g_hash_table_insert ()` 。
+- 若要查找与给定键对应的值，使用 `g_hash_table_lookup ()`和 `g_hash_table_lookup_extended ()`。
 - 还可以使用 `g_ hash_table_lookup_extended ()`简单地检查哈希表中是否存在键。
 - 若要删除键和值，使用 `g_hash_table_remove () `。
-- 要为每个键和值对调用函数，可以使用 `g_hash_table_foreach ()`或使用迭代器迭代哈希表中的键/值对，请参见 GHashTableIter。没有定义哈希表的迭代顺序，您不能依赖于按照插入键/值的相同顺序对它们进行迭代。
-- 使用 `ghash_table_destroy ()`来销毁一个 GHashTable。
-- 哈希表的一个常见用例是存储关于一组键的信息，而不将任何特定值与每个键关联。GHashTable 优化了这样做的一种方法: 如果您只存储 `key == value` 的键值对，那么 GHashTable 不会分配内存来存储这些值，如果您的集合很大，这可以节省相当多的空间。函数 `g_hash_table_add ()和 ``g_hash_table_contains ()`被设计成这样使用 GHashTable。
-- GHashTable 不是设计用在编译时已知的键和值静态初始化的。若要构建静态哈希表，建议使用 gperf 之类的工具。
+- 要为每个键和值对调用函数，可以使用 `g_hash_table_foreach ()`或使用迭代器迭代哈希表中的键/值对，请参见 `GHashTableIter`。没有定义哈希表的迭代顺序，您不能依赖于按照插入键/值的相同顺序对它们进行迭代。
+- 使用 `ghash_table_destroy ()`来销毁一个 `GHashTable`。
+- 哈希表的一个常见用例是存储关于一组键的信息，而不将任何特定值与每个键关联。`GHashTable` 优化了这样做的一种方法: 如果您只存储 `key == value` 的键值对，那么 `GHashTable` 不会分配内存来存储这些值，如果您的集合很大，这可以节省相当多的空间。函数 `g_hash_table_add ()`和 `g_hash_table_contains ()`被设计成这样使用 `GHashTable`。
 
 ## 比较
 

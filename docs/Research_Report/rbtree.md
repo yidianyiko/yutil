@@ -36,7 +36,6 @@ typedef struct RBTreeRec_ {
 
 ```c
 void RBTree_Init(RBTree *rbt); //初始化红黑树  
-
 void RBTree_Destroy(RBTree *rbt); //销毁红黑树         
 RBTreeNode * RBTree_First(const RBTree *rbt); //获取第一个结点 
 RBTreeNode * RBTree_Next(const RBTreeNode *node); //获取下一个结点     
@@ -166,7 +165,7 @@ struct ngx_rbtree_s {
 #define ngx_rbtree_sentinel_init(node)  ngx_rbt_black(node)
 ```
 
-ngx_rbtree初始化
+初始化
 
 #### ngx_rbtree_left_rotate && ngx_rbtree_right_rotate
 
