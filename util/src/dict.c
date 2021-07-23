@@ -1,39 +1,4 @@
-﻿/* Hash Tables Implementation.
- *
- * This file implements in memory hash tables with insert/del/replace/find/
- * get-random-element operations. Hash tables will auto resize if needed
- * tables of power of two in size are used, collisions are handled by
- * chaining. See the source code for more information... :)
- *
- * Copyright (c) 2006-2012, Salvatore Sanfilippo <antirez at gmail dot com>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *   * Redistributions of source code must retain the above copyright notice,
- *     this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in the
- *     documentation and/or other materials provided with the distribution.
- *   * Neither the name of Redis nor the names of its contributors may be used
- *     to endorse or promote products derived from this software without
- *     specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -41,10 +6,60 @@
 #include <ctype.h>
 #include <time.h>
 
-#include <LCUI_Build.h>
-#include <LCUI/LCUI.h>
+#include "../include/dict.h"
 
-/* Using Dict_EnableResize() / Dict_DisableResize() we make possible to
+/* //////////////////////////////////////////////////////////////////////////////////////
+ * macros
+ */
+#define DICTIONARY_HT_INITIAL_SIZE 4
+
+#define time_in_milliseconds LCUI_getTime
+
+#define DICT_STATS_VECTLEN 50
+struct dictionary_item_t {
+	void *key;
+	union {
+		void *val;
+		uint64_t u64;
+		int64_t s64;
+	} v;
+	struct dictionary_item_t *next; /**< 指向下一个哈希节点(形成链表) */
+};
+
+struct dictionary_type_t {
+	unsigned int(*hashFunction)(const void *key);
+	void *(*keyDup)(void *privdata, const void *key);
+	void *(*valDup)(void *privdata, const void *obj);
+	int(*keyCompare)(void *privdata, const void *key1, const void *key2);
+	void(*keyDestructor)(void *privdata, void *key);
+	void(*valDestructor)(void *privdata, void *obj);
+};
+
+struct dictionary_hash_map_t {
+	dictionary_item_t **table;	/**< 节点指针数组 */
+	unsigned long size;	/**< 桶的数量 */
+	unsigned long sizemask;	/**< mask 码，用于地址索引计算 */
+	unsigned long used;	/**< 已有节点数量 */
+};
+
+struct dictionary_t {
+	dictionary_type_t *type;		/**< 为哈希表中不同类型的值所使用的一族函数 */
+	void *privdata;
+	dictionary_hash_map_t ht[2];	/**< 每个字典使用两个哈希表 */
+	int rehashidx;		/**< rehash 进行到的索引位置，如果没有在 rehash ，就为 -1 */
+	int iterators;		/**< 当前正在使用的 iterator 的数量 */
+};
+
+struct dictionary_iterator_t {
+	dictionary_t *d;		/**< 迭代器所指向的字典 */
+	int table;		/**< 使用的哈希表号码 */
+	int index;		/**< 迭代进行的索引 */
+	int safe;		/**< 是否安全 */
+	dictionary_item_t *entry;	/**< 指向哈希表的当前节点 */
+	dictionary_item_t *next_entry;	/**< 指向哈希表的下个节点 */
+};
+
+/* Using dictionary_enableResize() / dictionary_DisableResize() we make possible to
  * enable/disable resizing of the hash table as needed. This is very important
  * for Redis, as we use copy-on-write and don't want to move too much memory
  * around when there is a child performing saving operations.
@@ -55,16 +70,17 @@
 static int dict_can_resize = 1;
 static unsigned int dict_force_resize_ratio = 5;
 
+static int dict_hash_function_seed = 5381;
 /* -------------------------- private prototypes ---------------------------- */
 
-static int Dict_ExpandIfNeeded(Dict *ht);
-static unsigned long Dict_NextPower(unsigned long size);
-static int Dict_KeyIndex(Dict *ht, const void *key);
-static int Dict_Init(Dict *ht, DictType *type, void *privdata);
+static int dictionary_expand_if_needed(dictionary_t *ht);
+static unsigned long dictionary_next_power(unsigned long size);
+static int dictionary_key_index(dictionary_t *ht, const void *key);
+static int dictionary_init(dictionary_t *ht, dictionary_type_t *type, void *privdata);
 
 /* -------------------------- hash functions -------------------------------- */
 
-unsigned int Dict_IntHashFunction(unsigned int key)
+unsigned int dictionary_make_int_hash(unsigned int key)
 {
 	key += ~(key << 15);
 	key ^= (key >> 10);
@@ -76,26 +92,25 @@ unsigned int Dict_IntHashFunction(unsigned int key)
 }
 
 /* Identity hash function for integer keys */
-unsigned int Dict_IdentityHashFunction(unsigned int key)
+unsigned int dictionary_identity_hash(unsigned int key)
 {
 	return key;
 }
 
-static int dict_hash_function_seed = 5381;
 
-void Dict_SetHashFunctionSeed(unsigned int seed)
+void dictionary_set_hash_seed(unsigned int seed)
 {
 	dict_hash_function_seed = seed;
 }
 
-unsigned int Dict_GetHashFunctionSeed(void)
+unsigned int dictionary_get_hash_seed(void)
 {
 	return dict_hash_function_seed;
 }
 
 /* Generic hash function (a popular one from Bernstein).
  * I tested a few and this was the best. */
-unsigned int Dict_GenHashFunction(const unsigned char *buf, int len)
+unsigned int dictionary_make_hash(const unsigned char *buf, int len)
 {
 	unsigned int hash = dict_hash_function_seed;
 	while (len--) {
@@ -105,7 +120,7 @@ unsigned int Dict_GenHashFunction(const unsigned char *buf, int len)
 }
 
 /* And a case insensitive version */
-unsigned int Dict_GenCaseHashFunction(const unsigned char *buf, int len)
+unsigned int dictionary_make_case_hash(const unsigned char *buf, int len)
 {
 	unsigned int hash = dict_hash_function_seed;
 	while (len--) {
@@ -118,7 +133,7 @@ unsigned int Dict_GenCaseHashFunction(const unsigned char *buf, int len)
 /* ----------------------------- API implementation ------------------------- */
 
 /** 重置哈希表 */
-static void Dict_Reset(DictHashTable *ht)
+static void dictionary_reset(dictionary_hash_map_t *ht)
 {
 	ht->table = NULL;
 	ht->size = 0;
@@ -126,11 +141,11 @@ static void Dict_Reset(DictHashTable *ht)
 	ht->used = 0;
 }
 
-Dict *Dict_Create(DictType *type, void *privdata)
+dictionary_t *dictionary_create(dictionary_type_t *type, void *privdata)
 {
 	static int inited = 0;
-	Dict *d = malloc(sizeof(Dict));
-	Dict_Init(d, type, privdata);
+	dictionary_t *d = malloc(sizeof(dictionary_t));
+	dictionary_init(d, type, privdata);
 	if (!inited) {
 		srand((unsigned int)time(NULL));
 		inited = 1;
@@ -139,43 +154,43 @@ Dict *Dict_Create(DictType *type, void *privdata)
 }
 
 /** 初始化字典 */
-static int Dict_Init(Dict *d, DictType *type, void *privdata)
+static int dictionary_init(dictionary_t *d, dictionary_type_t *type, void *privdata)
 {
 	d->type = type;
 	d->iterators = 0;
 	d->rehashidx = -1;
 	d->privdata = privdata;
-	Dict_Reset(&d->ht[0]);
-	Dict_Reset(&d->ht[1]);
+	dictionary_reset(&d->ht[0]);
+	dictionary_reset(&d->ht[1]);
 	return 0;
 }
 
-int Dict_Resize(Dict *d)
+int dictionary_resize(dictionary_t *d)
 {
 	int minimal;
-	if (!dict_can_resize || Dict_IsRehashing(d)) {
+	if (!dict_can_resize || dictionary_is_rehashing(d)) {
 		return -1;
 	}
 	minimal = d->ht[0].used;
-	if (minimal < DICT_HT_INITIAL_SIZE) {
-		minimal = DICT_HT_INITIAL_SIZE;
+	if (minimal < DICTIONARY_HT_INITIAL_SIZE) {
+		minimal = DICTIONARY_HT_INITIAL_SIZE;
 	}
-	return Dict_Expand(d, minimal);
+	return dictionary_expand(d, minimal);
 }
 
-int Dict_Expand(Dict *d, unsigned long size)
+int dictionary_expand(dictionary_t *d, unsigned long size)
 {
-	DictHashTable n;
+	dictionary_hash_map_t n;
 	unsigned long realsize;
-	if (Dict_IsRehashing(d) || d->ht[0].used > size) {
+	if (dictionary_is_rehashing(d) || d->ht[0].used > size) {
 		return -1;
 	}
 	/* 计算哈希表的(真正)大小 */
-	realsize = Dict_NextPower(size);
+	realsize = dictionary_next_power(size);
 	n.used = 0;
 	n.size = realsize;
 	n.sizemask = realsize - 1;
-	n.table = calloc(realsize, sizeof(DictEntry *));
+	n.table = calloc(realsize, sizeof(dictionary_item_t *));
 	/* 如果字典的 0 号哈希表未初始化，则将新建的哈希表作为字典的 0 号哈
 	 * 希表，否则，将新建哈希表作为字典的 1 号哈希表，并将它用于 rehash
 	 */
@@ -188,17 +203,17 @@ int Dict_Expand(Dict *d, unsigned long size)
 	return 0;
 }
 
-int Dict_Rehash(Dict *d, int n)
+int dictionary_rehash(dictionary_t *d, int n)
 {
-	if (!Dict_IsRehashing(d)) {
+	if (!dictionary_is_rehashing(d)) {
 		return 0;
 	}
 	while (n--) {
-		DictEntry *de, *nextde;
+		dictionary_item_t *de, *nextde;
 		if (d->ht[0].used == 0) {
 			free(d->ht[0].table);
 			d->ht[0] = d->ht[1];
-			Dict_Reset(&d->ht[1]);
+			dictionary_reset(&d->ht[1]);
 			d->rehashidx = -1;
 			return 0;
 		}
@@ -210,7 +225,7 @@ int Dict_Rehash(Dict *d, int n)
 		while (de) {
 			unsigned int h;
 			nextde = de->next;
-			h = Dict_HashKey(d, de->key) & d->ht[1].sizemask;
+			h = dictionary_hash_key(d, de->key) & d->ht[1].sizemask;
 			de->next = d->ht[1].table[h];
 			d->ht[1].table[h] = de;
 			d->ht[0].used--;
@@ -223,16 +238,15 @@ int Dict_Rehash(Dict *d, int n)
 	return 1;
 }
 
-#define timeInMilliseconds LCUI_GetTime
 
-int Dict_RehashMilliseconds(Dict *d, int ms)
+int dictionary_rehash_milliseconds(dictionary_t *d, int ms)
 {
-	long long start = timeInMilliseconds();
+	long long start = time_in_milliseconds();
 	int rehashes = 0;
 
-	while (Dict_Rehash(d, 100)) {
+	while (dictionary_rehash(d, 100)) {
 		rehashes += 100;
-		if (timeInMilliseconds() - start > ms) {
+		if (time_in_milliseconds() - start > ms) {
 			break;
 		}
 	}
@@ -240,30 +254,30 @@ int Dict_RehashMilliseconds(Dict *d, int ms)
 }
 
 /** 在字典没有迭代器的情况下，rehash 一个元素 */
-static void Dict_RehashStep(Dict *d)
+static void dictionary_rehash_step(dictionary_t *d)
 {
 	if (d->iterators == 0) {
-		Dict_Rehash(d, 1);
+		dictionary_rehash(d, 1);
 	}
 }
 
-int Dict_Add(Dict *d, void *key, void *val)
+int dictionary_add(dictionary_t *d, void *key, void *val)
 {
-	DictEntry *entry = Dict_AddRaw(d, key);
+	dictionary_item_t *entry = dictionary_add_raw(d, key);
 	if (!entry) {
 		return -1;
 	}
-	Dict_SetVal(d, entry, val);
+	dictionary_set_val(d, entry, val);
 	return 0;
 }
 
-int Dict_AddCopy(Dict *d, void *key, const void *val)
+int dictionary_add_2(dictionary_t *d, void *key, const void *val)
 {
-	DictEntry *entry;
+	dictionary_item_t *entry;
 	if (!d->type->valDup) {
 		return -2;
 	}
-	entry = Dict_AddRaw(d, key);
+	entry = dictionary_add_raw(d, key);
 	if (!entry) {
 		return -1;
 	}
@@ -271,76 +285,76 @@ int Dict_AddCopy(Dict *d, void *key, const void *val)
 	return 0;
 }
 
-DictEntry *Dict_AddRaw(Dict *d, void *key)
+dictionary_item_t *dictionary_add_raw(dictionary_t *d, void *key)
 {
 	int index;
-	DictEntry *entry;
-	DictHashTable *ht;
+	dictionary_item_t *entry;
+	dictionary_hash_map_t *ht;
 
 	/* 如果可以执行 rehash 操作，则执行平摊 rehash 操作 */
-	if (Dict_IsRehashing(d)) {
-		Dict_RehashStep(d);
+	if (dictionary_is_rehashing(d)) {
+		dictionary_rehash_step(d);
 	}
-	/* 计算 key 的 index 值，如果 key 已经存在，Dict_KeyIndex 返回 -1 */
-	if ((index = Dict_KeyIndex(d, key)) == -1) {
+	/* 计算 key 的 index 值，如果 key 已经存在，dictionary_key_index 返回 -1 */
+	if ((index = dictionary_key_index(d, key)) == -1) {
 		return NULL;
 	}
 	/* 判断是否正在进行 rehash ，选择相应的表 */
-	ht = Dict_IsRehashing(d) ? &d->ht[1] : &d->ht[0];
+	ht = dictionary_is_rehashing(d) ? &d->ht[1] : &d->ht[0];
 	entry = malloc(sizeof(*entry));
 	entry->next = ht->table[index];
 	ht->table[index] = entry;
 	ht->used++;
-	Dict_SetKey(d, entry, key);
+	dictionary_set_key(d, entry, key);
 	return entry;
 }
 
-int Dict_Replace(Dict *d, void *key, void *val)
+int dictionary_replace(dictionary_t *d, void *key, void *val)
 {
-	DictEntry *entry, auxentry;
-	if (Dict_Add(d, key, val) == 0) {
+	dictionary_item_t *entry, auxentry;
+	if (dictionary_add(d, key, val) == 0) {
 		return 1;
 	}
-	entry = Dict_Find(d, key);
+	entry = dictionary_find(d, key);
 	auxentry = *entry;
-	Dict_SetVal(d, entry, val);
-	Dict_FreeVal(d, &auxentry);
+	dictionary_set_val(d, entry, val);
+	dictionary_free_val(d, &auxentry);
 	return 0;
 }
 
-DictEntry *Dict_ReplaceRaw(Dict *d, void *key)
+dictionary_item_t *dictionary_replace_raw(dictionary_t *d, void *key)
 {
-	DictEntry *entry = Dict_Find(d, key);
-	return entry ? entry : Dict_AddRaw(d, key);
+	dictionary_item_t *entry = dictionary_find(d, key);
+	return entry ? entry : dictionary_add_raw(d, key);
 }
 
 /* 删除字典中的指定元素 */
-static int Dict_GenericDelete(Dict *d, const void *key, int nofree)
+static int dictionary_generic_delete(dictionary_t *d, const void *key, int nofree)
 {
 	int table;
 	unsigned int h, idx;
-	DictEntry *he, *prev_he;
+	dictionary_item_t *he, *prev_he;
 	if (d->ht[0].size == 0) {
 		return -1;
 	}
-	if (Dict_IsRehashing(d)) {
-		Dict_RehashStep(d);
+	if (dictionary_is_rehashing(d)) {
+		dictionary_rehash_step(d);
 	}
-	h = Dict_HashKey(d, key);
+	h = dictionary_hash_key(d, key);
 	for (table = 0; table <= 1; table++) {
 		idx = h & d->ht[table].sizemask;
 		he = d->ht[table].table[idx];
 		prev_he = NULL;
 		while (he) {
-			if (Dict_CompareKeys(d, key, he->key)) {
+			if (dictionary_compare_keys(d, key, he->key)) {
 				if (prev_he) {
 					prev_he->next = he->next;
 				} else {
 					d->ht[table].table[idx] = he->next;
 				}
 				if (!nofree) {
-					Dict_FreeKey(d, he);
-					Dict_FreeVal(d, he);
+					dictionary_free_key(d, he);
+					dictionary_free_val(d, he);
 				}
 				free(he);
 				d->ht[table].used--;
@@ -349,86 +363,86 @@ static int Dict_GenericDelete(Dict *d, const void *key, int nofree)
 			prev_he = he;
 			he = he->next;
 		}
-		if (!Dict_IsRehashing(d)) {
+		if (!dictionary_is_rehashing(d)) {
 			break;
 		}
 	}
 	return -1;
 }
 
-int Dict_Delete(Dict *ht, const void *key)
+int dictionary_Delete(dictionary_t *ht, const void *key)
 {
-	return Dict_GenericDelete(ht, key, 0);
+	return dictionary_generic_delete(ht, key, 0);
 }
 
-int Dict_DeleteNoFree(Dict *ht, const void *key)
+int dictionary_Delete_no_free(dictionary_t *ht, const void *key)
 {
-	return Dict_GenericDelete(ht, key, 1);
+	return dictionary_generic_delete(ht, key, 1);
 }
 
 /** 清除字典中指定的哈希表 */
-static void Dict_Clear(Dict *d, DictHashTable *ht)
+static void dictionary_clear(dictionary_t *d, dictionary_hash_map_t *ht)
 {
 	unsigned long i;
-	DictEntry *he, *next_he;
+	dictionary_item_t *he, *next_he;
 	for (i = 0; i < ht->size && ht->used > 0; i++) {
 		he = ht->table[i];
 		while (he) {
 			next_he = he->next;
-			Dict_FreeKey(d, he);
-			Dict_FreeVal(d, he);
+			dictionary_free_key(d, he);
+			dictionary_free_val(d, he);
 			free(he);
 			ht->used--;
 			he = next_he;
 		}
 	}
 	free(ht->table);
-	Dict_Reset(ht);
+	dictionary_reset(ht);
 }
 
-void Dict_Release(Dict *d)
+void dictionary_release(dictionary_t *d)
 {
-	Dict_Clear(d, &d->ht[0]);
-	Dict_Clear(d, &d->ht[1]);
+	dictionary_clear(d, &d->ht[0]);
+	dictionary_clear(d, &d->ht[1]);
 	free(d);
 }
 
-DictEntry *Dict_Find(Dict *d, const void *key)
+dictionary_item_t *dictionary_find(dictionary_t *d, const void *key)
 {
-	DictEntry *he;
+	dictionary_item_t *he;
 	unsigned int h, idx, table;
 	if (d->ht[0].size == 0) {
 		return NULL;
 	}
-	if (Dict_IsRehashing(d)) {
-		Dict_RehashStep(d);
+	if (dictionary_is_rehashing(d)) {
+		dictionary_rehash_step(d);
 	}
-	h = Dict_HashKey(d, key);
+	h = dictionary_hash_key(d, key);
 	for (table = 0; table <= 1; table++) {
 		idx = h & d->ht[table].sizemask;
 		he = d->ht[table].table[idx];
 		while (he) {
-			if (Dict_CompareKeys(d, key, he->key)) {
+			if (dictionary_compare_keys(d, key, he->key)) {
 				return he;
 			}
 			he = he->next;
 		}
-		if (!Dict_IsRehashing(d)) {
+		if (!dictionary_is_rehashing(d)) {
 			return NULL;
 		}
 	}
 	return NULL;
 }
 
-void *Dict_FetchValue(Dict *d, const void *key)
+void *dictionary_fetch_value(dictionary_t *d, const void *key)
 {
-	DictEntry *he = Dict_Find(d, key);
-	return he ? DictEntry_GetVal(he) : NULL;
+	dictionary_item_t *he = dictionary_find(d, key);
+	return he ? dictionary_item_get_val(he) : NULL;
 }
 
-DictIterator *Dict_GetIterator(Dict *d)
+dictionary_iterator_t *dictionary_get_iterator(dictionary_t *d)
 {
-	DictIterator *iter = malloc(sizeof(*iter));
+	dictionary_iterator_t *iter = malloc(sizeof(*iter));
 	iter->d = d;
 	iter->table = 0;
 	iter->index = -1;
@@ -438,16 +452,16 @@ DictIterator *Dict_GetIterator(Dict *d)
 	return iter;
 }
 
-DictIterator *Dict_GetSafeIterator(Dict *d)
+dictionary_iterator_t *dictionary_get_safe_iterator(dictionary_t *d)
 {
-	DictIterator *i = Dict_GetIterator(d);
+	dictionary_iterator_t *i = dictionary_get_iterator(d);
 	i->safe = 1;
 	return i;
 }
 
-DictEntry *Dict_Next(DictIterator *iter)
+dictionary_item_t *dictionary_next_iterator(dictionary_iterator_t *iter)
 {
-	DictHashTable *ht;
+	dictionary_hash_map_t *ht;
 	while (1) {
 		if (iter->entry) {
 			iter->entry = iter->next_entry;
@@ -464,7 +478,7 @@ DictEntry *Dict_Next(DictIterator *iter)
 		}
 		iter->index++;
 		if (iter->index >= (signed)ht->size) {
-			if (Dict_IsRehashing(iter->d) && iter->table == 0) {
+			if (dictionary_is_rehashing(iter->d) && iter->table == 0) {
 				iter->table++;
 				iter->index = 0;
 				ht = &iter->d->ht[1];
@@ -481,7 +495,7 @@ DictEntry *Dict_Next(DictIterator *iter)
 	return NULL;
 }
 
-void Dict_ReleaseIterator(DictIterator *iter)
+void dictionary_release_iterator(dictionary_iterator_t *iter)
 {
 	if (iter->safe && !(iter->index == -1 && iter->table == 0)) {
 		iter->d->iterators--;
@@ -489,19 +503,19 @@ void Dict_ReleaseIterator(DictIterator *iter)
 	free(iter);
 }
 
-DictEntry *Dict_GetRandomKey(Dict *d)
+dictionary_item_t *dictionary_get_random_key(dictionary_t *d)
 {
-	DictEntry *he, *orighe;
+	dictionary_item_t *he, *orighe;
 	unsigned int h;
 	int listlen, listele;
 
-	if (Dict_Size(d) == 0) {
+	if (dictionary_Size(d) == 0) {
 		return NULL;
 	}
-	if (Dict_IsRehashing(d)) {
-		Dict_RehashStep(d);
+	if (dictionary_is_rehashing(d)) {
+		dictionary_rehash_step(d);
 	}
-	if (Dict_IsRehashing(d)) {
+	if (dictionary_is_rehashing(d)) {
 		do {
 			h = rand() % (d->ht[0].size + d->ht[1].size);
 			if (h >= d->ht[0].size) {
@@ -532,15 +546,15 @@ DictEntry *Dict_GetRandomKey(Dict *d)
 /* ------------------------- private functions ------------------------------ */
 
 /* Expand the hash table if needed */
-static int Dict_ExpandIfNeeded(Dict *d)
+static int dictionary_expand_if_needed(dictionary_t *d)
 {
 	/* Incremental rehashing already in progress. Return. */
-	if (Dict_IsRehashing(d)) {
+	if (dictionary_is_rehashing(d)) {
 		return 0;
 	}
 	/* If the hash table is empty expand it to the intial size. */
 	if (d->ht[0].size == 0) {
-		return Dict_Expand(d, DICT_HT_INITIAL_SIZE);
+		return dictionary_expand(d, DICTIONARY_HT_INITIAL_SIZE);
 	}
 	/* If we reached the 1:1 ratio, and we are allowed to resize the hash
 	 * table (global setting) or we should avoid it but the ratio between
@@ -549,7 +563,7 @@ static int Dict_ExpandIfNeeded(Dict *d)
 	if (d->ht[0].used >= d->ht[0].size &&
 	    (dict_can_resize ||
 	     d->ht[0].used / d->ht[0].size > dict_force_resize_ratio)) {
-		return Dict_Expand(
+		return dictionary_expand(
 		    d, ((d->ht[0].size > d->ht[0].used) ? d->ht[0].size
 							: d->ht[0].used) *
 			   2);
@@ -557,9 +571,9 @@ static int Dict_ExpandIfNeeded(Dict *d)
 	return 0;
 }
 
-static unsigned long Dict_NextPower(unsigned long size)
+static unsigned long dictionary_next_power(unsigned long size)
 {
-	unsigned long i = DICT_HT_INITIAL_SIZE;
+	unsigned long i = DICTIONARY_HT_INITIAL_SIZE;
 
 	if (size >= LONG_MAX)
 		return LONG_MAX;
@@ -574,51 +588,50 @@ static unsigned long Dict_NextPower(unsigned long size)
  * 获取字典中与 key 对应的空槽的索引
  * @returns 如果 key 已经存在，则返回 -1
  */
-static int Dict_KeyIndex(Dict *d, const void *key)
+static int dictionary_key_index(dictionary_t *d, const void *key)
 {
-	DictEntry *he;
+	dictionary_item_t *he;
 	unsigned int h, idx, table;
-	if (Dict_ExpandIfNeeded(d) == -1) {
+	if (dictionary_expandif_needed(d) == -1) {
 		return -1;
 	}
-	h = Dict_HashKey(d, key);
+	h = dictionary_hash_key(d, key);
 	for (table = 0; table <= 1; table++) {
 		idx = h & d->ht[table].sizemask;
 		he = d->ht[table].table[idx];
 		while (he) {
-			if (Dict_CompareKeys(d, key, he->key)) {
+			if (dictionary_compare_keys(d, key, he->key)) {
 				return -1;
 			}
 			he = he->next;
 		}
-		if (!Dict_IsRehashing(d)) {
+		if (!dictionary_is_rehashing(d)) {
 			break;
 		}
 	}
 	return idx;
 }
 
-void Dict_Empty(Dict *d)
+void dictionary_empty(dictionary_t *d)
 {
-	Dict_Clear(d, &d->ht[0]);
-	Dict_Clear(d, &d->ht[1]);
+	dictionary_clear(d, &d->ht[0]);
+	dictionary_clear(d, &d->ht[1]);
 	d->rehashidx = -1;
 	d->iterators = 0;
 }
 
-#define DICT_STATS_VECTLEN 50
-static void Dict_PrintStatsHt(DictHashTable *ht)
+static void dictionary_print_stats_Ht(dictionary_hash_map_t *ht)
 {
 	unsigned long totchainlen = 0;
 	unsigned long clvector[DICT_STATS_VECTLEN];
 	unsigned long i, slots = 0, chainlen, maxchainlen = 0;
 	if (ht->used == 0) {
-		Logger_Info("No stats available for empty dictionaries\n");
+		Logger_info("No stats available for empty dictionaries\n");
 		return;
 	}
 	for (i = 0; i < DICT_STATS_VECTLEN; i++) clvector[i] = 0;
 	for (i = 0; i < ht->size; i++) {
-		DictEntry *he;
+		dictionary_item_t *he;
 		if (ht->table[i] == NULL) {
 			clvector[0]++;
 			continue;
@@ -660,26 +673,26 @@ static void Dict_PrintStatsHt(DictHashTable *ht)
 	}
 }
 
-void Dict_PrintStats(Dict *d)
+void dictionary_print_stats(dictionary_t *d)
 {
-	Dict_PrintStatsHt(&d->ht[0]);
-	if (Dict_IsRehashing(d)) {
-		printf("-- Rehashing into ht[1]:\n");
-		Dict_PrintStatsHt(&d->ht[1]);
+	dictionary_print_stats_Ht(&d->ht[0]);
+	if (dictionary_is_rehashing(d)) {
+		printf("-- _rehashing into ht[1]:\n");
+		dictionary_print_stats_Ht(&d->ht[1]);
 	}
 }
 
-void Dict_EnableResize(void)
+void dictionary_enable_resize(void)
 {
 	dict_can_resize = 1;
 }
 
-void Dict_DisableResize(void)
+void dictionary_disable_resize(void)
 {
 	dict_can_resize = 0;
 }
 
-unsigned int StringKeyDict_KeyHash(const void *key)
+unsigned int string_key_dictionary_get_key_hash(const void *key)
 {
 	const char *buf = key;
 	unsigned int hash = dict_hash_function_seed;
@@ -689,7 +702,7 @@ unsigned int StringKeyDict_KeyHash(const void *key)
 	return hash;
 }
 
-int StringKeyDict_KeyCompare(void *privdata, const void *key1,
+int string_key_dictionary_compare_key(void *privdata, const void *key1,
 					const void *key2)
 {
 	if (strcmp(key1, key2) == 0) {
@@ -698,34 +711,34 @@ int StringKeyDict_KeyCompare(void *privdata, const void *key1,
 	return 0;
 }
 
-void *StringKeyDict_KeyDup(void *privdata, const void *key)
+void *string_key_dictionary_duplicate_key(void *privdata, const void *key)
 {
 	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
 	strcpy(newkey, key);
 	return newkey;
 }
 
-void StringKeyDict_KeyDestructor(void *privdata, void *key)
+void string_key_dictionary_destroy_key(void *privdata, void *key)
 {
 	free(key);
 }
 
-void Dict_InitStringKeyType(DictType *t)
+void dictionary_init_string_key_type(dictionary_type_t *t)
 {
-	t->hashFunction = StringKeyDict_KeyHash;
+	t->hashFunction = string_key_dictionary_get_key_hash;
 	t->keyDup = NULL;
 	t->valDup = NULL;
-	t->keyCompare = StringKeyDict_KeyCompare;
+	t->keyCompare = string_key_dictionary_compare_key;
 	t->keyDestructor = NULL;
 	t->valDestructor = NULL;
 }
 
-void Dict_InitStringCopyKeyType(DictType *t)
+void dictionary_init_string_key_type_copy(dictionary_type_t *t)
 {
-	t->hashFunction = StringKeyDict_KeyHash;
-	t->keyDup = StringKeyDict_KeyDup;
+	t->hashFunction = string_key_dictionary_get_key_hash;
+	t->keyDup = string_key_dictionary_duplicate_key;
 	t->valDup = NULL;
-	t->keyCompare = StringKeyDict_KeyCompare;
-	t->keyDestructor = StringKeyDict_KeyDestructor;
+	t->keyCompare = string_key_dictionary_compare_key;
+	t->keyDestructor = string_key_dictionary_destroy_key;
 	t->valDestructor = NULL;
 }

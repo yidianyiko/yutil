@@ -26,8 +26,6 @@ typedef struct dictionary_iterator_t dictionary_iterator_t;
 /* //////////////////////////////////////////////////////////////////////////////////////
  * macros
  */
-#define DICTIONARY_HT_iNITIAL__sIZE 4
-
 #define dictionary_free_val(d, entry) \
     if ((d)->type->valDestructor) \
         (d)->type->valDestructor((d)->privdata, (entry)->v.val)
@@ -88,7 +86,7 @@ int dictionary_add(dictionary_t *dictionary, void *key, void *val);
  * 将元素添加到目标哈希表中
  * 功能与 dictionary_add() 相同，但必须指定 valDup 才能添加成功
 */
-int dictionary_add_copy(dictionary_t *dictionary, void *key, const void *val);
+int dictionary_add_2(dictionary_t *dictionary, void *key, const void *val);
 
 /** 添加元素的底层实现函数(由 dictionary_add 调用) */
 dictionary_item_t *dictionary_add_raw(dictionary_t *dictionary, void *key);
