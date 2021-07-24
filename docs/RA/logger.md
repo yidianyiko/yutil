@@ -7,9 +7,9 @@
 ```c
  void  Logger_SetLevel()   //设置级别                   
  int   Logger_Log()    //日志输出接口                     
- int   Logger_LogW()    //宽字符版的日志输出接口          
- void  Logger_SetHandler()    //返回给定参数表中的最小值  
- void  Logger_SetHandlerW()    //返回给定参数表中的最大值 
+ int   Logger_LogW()    //日志输出接口的宽字符版          
+ void  Logger_SetHandler()    //设置日志处理器
+ void  Logger_SetHandlerW()    //设置日志处理器的宽字符版
 ```
 
 
