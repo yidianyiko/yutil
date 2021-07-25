@@ -58,55 +58,57 @@ typedef struct dict_iterator_t dict_iterator_t;
 
 typedef void(dict_scan_function)(void *priv_data, const dict_entry_t *de);
 typedef void(dict_scan_bucket_function)(void *priv_data,
-                                        dict_entry_t **bucket_ref);
+					dict_entry_t **bucket_ref);
 
 /* ------------------------------- Macros ------------------------------------*/
 #define DICT_OK 0
 #define DICT_ERR 1
 
-#define dict_free_val(d, entry)                                                \
-  if ((d)->type->val_destructor)                                               \
-  (d)->type->val_destructor((d)->priv_data, (entry)->v.val)
+#define dict_free_val(d, entry)        \
+	if ((d)->type->val_destructor) \
+	(d)->type->val_destructor((d)->priv_data, (entry)->v.val)
 
-#define dict_set_val(d, entry, _val_)                                          \
-  do {                                                                         \
-    if ((d)->type->val_dup)                                                    \
-      (entry)->v.val = (d)->type->val_dup((d)->priv_data, _val_);              \
-    else                                                                       \
-      (entry)->v.val = (_val_);                                                \
-  } while (0)
+#define dict_set_val(d, entry, _val_)                                  \
+	do {                                                           \
+		if ((d)->type->val_dup)                                \
+			(entry)->v.val =                               \
+			    (d)->type->val_dup((d)->priv_data, _val_); \
+		else                                                   \
+			(entry)->v.val = (_val_);                      \
+	} while (0)
 
-#define dict_set_signed_integer_val(entry, _val_)                              \
-  do {                                                                         \
-    (entry)->v.s64 = _val_;                                                    \
-  } while (0)
+#define dict_set_signed_integer_val(entry, _val_) \
+	do {                                      \
+		(entry)->v.s64 = _val_;           \
+	} while (0)
 
-#define dict_set_unsigned_integer_val(entry, _val_)                            \
-  do {                                                                         \
-    (entry)->v.u64 = _val_;                                                    \
-  } while (0)
+#define dict_set_unsigned_integer_val(entry, _val_) \
+	do {                                        \
+		(entry)->v.u64 = _val_;             \
+	} while (0)
 
-#define dict_set_double_val(entry, _val_)                                      \
-  do {                                                                         \
-    (entry)->v.d = _val_;                                                      \
-  } while (0)
+#define dict_set_double_val(entry, _val_) \
+	do {                              \
+		(entry)->v.d = _val_;     \
+	} while (0)
 
-#define dict_free_key(d, entry)                                                \
-  if ((d)->type->key_destructor)                                               \
-  (d)->type->key_destructor((d)->priv_data, (entry)->key)
+#define dict_free_key(d, entry)        \
+	if ((d)->type->key_destructor) \
+	(d)->type->key_destructor((d)->priv_data, (entry)->key)
 
-#define dict_set_key(d, entry, _key_)                                          \
-  do {                                                                         \
-    if ((d)->type->key_dup)                                                    \
-      (entry)->key = (d)->type->key_dup((d)->priv_data, _key_);                \
-    else                                                                       \
-      (entry)->key = (_key_);                                                  \
-  } while (0)
+#define dict_set_key(d, entry, _key_)                                  \
+	do {                                                           \
+		if ((d)->type->key_dup)                                \
+			(entry)->key =                                 \
+			    (d)->type->key_dup((d)->priv_data, _key_); \
+		else                                                   \
+			(entry)->key = (_key_);                        \
+	} while (0)
 
-#define dict_compare_keys(d, key1, key2)                                       \
-  (((d)->type->key_compare)                                                    \
-       ? (d)->type->key_compare((d)->priv_data, key1, key2)                    \
-       : (key1) == (key2))
+#define dict_compare_keys(d, key1, key2)                          \
+	(((d)->type->key_compare)                                 \
+	     ? (d)->type->key_compare((d)->priv_data, key1, key2) \
+	     : (key1) == (key2))
 
 #define dict_hash_key(d, key) (d)->type->hash_function(key)
 #define dict_get_key(he) ((he)->key)
@@ -150,7 +152,7 @@ void dict_release_iterator(dict_iterator_t *iter);
 dict_entry_t *dict_get_random_key(dict_t *d);
 dict_entry_t *dict_get_fair_random_key(dict_t *d);
 unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
-                                unsigned int count);
+				unsigned int count);
 void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
 unsigned int dict_gen_hash_function(const unsigned char *buf, int len);
 unsigned int dict_gen_case_hash_function(const unsigned char *buf, int len);
@@ -162,10 +164,10 @@ int dict_rehash_milliseconds(dict_t *d, int ms);
 void dict_set_hash_function_seed(unsigned int *seed);
 unsigned int dict_get_hash_function_seed(void);
 unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
-                        dict_scan_bucket_function *bucketfn, void *priv_data);
+			dict_scan_bucket_function *bucketfn, void *priv_data);
 uint64_t dict_get_hash(dict_t *d, const void *key);
 dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
-                                                   const void *old_ptr,
-                                                   uint64_t hash);
+						   const void *old_ptr,
+						   uint64_t hash);
 
 #endif /* UTIL_DICT_H */
