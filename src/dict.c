@@ -310,11 +310,10 @@ int dict_rehash(dict_t *d, int n) {
 }
 
 long long time_in_milliseconds(void) {
-  //   struct timeval tv;
+  struct timeval tv;
 
-  // gettimeofday(&tv, NULL);
-  // return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
-  return 1000;
+  gettimeofday(&tv, NULL);
+  return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger
