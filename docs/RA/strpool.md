@@ -4,12 +4,12 @@ strpool 用于解决大量相同字符串的内存占用问题。
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                 |
-| :----------- | :----------------------------------------- |
-| strpool_t *  | `strpool_create` <br />创建字符串池        |
-| strpool_t *  | `strpool_free_str`<br />分配字符串给字符池 |
-| strpool_t *  | `strpool_size`<br />返回字符串池的大小     |
-| void         | `strpool_destroy`<br />销毁字符串池        |
+```c
+strpool_t * strpool_create()    //创建字符串池        
+strpool_t * strpool_free_str()    //分配字符串给字符池 
+strpool_t * strpool_size()    //返回字符串池的大小     
+void        strpool_destroy()    //销毁字符串池       
+```
 
 ## strpool_create 
 

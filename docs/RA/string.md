@@ -4,21 +4,21 @@
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                                   |
-| :----------- | :----------------------------------------------------------- |
-| char *       | `strdup2` <br />strdup() 的再实现版本，将串拷贝到新建的位置，用于清除编译错误 |
-| wchar_t *    | `wcsdup2`<br />strdup2() 的宽字符版本                        |
-| size_t       | `strsize`<br />计算字符串占用的内存空间大小。                |
-| size_t       | `wcssize`<br />strzie()的宽字符版本                          |
-| size_t       | `strtolower`<br />将字符串中的字母转成小写字母。             |
-| size_t       | `strntolower`<br />将字符串中前面的指定长度的字母转成小写字母。 |
-| size_t       | `strtrim`<br />清除字符串首尾的字符                          |
-| size_t       | `wcstrim`<br />strtrim()的宽字符版本。                       |
-| unsigned     | `strhash`<br />返回输入的字符串的hash值                      |
-| size_t       | `strreplace`<br />字符串替换                                 |
-| size_t       | `wcsreplace`<br />宽字符类型字符串替换                       |
-| int          | `cmdsplit`<br />分割命令行字符串                             |
-| int          | `strsplit`<br />分割字符串                                   |
+```c
+char *    strdup2()    //strdup() 的再实现版本，将串拷贝到新建的位置，用于清除编译错误
+wchar_t * wcsdup2()    //strdup2() 的宽字符版本                       
+size_t    strsize()    //计算字符串占用的内存空间大小。               
+size_t    wcssize()    //strzie()的宽字符版本                         
+size_t    strtolower()    //将字符串中的字母转成小写字母。            
+size_t    strntolower()    //将字符串中前面的指定长度的字母转成小写字母。
+size_t    strtrim()    //清除字符串首尾的字符                         
+size_t    wcstrim()    //strtrim()的宽字符版本。                      
+unsigned  strhash()    //返回输入的字符串的哈希值                     
+size_t    strreplace()    //字符串替换                                
+size_t    wcsreplace()    //宽字符类型字符串替换                      
+int       cmdsplit()    //分割命令行字符串                            
+int       strsplit()    //分割字符串                                  
+```
 
 
 
@@ -29,11 +29,11 @@ char *strdup2(const char *str);
 
 ```
 
-strdup() 的再实现版本，将串拷贝到新建的位置，用于清除编译错误 
+`strdup()` 的再实现版本，将串拷贝到新建的位置，用于清除编译错误 
 
 **参数说明：**
 
-- `str`：指向要复制的（以NULL结束）字符串的指针
+- `str`：指向要复制的（以  NULL  结束）字符串的指针
 
 **返回说明：**
 
@@ -71,11 +71,11 @@ wchar_t *wcsdup2(const wchar_t *str);
 
 ```
 
-strdup2() 的宽字符版本，将串拷贝到新建的位置，用于清除编译错误 
+`strdup2()` 的宽字符版本，将串拷贝到新建的位置，用于清除编译错误 
 
 **参数说明：**
 
-- `str`：指向要复制的（以NULL结束）宽字符类型字符串的指针
+- `str`：指向要复制的（以  NULL  结束）宽字符类型字符串的指针
 
 **返回说明：**
 
@@ -105,7 +105,7 @@ size_t strsize(const char *str);
 
 **参数说明：**
 
-- `str`：指向目标（以NULL结束）字符串的指针
+- `str`：指向目标（以  NULL  结束）字符串的指针
 
 **返回说明：**
 
@@ -136,7 +136,7 @@ size_t wcssize(const wchar_t *str);
 
 **参数说明：**
 
-- `str`：指向（以NULL结束）宽字符类型字符串指针
+- `str`：指向（以  NULL  结束）宽字符类型字符串指针
 
 **返回说明：**
 
@@ -167,7 +167,7 @@ size_t strtolower(char *outstr, const char *instr);
 **参数说明：**
 
 - `outstr`：目标缓冲，存放转换后的字符串。
-- `instr`：指向要转换的（以NULL结束）宽字符类型字符串指针
+- `instr`：指向要转换的（以  NULL  结束）宽字符类型字符串指针
 
 **返回说明：**
 
@@ -196,7 +196,7 @@ size_t strntolower(char *outstr, size_t max_len, const char *instr);
 **参数说明：**
 
 - `outstr`：目标缓冲，存放转换后的字符串。
-- `instr`：指向要转换的（以NULL结束）宽字符类型字符串指针
+- `instr`：指向要转换的（以  NULL  结束）宽字符类型字符串指针
 
 **返回说明：**
 
@@ -216,7 +216,7 @@ size_t strntolower(char *outstr, size_t max_len, const char *instr);
 
 ## strtrim
 
-```
+```c
 size_t strtrim(char *outstr, const char *instr, const char *charlist);
 ```
 
@@ -227,7 +227,7 @@ size_t strtrim(char *outstr, const char *instr, const char *charlist);
 
 - `outstr` – 目标缓存，存放处理后的字符串
 - `instr` – 需要处理的字符串
-- `charlist` – 需要清除的字符列表，当为NULL时，默认清除空白符
+- `charlist` – 需要清除的字符列表，当为  NULL  时，默认清除空白符
 
 **返回说明：**
 
@@ -263,7 +263,7 @@ unsigned strhash(unsigned hash, const char *str);
 
 - `outstr` – 目标缓存，存放处理后的字符串
 - `instr` – 需要处理的字符串
-- `charlist` – 需要清除的字符列表，当为NULL时，默认清除空白符
+- `charlist` – 需要清除的字符列表，当为 NULL 时，默认清除空白符
 
 **返回说明：**
 
@@ -279,20 +279,20 @@ unsigned strhash(unsigned hash, const char *str);
 
 ## strhash
 
-```
+```c
 unsigned strhash(unsigned hash, const char *str);
 ```
 
-返回输入的字符串的hash值
+返回输入的字符串的哈希值
 
 **参数说明：**
 
-- `hash` – 无符号型的hash值
+- `hash` – 无符号型的哈希值
 - `instr` – 目标字符串
 
 **返回说明：**
 
-- 返回hash值
+- 返回哈希值
 
 **存在问题：**
 
@@ -339,8 +339,6 @@ size_t strreplace(char *str, size_t max_len, const char *substr, const char *new
 
 ```c
 size_t strreplace(char *str, size_t max_len, const char *substr, const char *newstr);
-
-
 ```
 
 宽字符类型字符串替换
@@ -366,7 +364,7 @@ size_t strreplace(char *str, size_t max_len, const char *substr, const char *new
 
 ## cmdsplit
 
-```
+```c
 int cmdsplit(const char *cmd, char ***outargv);
 ```
 

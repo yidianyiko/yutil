@@ -4,12 +4,10 @@
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                          |
-| :----------- | :-------------------------------------------------- |
-| size_t       | `LCUI_DecodeString` <br />多字节字符编码转 Unicode  |
-| size_t       | `LCUI_EncodeString ` <br />Unicode 转多字节字符编码 |
-
-
+```c
+ size_t        LCUI_DecodeString //多字节字符编码转 Unicode  
+ size_t        LCUI_EncodeString //Unicode 转多字节字符编码 
+```
 
 
 ## LCUI_DecodeString

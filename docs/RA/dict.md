@@ -1,8 +1,8 @@
 # dict
 
-添加 dict 数据结构操作函数
+字典（哈希表）数据结构操作函数。
 
-实现方式：
+**实现方式：**
 
 ```c
 /** 哈希表节点结构 */
@@ -174,7 +174,7 @@ LCUI_API int Dict_Add(Dict *d, void *key, void *val);
 LCUI_API int Dict_AddCopy(Dict *d, void *key, const void *val);
 ```
 
-将元素添加到目标哈希表中， 功能与 Dict_Add() 相同，但必须指定 valDup 才能添加成功
+将元素添加到目标哈希表中， 功能与 `Dict_Add()` 相同，但必须指定 `valDup` 才能添加成功
 
 **参数说明：**
 
@@ -184,7 +184,7 @@ LCUI_API int Dict_AddCopy(Dict *d, void *key, const void *val);
 
 **返回说明：**
 
-- 成功返回指向目录下文件的开始，LCUI_DirEntry指针，失败返回 NULL
+- 成功返回指向目录下文件的开始，`LCUI_DirEntry`指针，失败返回 NULL
 
 **存在问题：**
 
@@ -204,7 +204,7 @@ LCUI_API int Dict_AddCopy(Dict *d, void *key, const void *val);
 LCUI_API DictEntry *Dict_AddRaw(Dict *d, void *key);
 ```
 
-添加元素的底层实现函数(由 Dict_Add 调用)
+添加元素的底层实现函数(由 `Dict_Add` 调用)
 
 **参数说明：**
 
@@ -233,7 +233,7 @@ LCUI_API DictEntry *Dict_AddRaw(Dict *d, void *key);
 LCUI_API int Dict_Replace(Dict *d, void *key, void *val);
 ```
 
-获将新元素添加到字典，如果 key 已经存在，那么新元素覆盖旧元素。
+获将新元素添加到字典，如果 `key` 已经存在，那么新元素覆盖旧元素。
 
 **参数说明：**
 
@@ -265,7 +265,7 @@ LCUI_API int Dict_Replace(Dict *d, void *key, void *val);
 LCUI_API LCUI_API DictEntry *Dict_ReplaceRaw(Dict *d, void *key);
 ```
 
-添加元素的底层实现函数，获将新元素添加到字典，如果 key 已经存在，那么新元素覆盖旧元素。
+添加元素的底层实现函数，获将新元素添加到字典，如果 `key` 已经存在，那么新元素覆盖旧元素。
 
 **参数说明：**
 
@@ -291,7 +291,7 @@ LCUI_API LCUI_API DictEntry *Dict_ReplaceRaw(Dict *d, void *key);
 
 ## Dict_DeleteNoFree
 
-```
+```c
 int Dict_DeleteNoFree(Dict *ht, const void *key)
 
 ```
@@ -322,7 +322,7 @@ int Dict_DeleteNoFree(Dict *ht, const void *key)
 
 ## Dict_Release
 
-```
+```c
 LCUI_API void Dict_Release(Dict *d);
 
 ```
@@ -360,7 +360,7 @@ LCUI_API void Dict_Release(Dict *d);
 
 ## Dict_Find
 
-```
+```c
 LCUI_API DictEntry * Dict_Find(Dict *d, const void *key);
 
 ```
@@ -392,7 +392,7 @@ LCUI_API DictEntry * Dict_Find(Dict *d, const void *key);
 
 ## Dict_FetchValue
 
-```
+```c
 LCUI_API void *Dict_FetchValue(Dict *d, const void *key);
 
 ```
@@ -432,7 +432,7 @@ LCUI_API void *Dict_FetchValue(Dict *d, const void *key);
 
 ## Dict_Resize
 
-```
+```c
 LCUI_API int Dict_Resize(Dict *d);
 ```
 
@@ -460,14 +460,14 @@ LCUI_API int Dict_Resize(Dict *d);
 
 ## Dict_GetIterator
 
-```
+```c
 LCUI_API DictIterator *Dict_GetIterator(Dict *d);
 
 ```
 
  创建一个迭代器，用于遍历哈希表节点。
 
-迭代器是不安全的，只能执行 Dict_Next 操作。
+> 迭代器是不安全的，只能执行 `Dict_Next` 操作。
 
 **参数说明：**
 
@@ -491,14 +491,14 @@ LCUI_API DictIterator *Dict_GetIterator(Dict *d);
 
 ## Dict_GetSafeIterator
 
-```
+```c
 LCUI_API DictIterator *Dict_GetSafeIterator(Dict *d);
 
 ```
 
  创建一个迭代器，用于遍历哈希表节点。
 
- /* safe 属性指示迭代器是否安全，如果迭代器是安全的，那么它可以在遍历的过程中进行增删操作
+> safe 属性指示迭代器是否安全，如果迭代器是安全的，那么它可以在遍历的过程中进行增删操作
 
 **参数说明：**
 
@@ -522,7 +522,7 @@ LCUI_API DictIterator *Dict_GetSafeIterator(Dict *d);
 
 ## Dict_Next
 
-```
+```c
 LCUI_API DictEntry *Dict_Next(DictIterator *iter);
 
 ```
@@ -551,7 +551,7 @@ LCUI_API DictEntry *Dict_Next(DictIterator *iter);
 
 ## Dict_ReleaseIterator
 
-```
+```c
 LCUI_API void Dict_ReleaseIterator(DictIterator *iter);
 ```
 
@@ -579,7 +579,7 @@ LCUI_API void Dict_ReleaseIterator(DictIterator *iter);
 
 ## Dict_GetRandomKey
 
-```
+```c
 LCUI_API DictEntry *Dict_GetRandomKey(Dict *d);
 
 ```
@@ -608,7 +608,7 @@ LCUI_API DictEntry *Dict_GetRandomKey(Dict *d);
 
 ## Dict_PrintStats
 
-```
+```c
 LCUI_API void Dict_PrintStats(Dict *d);
 ```
 
@@ -636,7 +636,7 @@ LCUI_API void Dict_PrintStats(Dict *d);
 
 ## Dict_GenHashFunction
 
-```
+```c
 LCUI_API unsigned int Dict_GenHashFunction(const unsigned char *buf, int len);
 
 ```
@@ -666,7 +666,7 @@ LCUI_API unsigned int Dict_GenHashFunction(const unsigned char *buf, int len);
 
 ## Dict_GenHashFunction
 
-```
+```c
 unsigned int Dict_GenCaseHashFunction(const unsigned char *buf, int len)
 
 ```
@@ -696,7 +696,7 @@ unsigned int Dict_GenCaseHashFunction(const unsigned char *buf, int len)
 
 ## Dict_IntHashFunction
 
-```
+```c
 unsigned int Dict_IntHashFunction(unsigned int key)
 
 ```
@@ -726,7 +726,7 @@ unsigned int Dict_IntHashFunction(unsigned int key)
 
 ## Dict_IdentityHashFunction
 
-```
+```c
 LCUI_API unsigned int Dict_IdentityHashFunction(unsigned int key);
 
 ```
@@ -756,7 +756,7 @@ LCUI_API unsigned int Dict_IdentityHashFunction(unsigned int key);
 ## Dict_Empty
 
 ```
-LCUI_API void Dict_Empty(Dict *d);
+LCUI_API void Dict_Empty(Dict *d);c
 
 ```
 
@@ -784,9 +784,8 @@ LCUI_API void Dict_Empty(Dict *d);
 
 ## Dict_EnableResize
 
-```
+```c
 LCUI_API void Dict_EnableResize(void);
-
 ```
 
 设置字典可以重新调整大小
@@ -813,11 +812,11 @@ LCUI_API void Dict_EnableResize(void);
 
 ## Dict_DisableResize
 
-```
+```c
 LCUI_API void Dict_DisableResize(void);
 ```
 
-设置禁止字典重新调整大小
+设置字典是否可以重新调整大小
 
 **参数说明：**
 
@@ -841,9 +840,8 @@ LCUI_API void Dict_DisableResize(void);
 
 ## Dict_Rehash
 
-```
+```c
 LCUI_API int Dict_Rehash(Dict *d, int n);
-
 ```
 
 字典的 rehash 函数
@@ -872,9 +870,8 @@ LCUI_API int Dict_Rehash(Dict *d, int n);
 
 ## Dict_RehashMilliseconds
 
-```
+```c
 LCUI_API int Dict_RehashMilliseconds(Dict *d, int ms);
-
 ```
 
 在指定的时间内完成 rehash 操作
@@ -902,11 +899,11 @@ LCUI_API int Dict_RehashMilliseconds(Dict *d, int ms);
 
 ## Dict_SetHashFunctionSeed
 
-```
+```c
 LCUI_API void Dict_SetHashFunctionSeed(unsigned int initval);
 ```
 
-设置Hash Seed参与计算
+设置 Hash Seed 参与计算
 
 **参数说明：**
 
@@ -930,11 +927,11 @@ LCUI_API void Dict_SetHashFunctionSeed(unsigned int initval);
 
 ## Dict_GetHashFunctionSeed
 
-```
+```c
 LCUI_API unsigned int Dict_GetHashFunctionSeed(void);
 ```
 
-获取Hash Seed
+获取 Hash Seed
 
 **参数说明：**
 
@@ -958,7 +955,7 @@ LCUI_API unsigned int Dict_GetHashFunctionSeed(void);
 
 ## StringKeyDict_KeyHash
 
-```
+```c
 LCUI_API unsigned int StringKeyDict_KeyHash(const void *key);
 ```
 
@@ -986,9 +983,8 @@ LCUI_API unsigned int StringKeyDict_KeyHash(const void *key);
 
 ## StringKeyDict_KeyCompare
 
-```
+```c
 LCUI_API int StringKeyDict_KeyCompare(void *privdata, const void *key1,	 const void *key2);
-
 ```
 
 判断两个键是否冲突
@@ -1005,7 +1001,7 @@ LCUI_API int StringKeyDict_KeyCompare(void *privdata, const void *key1,	 const v
 
 **存在问题：**
 
-1. 参数过多，privdata未使用
+1. 参数过多，privdata 未使用
 
 **改进方案：**
 
@@ -1017,7 +1013,7 @@ LCUI_API int StringKeyDict_KeyCompare(void *privdata, const void *key1,	 const v
 
 ## StringKeyDict_KeyDup
 
-```
+```c
 LCUI_API void *StringKeyDict_KeyDup(void *privdata, const void *key);
 
 ```
@@ -1047,7 +1043,7 @@ LCUI_API void *StringKeyDict_KeyDup(void *privdata, const void *key);
 
 ## StringKeyDict_KeyDestructor
 
-```
+```c
 LCUI_API void StringKeyDict_KeyDestructor(void *privdata, void *key);
 
 ```
@@ -1077,7 +1073,7 @@ LCUI_API void StringKeyDict_KeyDestructor(void *privdata, void *key);
 
 ## Dict_InitStringKeyType
 
-```
+```c
 void Dict_InitStringKeyType(DictType *t)
 
 ```
@@ -1115,9 +1111,8 @@ void Dict_InitStringKeyType(DictType *t)
 
 ## Dict_InitStringCopyKeyType
 
-```
+```c
 void Dict_InitStringCopyKeyType(DictType *t)
-
 ```
 
 初始化复制字典类型
