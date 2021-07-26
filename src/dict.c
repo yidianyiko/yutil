@@ -42,7 +42,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "../include/dict.h"
+#include "../include/yutil/dict.h"
 
 /* ------------------------------- Types ------------------------------------*/
 struct dict_entry_t {
