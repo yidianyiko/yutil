@@ -729,7 +729,7 @@ tb_void_t           tb_timer_task_kill(tb_timer_ref_t timer, tb_timer_task_ref_t
 
 **存储方式：**
 
-```
+```c
 typedef struct __tb_array_iterator_t
 {
     /// the iterator base

@@ -4,22 +4,21 @@
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                                   |
-| :----------- | :----------------------------------------------------------- |
-| void         | RBTree_Init(RBTree *rbt);<br />初始化红黑树                  |
-| void         | RBTree_Destroy(RBTree *rbt);<br />销毁红黑树                 |
-| RBTreeNode * | RBTree_First(const RBTree *rbt);<br />获取第一个结点         |
-| RBTreeNode * | RBTree_Next(const RBTreeNode *node);<br />获取下一个结点     |
-| RBTreeNode * | RBTree_Search(RBTree* rbt, int key);<br />红黑树查找结点     |
-| void*        | RBTree_GetData(RBTree* rbt, int key);<br />红黑树查找结点并获取该 结点数据 |
-| RBTreeNode * | RBTree_Insert(RBTree *rbt, int key, void *data);<br />插入新的结点 |
-| int          | RBTree_Erase(RBTree *rbt, int key);<br />删除红黑树中的结点  |
-| void         | RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);<br />按结点删除红黑树 |
-| int          | RBTree_CustomErase(RBTree *rbt, const void *keydata);<br />按指定数据删除结点 |
-| RBTreeNode * | RBTree_CustomSearch(RBTree* rbt, const void *keydata);<br />红黑树按指定数据查找结点 |
-| void*        | RBTree_CustomGetData(RBTree* rbt, const void *keydata);<br />获取指定结点数据 |
-| RBTreeNode * | RBTree_CustomInsert(RBTree *rbt, const void *keydata, void *data);<br />按指定数据插入 |
-
+```c
+void         RBTree_Init(RBTree *rbt);  //初始化红黑树                  
+void         RBTree_Destroy(RBTree *rbt);  //销毁红黑树                 
+RBTreeNode * RBTree_First(const RBTree *rbt);  //获取第一个结点         
+RBTreeNode * RBTree_Next(const RBTreeNode *node);  //获取下一个结点     
+RBTreeNode * RBTree_Search(RBTree* rbt, int key);  //红黑树查找结点     
+void*        RBTree_GetData(RBTree* rbt, int key);  //红黑树查找结点并获取该 结点数据 
+RBTreeNode * RBTree_Insert(RBTree *rbt, int key, void *data);  //插入新的结点 
+int          RBTree_Erase(RBTree *rbt, int key);  //删除红黑树中的结点  
+void         RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);  //按结点删除红黑树 
+int          RBTree_CustomErase(RBTree *rbt, const void *keydata);  //按指定数据删除结点 
+RBTreeNode * RBTree_CustomSearch(RBTree* rbt, const void *keydata);  //红黑树按指定数据查找结点 
+void*        RBTree_CustomGetData(RBTree* rbt, const void *keydata);  //获取指定结点数据 
+RBTreeNode * RBTree_CustomInsert(RBTree *rbt, const void *keydata, void *data);  //按指定数据插入 
+```
 
 ## RBTree_Init
 
@@ -27,7 +26,7 @@
 void RBTree_Init(RBTree *rbt);
 ```
 
-初始化
+初始化红黑树
 
 **参数说明：**
 
@@ -163,7 +162,7 @@ void* RBTree_GetData(RBTree* rbt, int key);
 RBTreeNode* RBTree_Insert(RBTree *rbt, int key, void *data);
 ```
 
-插入新 结点
+插入新结点
 
 **参数说明：**
 
@@ -256,7 +255,7 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 **返回说明：**
 
-- 返回找到的结点，未找到返回null
+- 返回找到的结点，未找到返回 null
 
 ## RBTree_CustomGetData
 
@@ -315,7 +314,6 @@ void RBTree_EraseNode(RBTree *rbt, RBTreeNode *node);
 
 1. 调研常见的红黑树实现分析
   - Linux rbtree
-  - STL rbtree
   - ngnix rbtree
   - ...
 2. 比较并选择较好的红黑树实现

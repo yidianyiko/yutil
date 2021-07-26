@@ -1,6 +1,6 @@
 # array
 
-- 调研与其他库的 array 实现方式，验证是否可以将 linkedlist 更名为 array。
+
 
 ## LCUI
 
@@ -125,7 +125,6 @@ tb_size_t           tb_oc_array_size(tb_object_ref_t array);
 
 ```c
 tb_object_ref_t     tb_oc_array_item(tb_object_ref_t array, tb_size_t index);
-
 ```
 
 索引处的数组元素
@@ -134,7 +133,6 @@ tb_object_ref_t     tb_oc_array_item(tb_object_ref_t array, tb_size_t index);
 
 ```c
 tb_void_t           tb_oc_array_incr(tb_object_ref_t array, tb_bool_t incr);
-
 ```
 
 设置数组是否开启引用
@@ -234,20 +232,33 @@ struct _GRealArray
 **使用场景**
 
 - 使用 `g_array_new ()`创建新数组。
-- 为了在最坏的情况下向数组添加元素，成本为 `o (n)`，可以使用 `garray_append_val ()`、 `garray_append_vals ()`、 `garray_prepend_val ()`、 `garray_prepend_vals ()`、 `garray_insert_val ()`和 `garray_insert_vals ()`。
-- 若要访问中的数组元素(读或写)，成本为 `o (1) `请使用 `g_array_index ()`。
-- 若要设置数组的大小，请使用 `g_array_set_size ()` 。
-- 若要释放数组，请使用 `g_array_unref ()`或 `g_array_free ()` 。
+- 为了在最坏的情况下向数组添加元素，成本为 `o(n)`，可以使用 `garray_append_val ()`、 `garray_append_vals()`、 `garray_prepend_val()`、 `garray_prepend_vals()`、 `garray_insert_val()`和 `garray_insert_vals()`。
+- 若要访问中的数组元素(读或写)，成本为 `o(1) `请使用 `g_array_index()`。
+- 若要设置数组的大小，请使用 `g_array_set_size()` 。
+- 若要释放数组，请使用 `g_array_unref()`或 `g_array_free()` 。
 - 所有的排序函数都在内部调用一个快速排序(或类似的)函数，平均开销为 `o(nlog(n))` ，最坏情况下开销为 `o(n^2)`。
 
 ## 比较和结论
+
+> 调研与其他库的 array 实现方式，验证是否可以将 linkedlist 更名为 array。
 
 初步来看，不适合改名为array
 
 原因：
 
 - array一般使用变长数组实现，而LCUI中使用双链表实现。
+- 一般而言，数组要求内存分配是连续的。
 
-使用场景：
+适合更换为array的使用场景
+
+**使用场景：**
 
 - ……
+
+**结论：**
+
+选择一种不依赖其它数据结构的方案。
+
+在 LCUI 中的一些不只需要记录和遍历数据的地方使用 linux 这种链表结构。
+
+用迭代器来遍历数组这种方案可以有，但考虑到时间成本，可以将优先级调低点。建议考虑 LCUI 的 `LinkedList_Each()` 方案，靠宏生成迭代相关代码。

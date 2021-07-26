@@ -99,7 +99,7 @@ g_ascii_tolower (gchar c);
 
 ### `g_ascii_toupper ()`
 
-```
+```c
 gchar
 g_ascii_toupper (gchar c);
 ```
@@ -110,7 +110,7 @@ g_ascii_toupper (gchar c);
 
 ### `g_strin_ascii_up ()`
 
-```
+```c
 GString *
 g_string_ascii_up (GString *string);
 ```
@@ -119,7 +119,7 @@ g_string_ascii_up (GString *string);
 
 ### `g_string_ascii_down ()`
 
-```
+```c
 GString *
 g_string_ascii_down (GString *string);
 ```
@@ -130,7 +130,7 @@ g_string_ascii_down (GString *string);
 
 ### `g_strstrip()`
 
-```
+```c
 #define             g_strstrip( string )
 ```
 
@@ -156,7 +156,7 @@ g_strsplit_set (const gchar *string,
                 gint max_tokens);
 ```
 
-将字符串拆分为若干不包含分隔符中任何字符的标记。标记是不包含任何分隔符的最长字符串(可能是空的)。如果达到 max_token，则将剩余字符追加到最后一个token。
+将字符串拆分为若干不包含分隔符中任何字符的标记。标记是不包含任何分隔符的最长字符串(可能是空的)。如果达到 `max_token`，则将剩余字符追加到最后一个`token`后。
 
 
 
@@ -869,3 +869,115 @@ GNU style.：每层缩进2个空格
 
 为了做到跨平台，所有类型，都是全部重定义过。
 
+### 头文件
+
+头文件的唯一主要规则是，函数定义应该垂直对齐三列:
+
+```c
+return_type          function_name           (type   argument,
+                                              type   argument,
+                                              type   argument);
+```
+
+>  如果您正在创建一个公共库，请尝试导出一个单独的公共头文件，该文件反过来包含所有较小的头文件。这样就不会直接包含公共标头，而是在应用程序中使用单个 include。
+
+对于库，所有头文件都应该有包含保护(用于内部使用)和 c++ 保护。
+
+###  **GObject 类**
+
+GObject 类定义和实现需要一些额外的编码样式通知，并且应该始终正确地使用名称空间。
+
+Typedef 声明应该放在文件的开头:
+
+```c
+typedef struct _GtkBoxedStruct       GtkBoxedStruct;
+typedef struct _GtkMoreBoxedStruct   GtkMoreBoxedStruct;
+//枚举类型:
+typedef enum
+{
+  GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT,
+  GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH
+} GtkSizeRequestMode;
+//回调类型:
+typedef void (* GtkCallback) (GtkWidget *widget,
+                              gpointer   user_data);
+```
+
+实例结构应该使用 `G_DECLARE_FINAL_TYPE` 或 `G_DECLARE_DERIVABLE_TYPE`:
+
+```c
+#define GTK_TYPE_FOO (gtk_foo_get_type ())
+G_DECLARE_FINAL_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)
+```
+
+对于final类型，私有数据可以存储在对象结构中，这应该在 c 文件中定义:
+
+```c
+struct _GtkFoo
+{
+  GObject   parent_instance;
+
+  guint     private_data;
+  gpointer  more_private_data;
+};
+```
+
+对于可派生类型，私有数据必须存储在 c 文件中的一个私有结构中，使用`G_DEFINE_TYPE_WITH_PRIVATE()`配置，并使用 `_get_instance_private()` 函数访问:
+
+```c
+#define GTK_TYPE_FOO gtk_foo_get_type ()
+G_DECLARE_DERIVABLE_TYPE (GtkFoo, gtk_foo, GTK, FOO, GtkWidget)
+
+struct _GtkFooClass
+{
+  GtkWidgetClass parent_class;
+
+  void (* handle_frob)  (GtkFrobber *frobber,
+                         guint       n_frobs);
+
+  gpointer padding[12];
+};
+```
+
+使用 `G_DEFINE_TYPE()`, `G_DEFINE_TYPE_WITH_PRIVATE()`, 和 `G_DEFINE_TYPE_WITH_CODE()` 宏, 或者它们的抽象变体 `G_DEFINE_ABSTRACT_TYPE()`, `G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE(),` 和`G_DEFINE_ABSTRACT_TYPE_WITH_CODE() ；`还要使用类似的宏来定义接口和封装类型。.
+
+接口类型应该始终使用用于强制转换的虚拟 typedef:
+
+```c
+typedef struct _GtkFooable          GtkFooable;
+```
+
+接口结构应该有到 dummy typedef的标准化接口
+
+```c
+typedef struct _GtkFooableInterface     GtkFooableInterface;
+```
+
+接口必须具有以下宏:
+
+| Macro                      | Expands to                    |
+| -------------------------- | ----------------------------- |
+| GTK_TYPE_*iface_name*      | *iface_name*_get_type         |
+| GTK_*iface_name*           | G_TYPE_CHECK_INSTANCE_CAST    |
+| GTK_IS_*iface_name*        | G_TYPE_CHECK_INSTANCE_TYPE    |
+| GTK_*iface_name*_GET_IFACE | G_TYPE_INSTANCE_GET_INTERFACE |
+
+## 宏
+
+除非绝对必要，尽量避免使用私有宏。记住在一个块或一系列需要它们的函数的末尾 # undef 它们。
+
+内联函数通常优于私有宏。
+
+除非计算为常数，否则不应使用公共宏。
+
+## Public API
+
+避免将变量导出为公共 API，因为这在某些平台上很麻烦。最好还是添加 getter 和 setter。另外，通常要注意全局变量。
+
+## Private API
+
+在多个源文件中需要的非导出函数应该以下划线(“ _”)作为前缀，并在私有头文件中声明。例如，_ mylib _ internal _ foo ()。
+
+下划线前缀函数从不导出。
+
+只在一个源文件中需要的非导出函数应声明为静态函数。

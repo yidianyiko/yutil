@@ -1,18 +1,20 @@
 # strlist
 
-strlist 是针对部件和 CSS 选择器的多字符串存储需求而设计的，配合 strpool 使用.
+strlist 是针对部件和 CSS 选择器的多字符串存储需求而设计的，配合 strpool 使用。
 
 ## 函数概要
 
-| 限定符和类型 | 函数和说明                                            |
-| :----------- | :---------------------------------------------------- |
-| int          | `strlist_add` <br />向字符串组添加字符串              |
-| int          | `strlist_add_one`<br />向字符串组添加一个字符串       |
-| int          | `strlist_remove_one`<br />删除字符串组中的一个字符串  |
-| int          | `sortedstrlist_add`<br />向已排序的字符串组添加字符串 |
-| int          | `strlist_has` <br />判断字符串组中是否包含指定字符串  |
-| int          | `strlist_remove`<br />从字符串组中移除指定字符串      |
-| void         | `strlist_free`<br />释放字符串组                      |
+```c
+int  strlist_add()    //向字符串组添加字符串              
+int  strlist_add_one()    //向字符串组添加一个字符串       
+int  strlist_remove_one()    //删除字符串组中的一个字符串  
+int  sortedstrlist_add()    //向已排序的字符串组添加字符串 
+int  strlist_has()    //判断字符串组中是否包含指定字符串  
+int  strlist_remove()    //从字符串组中移除指定字符串      
+void strlist_free()    //释放字符串组                      
+```
+
+
 
 ## strlist_add 
 
@@ -199,13 +201,6 @@ int strlist_remove(strlist_t *strlist, const char *str);
 - src/gui/widget_class.c
 
 - src/gui/widget_status.cint sortedstrlist_add(strlist_t *strlist, const char *str)
-
-  向已排序的字符串组添加字符串
-
-  **参数:**
-  `strlist` – 字符串组
-  `str` – 字符串
-
 
 
 ## strlist_free
