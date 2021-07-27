@@ -11,4 +11,6 @@
 
 #define round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
 
+#define pow2(x) ((x) * (x))
+
 #endif /* UTIL_MATH_H */
