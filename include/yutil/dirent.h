@@ -40,6 +40,7 @@ typedef HANDLE dir_handle_t;
 typedef union dir_entry_t dir_entry_t;
 #else
 #include <dirent.h>
+#include <locale.h>
 
 #define DIRENT_NAME_LEN 256
 #define PATH_DELIMITER '/'

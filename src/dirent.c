@@ -30,22 +30,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-
 #include "../yutil/dirent.h"
 
 #ifdef _WIN32
-typedef union dir_entry_t {
+union dir_entry_t {
 	WIN32_FIND_DATAA data_a;
 	WIN32_FIND_DATAW data_w;
 };
 #else
-typedef struct dir_entry_t {
+struct dir_entry_t {
 	struct dirent dirent;
 	wchar_t name[DIRENT_NAME_LEN];
 };
 #endif
 
-typedef struct dir_t_ {
+struct dir_t_ {
 	dir_handle_t handle;
 	dir_entry_t entry;
 	int cached;
@@ -115,9 +114,15 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 
 	int len;
 	char *newpath;
-	len = LCUI_EncodeString(NULL, path, 0, ENCODING_UTF8) + 1;
+	if (!(setlocale(LC_ALL, "C.UTF-8") ||
+	      setlocale(LC_ALL, "en_US.UTF-8") ||
+	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
+		setlocale(LC_ALL, "");    //"failed to setlocale to utf-8"
+	}
+	len = wcstombs(NULL, path, 0) + 1;
 	newpath = malloc(len * sizeof(wchar_t));
-	LCUI_EncodeString(newpath, path, len, ENCODING_UTF8);
+	wcstombs(newpath, path, len);
+	setlocale(LC_ALL, "C");
 	dir->handle = opendir(newpath);
 	free(newpath);
 	if (!dir->handle) {
@@ -170,8 +175,14 @@ dir_entry_t *dir_read_w(dir_t *dir)
 		return NULL;
 	}
 	dir->entry.dirent = *d;
-	len = LCUI_DecodeString(dir->entry.name, d->d_name,
-				LCUI_DIRENT_NAME_LEN, ENCODING_UTF8);
+	if (!(setlocale(LC_ALL, "C.UTF-8") ||
+	      setlocale(LC_ALL, "en_US.UTF-8") ||
+	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
+		setlocale(LC_ALL, "");    //"failed to setlocale to utf-8"
+	}
+	len = mbstowcs((dir->entry.name, d->d_name,
+				DIRENT_NAME_LEN);
+	setlocale(LC_ALL, "C");
 	dir->entry.name[len] = 0;
 	return &dir->entry;
 #endif
