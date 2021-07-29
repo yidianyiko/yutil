@@ -1,43 +1,18 @@
-# linkedlist_linux
-
-
-
-使用传统的链表结构会造成大量的冗余代码, 降低代码的重用性的问题
-
-```c
-//传统链表
-struct listNode {
-	struct list *pre;
-	struct list *next;
-	void *data;
-};
-```
-
-而Linux内核源代码中有很多地方都需要用双向循环链表来组织数据。因此,Linux内核源码在`include/linux/list.h`中提供了双向循环链表。我们可以通过直接修改或者学习该其实现方式。
+# linkedlist
 
 Linux 中的链表采用了数据与结点分离的实现方式。这样在进行遍历等操作的时候，就可以大大的提升效率。
 
 ```c
-//双循环链表
 struct list_head {
 	struct list_head *next, *prev;
 };
-
-//用于hash表的链表
-/* 链表头 */
-struct hlist_head {
-	struct hlist_node *first;
-};
-/* 链表节点 */
-struct hlist_node {
-	struct hlist_node *next, **pprev;
-};
-
 ```
 
-在这个结构体类型定义中, 并没有数据成员,其主要作用就是**嵌套在其它结构体类型的定义中起**到链接作用。
+在这个结构体类型定义中, 只包含两个指向`list_head`结构的的指针`prev`和`next`，并没有数据成员,其主要作用就是**嵌套在其它结构体类型的定义中起**到链接作用。
 
-## 基础操作
+而在需要链表组织的数据，只需要包含一个`struct list_head`成员就可以把数据链接起来。这种通用的链表结构避免了为每个数据项类型定义自己的链表的操作。
+
+## 操作接口
 
 ### 初始化
 
@@ -46,35 +21,183 @@ struct hlist_node {
 
 #define LIST_HEAD(name) \
 	struct list_head name = LIST_HEAD_INIT(name)
-/**
- * INIT_LIST_HEAD - Initialize a list_head structure
- * @list: list_head structure to be initialized.
- *
- * Initializes the list_head to point to itself.  If it is a list header,
- * the result is an empty list.
- */
-static inline void INIT_LIST_HEAD(struct list_head *list)
-{
-	WRITE_ONCE(list->next, list);
-	list->prev = list;
+
+#define INIT_LIST_HEAD(ptr) do { \
+    (ptr)->next = (ptr); (ptr)->prev = (ptr); \
+} while (0)
+```
+
+`LIST_HEAD(name)`在声明的时候完成了链表的初始化，将链表的前后指针指向了自己，得到一个空链表。
+
+`INIT_LIST_HEAD(ptr)`在运行时初始化链表。
+
+### 插入
+
+```c
+static inline void list_add(struct list_head *new, struct list_head *head);
+static inline void list_add_tail(struct list_head *new, struct list_head *head);
+```
+
+`list_add`在表头插入结点。
+
+`list_add_tail`在表尾插入结点。
+
+### 删除
+
+```c
+static inline void list_del(struct list_head *entry) {
+  __list_del_entry(entry);
+  entry->next = LIST_POISON1;
+  entry->prev = LIST_POISON2;
+}
+static inline void list_del_init(struct list_head *entry) {
+  __list_del_entry(entry);
+  INIT_LIST_HEAD(entry);
 }
 ```
 
-上面的宏完成了链表的初始化，将链表的前后指针指向了自己。
-
-### ……
-
-## 实例
-
-以下的链表构造, 只需要在定义一个list_head指针成员，即可将这种结构体类型的结点链接起来, 形成链表。不管链表中节点的数据结构怎么变化，它的链表头只需要占8个字节。
+`list_del`用于删除结点。被删除的结点的`next`和`prev`被重新指向`LIST_POISON1`、`LIST_POISON2`
 
 ```c
-//链表中的节点则如下定义
-struct list {
-	struct list_head list_head;
-	void *data;
-};
+#define LIST_POISON1  ((void *) 0x100 + POISON_POINTER_DELTA)
+#define LIST_POISON2  ((void *) 0x122 + POISON_POINTER_DELTA)
 ```
+
+非法访问已删除的结点将引起页故障。
+
+`list_del_init`用于删除结点。被删除的结点的`next`和`prev`重新指向自己。
+
+### 移动
+
+```c
+static inline void list_move(struct list_head *list, struct list_head *head);
+static inline void list_move_tail(struct list_head *list, struct list_head *head);
+```
+
+`list_move`将一个链表的节点移动到另一个链表的首部。
+
+`list_move_tail`将一个链表的节点移动到另一个链表的尾部。
+
+### 合并
+
+```c
+static inline void list_splice(const struct list_head *list, struct list_head *head);
+static inline void list_splice_init(struct list_head *list, struct list_head *head);
+```
+
+`list_splice`将list链表合并到head链表，原list头节点仍然指向原来的结点。
+
+`list_move_tail`将list链表合并到head链表，原list头节点重新初始化。
+
+### 遍历
+
+```c
+#define list_entry(ptr, type, member) container_of(ptr, type, member)
+
+#define list_first_entry(ptr, type, member)                                    \
+  list_entry((ptr)->next, type, member)
+
+#define list_last_entry(ptr, type, member) list_entry((ptr)->prev, type, member)
+
+```
+
+`list_entry`通过`list_head`成员访问一个数据项节点。
+
+- `ptr`：指向`list_head`成员的指针
+- `type`：数据项的类型
+- `member`：数据项类型定义中的`list_head`成员的变量名。
+
+> 其中:
+>
+> ```c
+> #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+> 
+> #define container_of(ptr, type, member) ({          \
+>         const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+>         (type *)( (char *)__mptr - offsetof(type,member) );})
+> ```
+>
+> 这里使用的是一个利用编译器技术的小技巧，即先求得结构成员在与结构中的偏移量，然后根据成员变量的地址反过来得出属主结构变量的地址。
+>
+> `((type *)0)->member`将0地址强制"转换"为 type 结构的指针，再访问到 type 结构中的 member 成员。在`container_of`宏中，它用来给`typeof()`提供参数，以获得 member 成员的数据类型；在`offsetof()`中，这个member成员的地址实际上就是type数据结构中member成员相对于结构变量的偏移量。
+>
+> 对于给定一个结构，offsetof(type,member)是一个常量，list_entry()正是利用这个不变的偏移量来求得链表数据项的变量地址。
+
+```c
+#define list_for_each(pos, head)                                               \
+  for (pos = (head)->next; pos != (head); pos = pos->next)
+```
+
+`list_for_each`遍历整个链表。
+
+```c
+#define list_for_each_entry(pos, head, member)                                 \
+  for (pos = list_first_entry(head, typeof(*pos), member);                     \
+       !list_entry_is_head(pos, head, member);                                 \
+       pos = list_next_entry(pos, member))
+
+```
+
+`list_for_each_entry`遍历链表的时候获得链表节点数据项.
+
+
+
+```c
+#define list_for_each_prev(pos, head);
+#define list_for_each_entry_reverse(pos, head, member);
+
+```
+
+`list_for_each_entry_reverse`是遍历的反向操作。
+
+```c
+#define list_for_each_entry_continue(pos, head, member);
+```
+
+`list_for_each_entry_continue`用于从节点pos开始遍历。
+
+```c
+#define list_prepare_entry(pos, head, member) ;
+```
+
+`list_prepare_entry`如果pos有值，则从pos开始遍历，如果没有，则从链表头开始。
+
+> 由于上面的宏都是通过移动pos指针来达到遍历的目的。所以如果遍历的操作中包含删除pos指针所指向的节点，pos指针的移动就会被中断，
+>
+> Linux链表提供了两个对应于基本遍历操作的"_safe"接口：`list_for_each_safe(pos, n, head)`、`list_for_each_entry_safe(pos, n, head, member)`，它们要求调用者另外提供一个与pos同类型的指针n，在for循环中暂存pos下一个节点的地址，避免因pos节点被释放而造成的断链。
+
+### 安全性
+
+```c
+static inline int list_empty(const struct list_head *head)
+{
+        return head->next == head;
+}
+static inline int list_empty_careful(const struct list_head *head) {
+  struct list_head *next = smp_load_acquire(&head->next);
+  return (next == head) && (next == head->prev);
+}
+```
+
+`list_empty`仅以头指针的next是否指向自己来判断链表是否为空，判断链表是否为空。
+
+`list_empty_careful`以头指针的next和prev是否同时指向自己来判断链表是否为空，判断链表是否为空。
+
+> 注意：除非其他cpu的链表操作只有ist_del_init()，否则仍然不能保证安全。例如，如果另一个 CPU 可以重新 list_add() ，它就不能被使用。
+
+
+
+```c
+#define list_for_each_safe(pos, n, head)                                       \
+  for (pos = (head)->next, n = pos->next; pos != (head); pos = n, n = pos->next)
+
+```
+
+
+
+`list_for_each_safe`用于从节点pos开始遍历。
+
+
 
 ## 优势：
 
@@ -89,7 +212,8 @@ struct list {
 1. 在C语言程序中若想根据需要动态地分配和释放内存单元, 通常可以使用链表结构来组织数据；
 2. 可以在用户程序自定义的结构体类型中定义一个或多个list_head指针, 用于链接不同的链表。
 
-**参考：**
+## 参阅
 
 - [浅析Linux Kernel中的那些链表 - tangr206 - 博客园 (cnblogs.com)](https://www.cnblogs.com/tangr206/articles/3291029.html)
 - Linux存储结构分析_毛婷
+- [深入理解Linux内核链表](https://mp.weixin.qq.com/s/VavjKQmfsXR-0dFccBuf9Q)
