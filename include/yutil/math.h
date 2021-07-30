@@ -9,7 +9,9 @@
 #define min(x, y) (((x) < (y)) ? (x) : (y))
 #endif
 
+#ifndef round
 #define round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
+#endif
 
 #define pow2(x) ((x) * (x))
 
