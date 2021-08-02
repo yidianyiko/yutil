@@ -139,10 +139,6 @@ tb_void_t           tb_trace_sync(tb_noarg_t);
 
 同步 trace 
 
-
-
-
-
 ## 字符编码库
 
 由于包含函数过多，故结合分析报告，暂只调研以下内容
@@ -717,7 +713,7 @@ tb_void_t           tb_timer_task_kill(tb_timer_ref_t timer, tb_timer_task_ref_t
 
 -  "list.h"
 
--  ~~"list_entry.h"~~
+-  "list_entry"
 
 -  ~~"single_list.h"~~
 
@@ -813,6 +809,10 @@ c-string元素的 初始化数组迭代器并忽略大小写
 
 ### list
 
+ 元素在内部维护的双向链表。
+
+> - 内部维护：就是链表容器本身回去开辟一块空间，去单独存储元素内容，这种方式对接口的操作比较简单，但是灵活性和性能不如前一种，如果不需要多个链表维护同一种元素，那么使用这种模式简单操作下，更为妥当。（而且内部元素的存储也是用内存池优化过的）。
+
 **存储方式：**
 
 ```c
@@ -844,16 +844,10 @@ tb_list_ref_t       tb_list_init(tb_size_t grow, tb_element_t element);
 
 ```
 
-初始化双链表
+初始化双链表。
 
-#### tb_list_init
-
-```c
-tb_list_ref_t       tb_list_init(tb_size_t grow, tb_element_t element);
-
-```
-
-初始化双链表
+- `grow`：设置为0表示采用默认的自动元素增长大小，也可以手动设置更适合的大小
+- `element`：设置双链的类型
 
 #### tb_list_exit
 
@@ -862,7 +856,7 @@ tb_void_t           tb_list_exit(tb_list_ref_t list);
 
 ```
 
-退出双链表
+销毁list
 
 #### tb_list_clear
 
@@ -907,7 +901,7 @@ tb_size_t           tb_list_insert_next(tb_list_ref_t list, tb_size_t itor, tb_c
 
 ```
 
-插入下一项
+在之前新的元素后面插入一个新元素
 
 #### tb_list_insert_head
 
@@ -916,7 +910,7 @@ tb_size_t           tb_list_insert_head(tb_list_ref_t list, tb_cpointer_t data);
 
 ```
 
-插入头节点
+在链表头部插入元素，并返回新元素的迭代器索引。
 
 #### tb_list_insert_tail
 
@@ -925,7 +919,7 @@ tb_size_t           tb_list_insert_tail(tb_list_ref_t list, tb_cpointer_t data);
 
 ```
 
-插入尾结点
+链表尾部插入元素
 
 #### tb_list_replace
 
@@ -961,7 +955,7 @@ tb_size_t           tb_list_remove(tb_list_ref_t list, tb_size_t itor);
 
 ```
 
-移除链表
+移除指定的元素
 
 #### tb_list_remove_head
 
@@ -1001,10 +995,9 @@ tb_void_t           tb_list_moveto_next(tb_list_ref_t list, tb_size_t itor, tb_s
 
 #### tb_list_moveto_head
 
-```c
+
 tb_void_t           tb_list_moveto_head(tb_list_ref_t list, tb_size_t move);
 
-```
 
 移到头节点
 
@@ -1034,6 +1027,289 @@ tb_size_t           tb_list_maxn(tb_list_ref_t list);
 ```
 
 返回结点最大容量
+
+#### tb_for_all
+
+tbox的遍历函数是抽象出来的。
+
+```c
+#define tb_for_all(type, item, iterator) \
+            tb_iterator_ref_t item##_iterator_all = (tb_iterator_ref_t)iterator; \
+            tb_for(type, item, tb_iterator_head(item##_iterator_all), tb_iterator_tail(item##_iterator_all), item##_iterator_all)
+```
+
+### list_entry
+
+元素在外部维护的双向链表。
+
+> 类似Linux的链表结构，链表容器本身不存储元素，不开辟内存空间，仅仅是一个节点头，这样比较节省内存，更加灵活。（尤其是在多个链表间元素迁移的时候，或者多个链表需要统一内存池维护的时候）。
+
+**存储方式**
+
+```c
+/*! the doubly-linked list entry type
+ *
+ * <pre>
+ * list: list => ... => last
+ *        |               |
+ *        <---------------
+ *
+ * </pre>
+ */
+typedef struct __tb_list_entry_t
+{
+    /// the next entry
+    struct __tb_list_entry_t*   next;
+
+    /// the prev entry
+    struct __tb_list_entry_t*   prev;
+
+}tb_list_entry_t, *tb_list_entry_ref_t;
+
+/// the list entry head type
+typedef struct __tb_list_entry_head_t
+{
+    /// the next entry
+    struct __tb_list_entry_t*   next;
+
+    /// the prev entry
+    struct __tb_list_entry_t*   prev;
+
+    /// the list size
+    tb_size_t                   size;
+
+    /// the iterator
+    tb_iterator_t               itor;
+
+    /// the entry offset
+    tb_size_t                   eoff;
+
+    /// the entry copy func
+    tb_entry_copy_t             copy;
+
+}tb_list_entry_head_t, *tb_list_entry_head_ref_t;
+```
+
+
+
+#### tb_list_entry_init
+
+```c
+// 初始化链表，需要指定外置元素的结构体类型，链表的节点名字
+tb_list_entry_head_t list;
+#define tb_list_entry_init(list, type, entry, copy)     tb_list_entry_init_(list, tb_offsetof(type, entry), sizeof(type), copy)
+```
+
+初始化链表，需要指定外置元素的结构体类型，链表的节点名字
+
+**参数说明**
+
+- list：指定链表
+- type：外置元素的结构
+- entry：链表的节点名字
+- copy：the entry copy func
+
+#### tb_list_entry_clear
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_clear(tb_list_entry_head_ref_t list)
+
+```
+
+ 清除双链表
+
+#### tb_list_entry_head
+
+```c
+static __tb_inline__ tb_list_entry_ref_t    tb_list_entry_head(tb_list_entry_head_ref_t list)
+
+```
+
+返回头结点
+
+#### tb_list_entry_last
+
+```c
+static __tb_inline__ tb_list_entry_ref_t    tb_list_entry_last(tb_list_entry_head_ref_t list)
+
+```
+
+返回尾结点
+
+#### tb_list_entry_insert_prev
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_insert_prev(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+插入上一项
+
+#### tb_list_entry_insert_next
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_insert_next(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+在之前新的元素后面插入一个新元素
+
+#### tb_list_entry_insert_head
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_insert_head(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+在链表头部插入元素，并返回新元素的迭代器索引。
+
+#### tb_list_entry_insert_tail
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_insert_tail(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+链表尾部插入元素
+
+注意：所有操作都是在外置结构体中的list_entry节点上操作
+
+#### tb_list_entry_replace
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_replace(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+替换该项
+
+#### tb_list_entry_replace_head
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_replace_head(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+替换头节点
+
+#### tb_list_entry_replace_last
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_replace_last(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+替换尾节点
+
+#### tb_list_entry_remove
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_remove(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+移除指定的元素
+
+#### tb_list_entry_moveto_prev
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_prev(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+移到上一项
+
+#### tb_list_entry_moveto_next
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_next(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+移到下一项
+
+#### tb_list_entry_moveto_head
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_head(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+```
+
+
+移到头节点
+
+#### tb_list_entry_moveto_tail
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_tail(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+```
+
+移到尾节点
+
+#### 
+
+#### tb_list_entry
+
+```c
+#define tb_list_entry(head, entry)      ((((tb_byte_t*)(entry)) - (head)->eoff))
+```
+
+访问具体某个节点的元素数据
+
+#### tb_for_all_if
+
+```c
+tb_for_all_if(type, item, iterator, cond)
+```
+
+如果条件符合，则使用迭代器遍历所有元素
+
+#### tb_list_entry_replace_head
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_replace_head(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+```
+
+替换头节点的元素
+
+#### tb_list_entry_replace_last
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_replace_last(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+```
+
+替换尾节点的元素
+
+#### tb_list_entry_remove_head
+
+```c
+static __tb_inline__ tb_void_t              tb_list_entry_remove(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
+
+static __tb_inline__ tb_void_t              tb_list_entry_remove_prev(tb_list_entry_head_ref_t list, tb_list_entry_ref_t next)
+
+static __tb_inline__ tb_void_t              tb_list_entry_remove_head(tb_list_entry_head_ref_t list)
+
+static __tb_inline__ tb_void_t              tb_list_entry_remove_last(tb_list_entry_head_ref_t list)
+```
+
+移除元素
+
+#### tb_list_entry_moveto_head
+
+#### tb_list_entry_moveto_tail
+
+```
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_next(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_prev(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_next(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+static __tb_inline__ tb_void_t              tb_list_entry_moveto_prev(tb_list_entry_head_ref_t list, tb_list_entry_ref_t node, tb_list_entry_ref_t entry)
+
+```
+
+移动元素位置
 
 ### *hash_map*
 
