@@ -33,15 +33,24 @@
 #include "../yutil/dirent.h"
 
 #ifdef _WIN32
+#include <Windows.h>
+typedef HANDLE dir_handle_t;
+
 union dir_entry_t {
 	WIN32_FIND_DATAA data_a;
 	WIN32_FIND_DATAW data_w;
 };
 #else
+#include <dirent.h>
+#include <locale.h>
+typedef DIR *dir_handle_t;
+
 struct dir_entry_t {
 	struct dirent dirent;
 	wchar_t name[DIRENT_NAME_LEN];
 };
+
+#define DIRENT_NAME_LEN 256
 #endif
 
 struct dir_t_ {
