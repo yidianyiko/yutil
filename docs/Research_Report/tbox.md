@@ -997,7 +997,7 @@ tb_void_t           tb_list_moveto_next(tb_list_ref_t list, tb_size_t itor, tb_s
 
 #### tb_list_moveto_head
 
-```c
+
 tb_void_t           tb_list_moveto_head(tb_list_ref_t list, tb_size_t move);
 ```
 
@@ -1282,7 +1282,6 @@ tb_for_all_if(type, item, iterator, cond)
 ```
 
 如果条件符合，则使用迭代器遍历所有元素
-
 
 
 ### *hash_map*
