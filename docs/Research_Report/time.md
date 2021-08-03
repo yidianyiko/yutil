@@ -31,7 +31,7 @@ typedef struct __tb_timeval_t
 
 ## glib
 
-tbox 中，关于时间的存储方式：有使用gint32 存储时间，同时也提供了GTimeVal 结构体来存储
+tbox 中，关于时间的存储方式：有使用gint32 存储时间，同时也提供了 GTimeVal 结构体来存储
 
 ```c
 struct GTimeVal {
@@ -57,7 +57,7 @@ struct GDate {
 typedef gint32  GTime GLIB_DEPRECATED_TYPE_IN_2_62_FOR(GDateTime);
 ```
 
-GDate 数据结构表示从1月1日到未来几千年之间的某一天(现在是65535年左右，但是 g _ date _ set _ parse ()只解析到8000年左右——只有“几千”)。GDate 表示的是每天的日期，而不是天文日期或历史日期或 ISO 时间戳之类的。它在时间上向前和向后推断当前的公历; 没有尝试改变日历以匹配时间周期或地点。GDate 不存储时间信息; 它表示一天。
+GDate 数据结构表示从1月1日到未来几千年之间的某一天(现在是65535年左右，但是 `g_date_set_parse()`只解析到8000年左右)。GDate 表示的是每天的日期，而不是天文日期或历史日期或 ISO 时间戳之类的。它在时间上向前和向后推断当前的公历; 没有尝试改变日历以匹配时间周期或地点。
 
 **GDate 实现有几个不错的特性; 它只是一个64位的结构，因此存储大量日期是非常有效的。**
 
@@ -65,7 +65,7 @@ GDate 数据结构表示从1月1日到未来几千年之间的某一天(现在�
 
 ## Linux
 
-**Linux\**下常用时间类型\****
+**Linux常用时间类型**
 Linux下常用时间类型有四种：time_t、struct tm、struct timeval、struct timespec。
 
 ### time_t
@@ -99,10 +99,10 @@ struct tm{
 #endif
 ```
 
-ANSI C标准称使用tm结构的这种时间表示为分解时间(broken-down time)。
-使用gmtime( )和localtime( )可将time_t时间类型转换为tm结构体；
-使用mktime( )将tm结构体转换为time_t时间类型；
-使用asctime( )将struct tm转换为字符串形式。
+ANSI C 标准称使用 tm 结构的这种时间表示为分解时间(broken-down time)。
+使用`gmtime( )`和`localtime( )`可将 time_t 时间类型转换为 tm 结构体；
+使用`mktime( )`将 tm 结构体转换为`time_t`时间类型；
+使用`asctime( )`将`struct tm`转换为字符串形式。
 
 ### **struct timeval**
 
@@ -116,7 +116,7 @@ Struct tmieval{
 ```
 
 
-设置时间函数settimeofday( )与获取时间函数gettimeofday( )均使用该事件类型作为传参。
+设置时间函数`settimeofday( )`与获取时间函数`gettimeofday( )`均使用该事件类型作为传参。
 
 ### **struct timespec**
 
@@ -126,16 +126,7 @@ struct timespec{
     time_t tv_sec; /*秒s*/
     long tv_nsec; /*纳秒ns*/
 };
- 
 ```
-
-
-
-**参考文章**：
-
-- [Linux时间函数_Skyline的专栏-CSDN博客](https://blog.csdn.net/water_cow/article/details/7521567)
-
-
 
 ## 比较和结论
 
@@ -145,3 +136,8 @@ struct timespec{
 
 综上所述：我们可以在LCUI中同时提供int64和timeval两种，以应对不同的需求。
 
+## 参阅
+
+**参考文章**：
+
+- [Linux时间函数_Skyline的专栏-CSDN博客](https://blog.csdn.net/water_cow/article/details/7521567)
