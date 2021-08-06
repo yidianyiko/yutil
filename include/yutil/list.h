@@ -28,8 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTIL_LINKEDLIST_H
-#define UTIL_LINKEDLIST_H
+#ifndef UTIL_LIST_H
+#define UTIL_LIST_H
 
 #include "types.h"
 
