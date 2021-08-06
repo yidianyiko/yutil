@@ -110,20 +110,17 @@ static inline list_entry_t* list_entry_get_last(list_entry_head_t* head)
 	return head->prev;
 }
 
-// the list is empty?
 static inline bool_t list_entry_is_empty(list_entry_head_t* head)
 {
 	return !(head->length);
 }
 
-// is the list head entry?
 static inline bool_t list_entry_is_head(list_entry_head_t* head,
 					list_entry_t* entry)
 {
 	return head->next == entry;
 }
 
-// is the list last entry?
 static inline bool_t list_entry_is_last(list_entry_head_t* head,
 					list_entry_t* entry)
 {
@@ -142,7 +139,7 @@ static inline bool_t list_entry_is_valid(list_entry_head_t* list)
 	       (list->prev && list->prev->next == (list_entry_t*)list);
 }
 
-// Insert a new entry after node.
+// insert a new entry after node.
 static inline void list_entry_add_next(list_entry_head_t* head,
 				       list_entry_t* node, list_entry_t* entry)
 {
@@ -158,18 +155,18 @@ static inline void list_entry_add_next(list_entry_head_t* head,
 	head->length++;
 }
 
-// Insert entry to the prev
+// insert entry to the prev
 #define list_entry_add_prev(head, node, entry) \
 	list_entry_add_next(head, ((node)->prev), entry)
 
-// Insert entry to the head
+// insert entry to the head
 static inline void list_entry_add_head(list_entry_head_t* head,
 				       list_entry_t* entry)
 {
 	list_entry_add_next(head, (list_entry_t*)head, entry);
 }
 
-// Insert entry to the tail
+// insert entry to the tail
 static inline void list_entry_add_tail(list_entry_head_t* head,
 				       list_entry_t* entry)
 {
