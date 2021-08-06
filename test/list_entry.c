@@ -27,10 +27,14 @@ int demo_list_entry_main(int argc, char** argv)
 	// get entry
 	demo_list_entry_t* node =
 	    list_entry(&list, &entries[0].entry_node, demo_list_entry_t);
+
 	printf("\nadd: %lu", list_entry_size(&list));
+
 	printf("\nentry_data:%lu", node->data);
+
 	printf("\list_entry_get_last_entry:%lu\n",
 	       list_entry_get_last_entry(&list, demo_list_entry_t)->data);
+
 	printf("\list_entry_get_first_entry:%lu\n",
 	       list_entry_get_first_entry(&list, demo_list_entry_t)->data);
 
@@ -43,13 +47,13 @@ int demo_list_entry_main(int argc, char** argv)
 		printf("\nentry_data[%d]:%lu\n", i, node->data);
 		i++;
 	}
-	i--;
 
 	// repalce entries
 	list_entry_replace_head(&list, &entries[0].entry_node);
 	list_entry_replace_last(&list, &entries[7].entry_node);
 	printf("\nreplace: %lu", list_entry_size(&list));
 
+	i = 6;
 	list_entry_for_each_reverse(&list, entry)
 	{
 		node = list_entry(&list, entry, demo_list_entry_t);
@@ -57,47 +61,38 @@ int demo_list_entry_main(int argc, char** argv)
 		printf("\nentry_data[%d]:%lu\n", i, node->data);
 		i--;
 	}
-	i++;
+
 	// delete entries
 	list_entry_delete_head(&list);
 	list_entry_delete_last(&list);
 
 	printf("\ndelete: %lu", list_entry_size(&list));
 
+	i = 1;
 	list_entry_for_each_entry(&list, node, entry_node, demo_list_entry_t)
 	{
 		printf("\nentry_data[%d]:%lu\n", i, node->data);
 		i++;
 	}
-	i--;
 
 	list_entry_t* head = list_entry_get_head(&list);
 	list_entry_move_head(&list, list_entry_get_last(&list));
 	list_entry_move_tail(&list, head);
 
-	// walk it
 	printf("move: %lu", list_entry_size(&list));
 
+	i = 6;
 	list_entry_for_each_entry_reverse(&list, node, entry_node,
 					  demo_list_entry_t)
 	{
 		printf("\nentry_data[%d]:%lu\n", i, node->data);
 		i--;
 	}
-	i++;
+
 	// clear entries
 	list_entry_clear(&list);
 	printf("clear: %lu", list_entry_size(&list));
-	i = 0;
-	list_entry_for_each(&list, entry)
-	{
-		demo_list_entry_t* node =
-		    list_entry(&list, entry, demo_list_entry_t);
 
-		printf("\nentry_data[%d]:%lu\n", i, node->data);
-		i++;
-	}
-	i--;
 	list_entry_exit(&list);
 
 	return 0;

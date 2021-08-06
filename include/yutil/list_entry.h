@@ -3,7 +3,9 @@
 
 /* ------------------------------- includes --------------------------------*/
 #include "types.h"
+
 /* ------------------------------- types -----------------------------------*/
+
 // the doubly-linked list entry type
 struct __list_entry_t {
 	struct __list_entry_t* next;
@@ -22,6 +24,7 @@ typedef struct __list_entry_t list_entry_t;
 typedef struct __list_entry_head_t list_entry_head_t;
 
 /* ------------------------------- macros ------------------------------------*/
+
 #define offsetof(type, member) ((size_t) & ((type*)0)->member)
 
 #define list_entry_head_init(list, type, member) \
@@ -39,10 +42,10 @@ typedef struct __list_entry_head_t list_entry_head_t;
 #define list_entry_get_last_entry(head, type) \
 	list_entry(head, (head)->prev, type)
 
-#define list_entry_next_entry(head, node, member, type) \
+#define list_entry_next_entry_(head, node, member, type) \
 	list_entry(head, (node)->member.next, type)
 
-#define list_entry_prev_entry(head, node, member, type) \
+#define list_entry_prev_entry_(head, node, member, type) \
 	list_entry(head, (node)->member.prev, type)
 
 #define list_entry_for_each(head, entry)                           \
@@ -56,12 +59,13 @@ typedef struct __list_entry_head_t list_entry_head_t;
 #define list_entry_for_each_entry(head, node, member, type) \
 	for (node = list_entry_get_first_entry(head, type); \
 	     &node->member != (list_entry_t*)(&list);       \
-	     node = list_entry_next_entry(head, node, member, type))
+	     node = list_entry_next_entry_(head, node, member, type))
 
 #define list_entry_for_each_entry_reverse(head, node, member, type) \
 	for (node = list_entry_get_last_entry(head, type);          \
 	     &node->member != (list_entry_t*)(&list);               \
-	     node = list_entry_prev_entry(head, node, member, type))
+	     node = list_entry_prev_entry_(head, node, member, type))
+
 // init list entry
 static inline void list_entry_init(list_entry_t* entry)
 {
@@ -79,12 +83,15 @@ static inline void list_entry_head_init_(list_entry_head_t* list,
 	list->entry_offset = entry_offset;
 }
 
+// destory
 static inline void list_entry_exit(list_entry_head_t* head)
 {
 	head->next = NULL;
 	head->prev = NULL;
 	head->length = 0;
+	head->entry_offset = 0;
 }
+
 // the list entry length
 static inline size_t list_entry_size(list_entry_head_t* head)
 {
