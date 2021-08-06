@@ -38,7 +38,7 @@ int demo_list_entry_main(int argc, char** argv)
 	printf("\list_entry_get_first_entry:%lu\n",
 	       list_entry_get_first_entry(&list, demo_list_entry_t)->data);
 
-	list_entry_t* entry;
+	list_entry_t* entry = list.next;
 	int i = 1;
 	list_entry_for_each(&list, entry)
 	{
