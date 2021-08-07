@@ -41,9 +41,9 @@ typedef struct list_t list_t;
 	node;                     \
 	node = node->next
 
-#define list_each_reverse(node, list) \
-	node = (list)->tail.prev;     \
-	node &&node != &(list)->head; \
+#define list_each_reverse(node, list)    \
+	node = (list)->tail.prev;        \
+	node && (node != &(list)->head); \
 	node = node->prev
 
 #define list_for_each(node, list) for (list_each(node, list))
