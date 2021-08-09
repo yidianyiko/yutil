@@ -59,7 +59,7 @@ typedef struct __list_entry_head_t list_entry_head_t;
 #define list_entry_head_init(list, type, member) \
 	list_entry_head_init_(list, list_entry_offsetof(type, member))
 
-#define list_entry_clear(list) list_entry_head_init_(list, 0)
+#define list_entry_clear(list) list_entry_head_init_(list, (list)->entry_offset)
 
 // get the struct for this entry
 #define list_entry(head, entry, type) \
@@ -85,14 +85,22 @@ typedef struct __list_entry_head_t list_entry_head_t;
 	for (entry = (head)->prev; entry != (list_entry_t*)(head); \
 	     entry = entry->prev)
 
+#define list_entry_for_each_by_length(head, size, entry)            \
+	for (entry = (head)->next, size = 0; size < (head)->length; \
+	     entry = entry->next, size++)
+
+#define list_entry_for_each_reverse_by_length(head, size, entry)             \
+	for (entry = (head)->prev, size = 0; entry != (list_entry_t*)(head); \
+	     entry = entry->prev, size++)
+
 #define list_entry_for_each_entry(head, node, member, type) \
 	for (node = list_entry_get_first_entry(head, type); \
-	     &node->member != (list_entry_t*)(&list);       \
+	     &node->member != (list_entry_t*)(head);        \
 	     node = list_entry_next_entry_(head, node, member, type))
 
 #define list_entry_for_each_entry_reverse(head, node, member, type) \
 	for (node = list_entry_get_last_entry(head, type);          \
-	     &node->member != (list_entry_t*)(&list);               \
+	     &node->member != (list_entry_t*)(head);                \
 	     node = list_entry_prev_entry_(head, node, member, type))
 
 // init list entry
@@ -173,8 +181,8 @@ static inline void list_entry_add_next(list_entry_head_t* head,
 				       list_entry_t* node, list_entry_t* entry)
 {
 	assert(head && node && node->next && entry);
-	assert(node != entry);
-	assert(list_entry_is_valid(head));
+	// assert(node != entry);
+	// assert(list_entry_is_valid(head));
 
 	node->next->prev = entry;
 	entry->next = node->next;
