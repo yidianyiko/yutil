@@ -31,20 +31,20 @@
 #ifndef UTIL_LOGGER_H
 #define UTIL_LOGGER_H
 
-typedef enum logger_level {
+typedef enum logger_level_t {
 	LOGGER_LEVEL_ALL,
 	LOGGER_LEVEL_DEBUG,
 	LOGGER_LEVEL_INFO,
 	LOGGER_LEVEL_WARNING,
 	LOGGER_LEVEL_ERROR,
 	LOGGER_LEVEL_OFF
-} logger_level;
+} logger_level_t;
 
-void logger_set_level(logger_level level);
+void logger_set_level(logger_level_t level);
 
-int logger_log(logger_level level, const char* fmt, ...);
+int logger_log(logger_level_t level, const char* fmt, ...);
 
-int logger_log_w(logger_level level, const wchar_t* fmt, ...);
+int logger_log_w(logger_level_t level, const wchar_t* fmt, ...);
 
 void logger_set_handler(void (*handler)(const char*));
 

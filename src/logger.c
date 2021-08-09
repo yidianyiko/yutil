@@ -30,74 +30,135 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <wchar.h>
-#include "../include/mutex.h"
+#include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
 
 #define BUFFER_SIZE 2048
 
-static struct Logger {
+struct logger_t {
 	char inited;
-	char buffer[BUFFER_SIZE];
-	wchar_t buffer_w[BUFFER_SIZE];
 	void (*handler)(const char*);
 	void (*handler_w)(const wchar_t*);
-	logger_level level;
-	mutex_t mutex;
-} logger = { 0 };
+	logger_level_t level;
+};
 
-void logger_set_level(logger_level level)
+struct logger_buffer_t {
+	char buffer[BUFFER_SIZE];
+	wchar_t buffer_w[BUFFER_SIZE];
+	list_entry_t buf_entry;
+};
+
+typedef struct logger_t logger_t;
+typedef struct logger_buffer_t logger_buffer_t;
+
+static logger_t logger = { 0 };
+static list_entry_head_t logger_buffer_head = { 0 };
+
+/* buffered output enabled flag */
+static bool_t is_enabled = FALSE;
+
+void logger_set_level(logger_level_t level)
 {
 	logger.level = level;
 }
 
-int logger_log(logger_level level, const char* fmt, ...)
+int logger_log(logger_level_t level, const char* fmt, ...)
 {
-	int len;
+	int len = -1;
 	va_list args;
+	logger_buffer_t node = { 0 };
 
 	if (level < logger.level) {
 		return 0;
 	}
 	if (!logger.inited) {
-		mutex_init(&logger.mutex);
+		list_entry_head_init(&logger_buffer_head, logger_buffer_t,
+				     buf_entry);
 		logger.inited = 1;
 	}
+
 	va_start(args, fmt);
-	mutex_lock(&logger.mutex);
-	if (logger.handler) {
-		len = vsnprintf(logger.buffer, BUFFER_SIZE, fmt, args);
-		logger.buffer[BUFFER_SIZE - 1] = 0;
-		logger.handler(logger.buffer);
-	} else {
-		len = vprintf(fmt, args);
+	len = vsnprintf(node.buffer, BUFFER_SIZE, fmt, args);
+	node.buffer[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+
+	while (!is_enabled && !list_entry_is_empty(&logger_buffer_head)) {
+		is_enabled = TRUE;
+
+		int i = 0;
+		list_entry_t* entry = logger_buffer_head.next;
+		logger_buffer_t* output = { 0 };
+		list_entry_head_t logger_buffer_head_copy;
+
+		logger_buffer_head_copy = logger_buffer_head;
+		list_entry_clear(&logger_buffer_head);
+
+		list_entry_for_each_by_length(&logger_buffer_head_copy, i,
+					      entry)
+		{
+			output = list_entry(&logger_buffer_head_copy, entry,
+					    logger_buffer_t);
+
+			if (logger.handler) {
+				logger.handler(&output->buffer);
+			} else {
+				printf("%s", output->buffer);
+			}
+		}
+		list_entry_exit(&logger_buffer_head_copy);
+		is_enabled = FALSE;
 	}
-	mutex_unlock(&logger.mutex);
+
 	va_end(args);
 	return len;
 }
 
-int logger_log_w(logger_level level, const wchar_t* fmt, ...)
+int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 {
 	int len;
 	va_list args;
+
+	logger_buffer_t node = { 0 };
 
 	if (level < logger.level) {
 		return 0;
 	}
 	if (!logger.inited) {
-		mutex_init(&logger.mutex);
+		list_entry_head_init(&logger_buffer_head, logger_buffer_t,
+				     buf_entry);
 		logger.inited = 1;
 	}
+
 	va_start(args, fmt);
-	mutex_lock(&logger.mutex);
-	if (logger.handler_w) {
-		len = vswprintf(logger.buffer_w, BUFFER_SIZE, fmt, args);
-		logger.buffer_w[BUFFER_SIZE - 1] = 0;
-		logger.handler_w(logger.buffer_w);
-	} else {
-		len = vwprintf(fmt, args);
+	len = vswprintf(node.buffer_w, BUFFER_SIZE, fmt, args);
+	node.buffer_w[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+
+	while (!is_enabled && !list_entry_is_empty(&logger_buffer_head)) {
+		is_enabled = TRUE;
+
+		int i = 0;
+		list_entry_t* entry = logger_buffer_head.next;
+		logger_buffer_t* output = { 0 };
+		list_entry_head_t logger_buffer_head_copy;
+
+		logger_buffer_head_copy = logger_buffer_head;
+		list_entry_clear(&logger_buffer_head);
+
+		list_entry_for_each_by_length(&logger_buffer_head_copy, i,
+					      entry)
+		{
+			output = list_entry(&logger_buffer_head_copy, entry,
+					    logger_buffer_t);
+
+			if (logger.handler) {
+				logger.handler_w(&output->buffer_w);
+			} else {
+				wprintf(L"%s", output->buffer_w);
+			}
+		}
+		is_enabled = FALSE;
 	}
-	mutex_unlock(&logger.mutex);
 	va_end(args);
 	return len;
 }
