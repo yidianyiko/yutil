@@ -79,12 +79,15 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 
 	va_start(args, fmt);
 	len = vsnprintf(node.buffer, BUFFER_SIZE, fmt, args);
+	va_end(args);
 	node.buffer[BUFFER_SIZE - 1] = 0;
 	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
 
-	while (!is_enabled && !list_entry_is_empty(&logger_buffer_head)) {
-		is_enabled = TRUE;
-
+	if (is_enabled) {
+		return 0;
+	}
+	is_enabled = TRUE;
+	while (!list_entry_is_empty(&logger_buffer_head)) {
 		int i = 0;
 		list_entry_t* entry = logger_buffer_head.next;
 		logger_buffer_t* output = { 0 };
@@ -106,10 +109,9 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 			}
 		}
 		list_entry_exit(&logger_buffer_head_copy);
-		is_enabled = FALSE;
 	}
+	is_enabled = FALSE;
 
-	va_end(args);
 	return len;
 }
 
@@ -131,12 +133,16 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 
 	va_start(args, fmt);
 	len = vswprintf(node.buffer_w, BUFFER_SIZE, fmt, args);
+	va_end(args);
+
 	node.buffer_w[BUFFER_SIZE - 1] = 0;
 	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
 
-	while (!is_enabled && !list_entry_is_empty(&logger_buffer_head)) {
-		is_enabled = TRUE;
-
+	if (is_enabled) {
+		return 0;
+	}
+	is_enabled = TRUE;
+	while (!list_entry_is_empty(&logger_buffer_head)) {
 		int i = 0;
 		list_entry_t* entry = logger_buffer_head.next;
 		logger_buffer_t* output = { 0 };
@@ -157,9 +163,8 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 				wprintf(L"%s", output->buffer_w);
 			}
 		}
-		is_enabled = FALSE;
 	}
-	va_end(args);
+	is_enabled = FALSE;
 	return len;
 }
 
