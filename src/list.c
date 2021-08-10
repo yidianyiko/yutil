@@ -1,4 +1,4 @@
-/* list.c -- Linked list_t
+/* list.c -- Linked list
  *
  * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
  *
@@ -27,7 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-//#define DEBUG
 #include <stdlib.h>
 #include "../include/yutil/list.h"
 

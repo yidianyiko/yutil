@@ -31,8 +31,6 @@
 #ifndef UTIL_LIST_H
 #define UTIL_LIST_H
 
-#include "types.h"
-
 typedef struct list_node_t list_node_t;
 typedef struct list_t list_t;
 
