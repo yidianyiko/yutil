@@ -1,5 +1,5 @@
 /*
- * dirent.h -- Directory entry operation set.
+ * logger.h -- Logger module
  *
  * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
  * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
@@ -30,43 +30,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTIL_DIRENT_H
-#define UTIL_DIRENT_H
+#ifndef UTIL_LOGGER_H
+#define UTIL_LOGGER_H
 
-#ifdef _WIN32
-typedef union dir_entry_t dir_entry_t;
-#else
-typedef struct dir_entry_t dir_entry_t;
-#endif
+typedef enum logger_level_t {
+	LOGGER_LEVEL_ALL,
+	LOGGER_LEVEL_DEBUG,
+	LOGGER_LEVEL_INFO,
+	LOGGER_LEVEL_WARNING,
+	LOGGER_LEVEL_ERROR,
+	LOGGER_LEVEL_OFF
+} logger_level_t;
 
-typedef struct dir_t_ dir_t;
+void logger_set_level(logger_level_t level);
 
-#if defined(_UNICODE) || !defined(_WIN32)
-#define dir_open dir_open_w
-#define dir_read dir_read_w
-#define dir_get_file_name dir_get_file_name_w
-#else
-#define dir_open dir_open_a
-#define dir_read dir_read_a
-#define dir_get_file_name dir_get_file_name_a
-#endif
+int logger_log(logger_level_t level, const char* fmt, ...);
 
-int dir_open_w(const wchar_t *path, dir_t *dir);
+int logger_log_w(logger_level_t level, const wchar_t* fmt, ...);
 
-int dir_open_a(const char *path, dir_t *dir);
+void logger_set_handler(void (*handler)(const char*));
 
-dir_entry_t *dir_read_a(dir_t *dir);
+void logger_set_handler_w(void (*handler)(const wchar_t*));
 
-dir_entry_t *dir_read_w(dir_t *dir);
-
-int dir_close(dir_t *dir);
-
-char *dir_get_file_name_a(dir_entry_t *entry);
-
-wchar_t *dir_get_file_name_w(dir_entry_t *entry);
-
-int file_is_directory(dir_entry_t *entry);
-
-int file_is_regular(dir_entry_t *entry);
+#define logger_info(fmt, ...) logger_log(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
+#define logger_debug(fmt, ...) \
+	logger_log(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
+#define logger_warning(fmt, ...) \
+	logger_log(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
+#define logger_error(fmt, ...) \
+	logger_log(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
+#define logger_info_w(fmt, ...) \
+	logger_log_w(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
+#define logger_debug_w(fmt, ...) \
+	logger_log_w(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
+#define logger_warning_w(fmt, ...) \
+	logger_log_w(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
+#define logger_error_w(fmt, ...) \
+	logger_log_w(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
 
 #endif

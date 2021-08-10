@@ -1,3 +1,6 @@
+#ifndef UTIL_TYPE_H
+#define UTIL_TYPE_H
+
 #ifndef FALSE
 #define FALSE 0
 #endif
@@ -7,3 +10,4 @@
 #endif
 
 typedef signed int bool_t;
+#endif    // UTIL_TYPE_H
