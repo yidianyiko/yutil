@@ -41,8 +41,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-
+#include "../include/yutil/time.h"
 #include "../include/yutil/dict.h"
 
 /* ------------------------------- Types ------------------------------------*/
@@ -326,10 +325,7 @@ int dict_rehash(dict_t *d, int n)
 
 long long time_in_milliseconds(void)
 {
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	return (((long long)tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
+	return time_get();
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger
