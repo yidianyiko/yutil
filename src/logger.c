@@ -68,8 +68,10 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 {
 	int len = -1;
 	va_list args;
-	logger_buffer_t node = { 0 };
-
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -80,10 +82,10 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 	}
 
 	va_start(args, fmt);
-	len = vsnprintf(node.buffer, BUFFER_SIZE, fmt, args);
+	len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
 	va_end(args);
-	node.buffer[BUFFER_SIZE - 1] = 0;
-	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+	node->buffer[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
 
 	if (is_enabled) {
 		return 0;
@@ -113,17 +115,17 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 		list_entry_exit(&logger_buffer_head_copy);
 	}
 	is_enabled = FALSE;
-
 	return len;
 }
 
 int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 {
-	int len;
+	int len = -1;
 	va_list args;
-
-	logger_buffer_t node = { 0 };
-
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -134,11 +136,10 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 	}
 
 	va_start(args, fmt);
-	len = vswprintf(node.buffer_w, BUFFER_SIZE, fmt, args);
+	len = vswprintf(&node->buffer_w, BUFFER_SIZE, fmt, args);
 	va_end(args);
-
-	node.buffer_w[BUFFER_SIZE - 1] = 0;
-	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+	node->buffer_w[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
 
 	if (is_enabled) {
 		return 0;
