@@ -3,3 +3,4 @@ extern int tests_count;
 
 void test_list(void);
 void test_math(void);
+void test_logger(void);

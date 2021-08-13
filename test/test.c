@@ -9,5 +9,6 @@ int main()
 
 	describe("test list", test_list);
 	describe("test math", test_math);
+	describe("test logger", test_logger);
 	return ret - print_test_result();
 }
