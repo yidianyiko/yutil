@@ -45,57 +45,6 @@
 #include "../include/yutil/dict.h"
 
 /* ------------------------------- Types ------------------------------------*/
-struct dict_entry_t {
-	void *key;
-	union {
-		void *val;
-		uint64_t u64;
-		int64_t s64;
-		double d;
-	} v;
-	struct dict_entry_t *next;
-};
-
-struct dict_type_t {
-	uint64_t (*hash_function)(const void *key);
-	void *(*key_dup)(void *priv_data, const void *key);
-	void *(*val_dup)(void *priv_data, const void *obj);
-	int (*key_compare)(void *priv_data, const void *key1, const void *key2);
-	void (*key_destructor)(void *priv_data, void *key);
-	void (*val_destructor)(void *priv_data, void *obj);
-	int (*expand_allowed)(size_t more_mem, double used_ratio);
-};
-
-/* This is our hash table structure. Every dict has two of this as we
- * implement incremental rehashing, for the old to the new table. */
-struct dict_hash_map_t {
-	dict_entry_t **table;
-	unsigned long size;
-	unsigned long size_mask;
-	unsigned long used;
-};
-
-struct dict_t {
-	dict_type_t *type;
-	void *priv_data;
-	dict_hash_map_t ht[2];
-	long rehash_index; /* rehashing not in progress if rehash_index == -1 */
-	int16_t pause_rehash; /* If >0 rehashing is paused (<0 indicates coding
-				 error) */
-};
-
-/* If safe is set to 1 this is a safe iterator, that means, you can call
- * dict_add, dict_find, and other functions against the dict even while
- * iterating. Otherwise it is a non safe iterator, and only dict_next()
- * should be called while iterating. */
-struct dict_iterator_t {
-	dict_t *d;
-	long index;
-	int table, safe;
-	dict_entry_t *entry, *next_entry;
-	/* unsafe iterator fingerprint for misuse detection. */
-	long long fingerprint;
-};
 
 /* ------------------------------- Macros ------------------------------------*/
 /* This is the initial size of every hash table */
@@ -411,6 +360,8 @@ dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing)
 	 * more frequently. */
 	ht = dict_is_rehashing(d) ? &d->ht[1] : &d->ht[0];
 	entry = malloc(sizeof(*entry));
+	if (entry == NULL)
+		return NULL;
 	entry->next = ht->table[index];
 	ht->table[index] = entry;
 	ht->used++;
