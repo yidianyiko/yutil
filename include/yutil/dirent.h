@@ -39,7 +39,7 @@ typedef union dir_entry_t dir_entry_t;
 typedef struct dir_entry_t dir_entry_t;
 #endif
 
-typedef struct dir_t_ dir_t;
+typedef struct dir_t dir_t;
 
 #if defined(_UNICODE) || !defined(_WIN32)
 #define dir_open dir_open_w
@@ -65,8 +65,8 @@ char *dir_get_file_name_a(dir_entry_t *entry);
 
 wchar_t *dir_get_file_name_w(dir_entry_t *entry);
 
-int file_is_directory(dir_entry_t *entry);
+int dir_file_is_directory(dir_entry_t *entry);
 
-int file_is_regular(dir_entry_t *entry);
+int dir_file_is_regular(dir_entry_t *entry);
 
 #endif

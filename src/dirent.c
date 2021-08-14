@@ -55,7 +55,7 @@ struct dir_entry_t {
 #define DIRENT_NAME_LEN 256
 #endif
 
-struct dir_t_ {
+struct dir_t {
 	dir_handle_t handle;
 	dir_entry_t entry;
 	int cached;
@@ -125,10 +125,11 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 
 	int len;
 	char *newpath;
+
 	if (!(setlocale(LC_ALL, "C.UTF-8") ||
 	      setlocale(LC_ALL, "en_US.UTF-8") ||
 	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");    //"failed to setlocale to utf-8"
+		setlocale(LC_ALL, "");
 	}
 	len = wcstombs(NULL, path, 0) + 1;
 	newpath = malloc(len * sizeof(wchar_t));
@@ -189,7 +190,7 @@ dir_entry_t *dir_read_w(dir_t *dir)
 	if (!(setlocale(LC_ALL, "C.UTF-8") ||
 	      setlocale(LC_ALL, "en_US.UTF-8") ||
 	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");    //"failed to setlocale to utf-8"
+		setlocale(LC_ALL, "");
 	}
 	len = mbstowcs((dir->entry.name, d->d_name,
 				DIRENT_NAME_LEN);
@@ -229,7 +230,7 @@ wchar_t *dir_get_file_name_w(dir_entry_t *entry)
 	return NULL;
 }
 
-int file_is_directory(dir_entry_t *entry)
+int dir_file_is_directory(dir_entry_t *entry)
 {
 #if defined(_WIN32)
 	return entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -238,7 +239,7 @@ int file_is_directory(dir_entry_t *entry)
 #endif
 }
 
-int file_is_regular(dir_entry_t *entry)
+int dir_file_is_regular(dir_entry_t *entry)
 {
 #if defined(_WIN32)
 	return !(entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
