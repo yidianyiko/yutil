@@ -41,6 +41,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "../include/yutil/time.h"
 #include "../include/yutil/dict.h"
 
@@ -68,9 +69,9 @@ static int _dict_init(dict_t *ht, dict_type_t *type, void *priv_data_ptr);
 /* -------------------------- hash functions -------------------------------- */
 
 /*
-由于最新的 hash functions 使用 uint8_t 类型的 seed ，需要依赖 siphash
-文件，故暂不使用，等以后再判断是否需要
-*/
+ * the hash function keep the old code (unsigned int)
+ * for reduce siphash.c (uint8_t)
+ */
 
 static int dict_hash_function_seed = 5381;
 
@@ -616,7 +617,8 @@ long long dict_fingerprint(dict_t *d)
 dict_iterator_t *dict_get_iterator(dict_t *d)
 {
 	dict_iterator_t *iter = malloc(sizeof(*iter));
-
+	if (iter == NULL)
+		return NULL;
 	iter->d = d;
 	iter->table = 0;
 	iter->index = -1;

@@ -212,7 +212,7 @@ void dict_enable_resize(void);
 void dict_disable_resize(void);
 int dict_rehash(dict_t *d, int n);
 int dict_rehash_milliseconds(dict_t *d, int ms);
-void dict_set_hash_function_seed(unsigned int *seed);
+void dict_set_hash_function_seed(unsigned int seed);
 unsigned int dict_get_hash_function_seed(void);
 unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
 			dict_scan_bucket_function *bucketfn, void *priv_data);
