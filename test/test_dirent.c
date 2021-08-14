@@ -1,7 +1,6 @@
 #include "test.h"
 #include "libtest.h"
 #include <locale.h>
-
 #include "../include/yutil/dirent.h"
 
 #if defined(_WIN32)
@@ -26,10 +25,14 @@ static void test_dirent_a()
 	wchar_t path_w[PATH_LEN] = { 0 };
 	GetCurrentDirectoryW(PATH_LEN, path_w);
 
-	setlocale(LC_ALL, "");
+	
+	if (!(setlocale(LC_ALL, "C.UTF-8") ||
+		      setlocale(LC_ALL, "en_US.UTF-8") ||
+		      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
+			setlocale(LC_ALL, "");
+		}
 	wcstombs(path, path_w, PATH_LEN);
 	setlocale(LC_ALL, "C");
-	printf("%s", path);
 #else
 	if (!getcwd(path, PATH_LEN - 1)) {
 		return;
@@ -45,7 +48,7 @@ static void test_dirent_a()
 		if (name[0] == '.') {
 			continue;
 		} else {
-			it_b("dir_get_file_name_a() should work", name, TRUE);
+			it_b("dir_get_file_name_a() should work", name != NULL, TRUE);
 			break;
 		}
 	}
@@ -82,7 +85,7 @@ static void test_dirent_w(void)
 		if (name_w[0] == '.') {
 			continue;
 		} else {
-			it_b("dir_get_file_name_w() should work", name_w, TRUE);
+			it_b("dir_get_file_name_w() should work", name_w != NULL, TRUE);
 
 			if (dir_entry_is_directory(entry)) {
 				it_b("dir_entry_is_directory() should work",

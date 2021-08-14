@@ -44,7 +44,7 @@ char *string_from_long_long(long long value)
 }
 
 dict_type_t BenchmarkDictType = { hash_callback, NULL, NULL, compare_callback,
-				  free_callback, NULL, NULL };
+			       free_callback, NULL, NULL };
 
 #define start_benchmark() start = time_in_milliseconds()
 #define end_benchmark(msg)                                              \
@@ -59,10 +59,8 @@ void test_dict(void)
 	long j;
 	long long start, elapsed;
 	dict_t *dict = dict_create(&BenchmarkDictType, NULL);
-	long count = 0;
-
-	count = 5000;
-
+	long count = 5000;
+	
 	start_benchmark();
 	for (j = 0; j < count; j++) {
 		int retval =

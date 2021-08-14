@@ -10,8 +10,9 @@ void test_list_concat(void)
 	list_t list2;
 	list_init(&list1);
 	list_init(&list2);
-	list_append(&list1, 0);
-	list_append(&list2, 10);
+	list_append(&list1, (void *)0);
+	//list_concat(&list1, &list2);
+	list_append(&list2, (void*)10);
 	list_concat(&list1, &list2);
 
 	it_b("list_concat() should work",
@@ -25,12 +26,11 @@ void test_list_concat(void)
 
 void test_list(void)
 {
-	int arr[] = { 0, 4, 8, 16, 32, 64, 1024 };
+	int arr[] = { 0, 4, 8, 16, 32, 64, 1024 ,2048 };
 	size_t i;
 	size_t n = sizeof(arr) / sizeof(int);
 
 	list_t list;
-	list_t list2;
 	list_node_t *node;
 
 	list_init(&list);
@@ -39,7 +39,7 @@ void test_list(void)
 		 !list.tail.prev,
 	     TRUE);
 
-	// append data
+	//append data
 	for (i = 0; i < n; ++i) {
 		list_append(&list, arr + i);
 	}

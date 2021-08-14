@@ -1,3 +1,5 @@
+#include "test.h"
+#include "libtest.h"
 #include "../include/yutil/list_entry.h"
 
 struct __test_list_entry_t {
@@ -19,9 +21,9 @@ void test_list_entry(void)
 	list_entry_head_init(&list, test_list_entry_t, entry_node);
 	it_b("list_entry_head_init() should work",
 	     &list.next == &list.next && !list.length, TRUE);
-	
+
 	//entry init
-	list_entry_t list_entry1; 
+	list_entry_t list_entry1;
 	list_entry_init(&list_entry1);
 
 	// add head
@@ -55,7 +57,7 @@ void test_list_entry(void)
 
 	// list_entry_for_each
 	list_entry_t* entry = list.next;
-	int i = 1;
+	unsigned int i = 1;
 	list_entry_for_each(&list, entry)
 	{
 		node = list_entry(&list, entry, test_list_entry_t);
