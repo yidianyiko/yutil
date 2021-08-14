@@ -111,6 +111,7 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 			} else {
 				printf("%s", output->buffer);
 			}
+			free(output);
 		}
 		list_entry_exit(&logger_buffer_head_copy);
 	}
@@ -165,6 +166,7 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 			} else {
 				wprintf(L"%s", output->buffer_w);
 			}
+			free(output);
 		}
 	}
 	is_enabled = FALSE;
