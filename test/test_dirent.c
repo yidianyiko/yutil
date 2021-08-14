@@ -84,17 +84,17 @@ static void test_dirent_w(void)
 		} else {
 			it_b("dir_get_file_name_w() should work", name_w, TRUE);
 
-			if (dir_file_is_directory(entry)) {
-				it_b("dir_file_is_directory() should work",
-				     dir_file_is_directory(entry), TRUE);
-				it_b("dir_file_is_regular() should work",
-				     !dir_file_is_regular(entry), TRUE);
+			if (dir_entry_is_directory(entry)) {
+				it_b("dir_entry_is_directory() should work",
+				     dir_entry_is_directory(entry), TRUE);
+				it_b("dir_entry_is_regular() should work",
+				     !dir_entry_is_regular(entry), TRUE);
 				break;
 			} else {
-				it_b("dir_file_is_directory() should work",
-				     !dir_file_is_directory(entry), TRUE);
-				it_b("dir_file_is_regular() should work",
-				     dir_file_is_regular(entry), TRUE);
+				it_b("dir_entry_is_directory() should work",
+				     !dir_entry_is_directory(entry), TRUE);
+				it_b("dir_entry_is_regular() should work",
+				     dir_entry_is_regular(entry), TRUE);
 				break;
 			}
 		}

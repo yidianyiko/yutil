@@ -230,7 +230,7 @@ wchar_t *dir_get_file_name_w(dir_entry_t *entry)
 	return NULL;
 }
 
-int dir_file_is_directory(dir_entry_t *entry)
+int dir_entry_is_directory(dir_entry_t *entry)
 {
 #if defined(_WIN32)
 	return entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
@@ -239,7 +239,7 @@ int dir_file_is_directory(dir_entry_t *entry)
 #endif
 }
 
-int dir_file_is_regular(dir_entry_t *entry)
+int dir_entry_is_regular(dir_entry_t *entry)
 {
 #if defined(_WIN32)
 	return !(entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
