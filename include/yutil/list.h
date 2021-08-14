@@ -60,7 +60,11 @@ struct list_t {
 #define list_for_each_reverse(node, list) for (list_each_reverse(node, list))
 
 void list_init(list_t *list);
-size_t list_get_size(list_t *list);
+
+static inline size_t list_get_size(list_t *list)
+{
+	return list->length;
+}
 
 // append data at tail
 list_node_t *list_append(list_t *list, void *data);
@@ -78,8 +82,24 @@ void list_insert_node(list_t *list, size_t pos, list_node_t *node);
 
 void *list_get(const list_t *list, size_t pos);
 list_node_t *list_get_node_by_pos(const list_t *list, size_t pos);
-list_node_t *list_get_node_at_head(const list_t *list);
-list_node_t *list_get_node_at_tail(const list_t *list);
+static inline list_node_t *list_get_node_at_head(const list_t *list)
+{
+	if (0 >= list->length) {
+		return NULL;
+	}
+	list_node_t *node;
+	node = list->head.next;
+	return node;
+}
+static inline list_node_t *list_get_node_at_tail(const list_t *list)
+{
+	if (0 >= list->length) {
+		return NULL;
+	}
+	list_node_t *node;
+	node = list->tail.prev;
+	return node;
+}
 
 void list_remove_link(list_t *list, list_node_t *node);
 void list_delete_by_pos(list_t *list, size_t pos);

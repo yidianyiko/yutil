@@ -45,28 +45,6 @@ void *list_get(const list_t *list, size_t pos)
 	return node ? node->data : NULL;
 }
 
-list_node_t *list_get_node_at_head(const list_t *list)
-{
-	if (0 >= list->length) {
-		return NULL;
-	}
-	list_node_t *node;
-
-	node = list->head.next;
-	return node;
-}
-
-list_node_t *list_get_node_at_tail(const list_t *list)
-{
-	if (0 >= list->length) {
-		return NULL;
-	}
-	list_node_t *node;
-
-	node = list->tail.prev;
-	return node;
-}
-
 list_node_t *list_get_node_by_pos(const list_t *list, size_t pos)
 {
 	list_node_t *node;
@@ -223,9 +201,4 @@ void list_concat(list_t *list1, list_t *list2)
 	list2->head.next = list2->tail.prev = NULL;
 	list1->length += list2->length;
 	list2->length = 0;
-}
-
-size_t list_get_size(list_t *list)
-{
-	return list->length;
 }
