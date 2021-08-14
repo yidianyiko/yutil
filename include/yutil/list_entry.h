@@ -103,6 +103,13 @@ typedef struct __list_entry_head_t list_entry_head_t;
 	     &node->member != (list_entry_t*)(head);                \
 	     node = list_entry_prev_entry_(head, node, member, type))
 
+// init list entry
+static inline void list_entry_init(list_entry_t* entry)
+{
+	entry->next = entry;
+	entry->prev = entry;
+}
+
 // init list entry head
 static inline void list_entry_head_init_(list_entry_head_t* list,
 					 size_t entry_offset)
@@ -174,8 +181,8 @@ static inline void list_entry_add_next(list_entry_head_t* head,
 				       list_entry_t* node, list_entry_t* entry)
 {
 	assert(head && node && node->next && entry);
-	// assert(node != entry);
-	// assert(list_entry_is_valid(head));
+	assert(node != entry);
+	assert(list_entry_is_valid(head));
 
 	node->next->prev = entry;
 	entry->next = node->next;
@@ -250,6 +257,18 @@ static inline void list_entry_delete_last(list_entry_head_t* head)
 	list_entry_delete_(head, head->prev->prev, (list_entry_t*)head);
 }
 
+// delete from one list and add as another's head
+static inline void list_entry_move_next(list_entry_head_t* head,
+					list_entry_t* node, list_entry_t* entry)
+{
+	list_entry_delete(head, entry);
+	list_entry_add_next(head, node, entry);
+}
+
+// move the prev entry
+#define list_entry_move_prev(head, node, entry) \
+	list_entry_move_next(head, (node)->prev, entry);
+
 // move the head entry
 static inline void list_entry_move_head(list_entry_head_t* head,
 					list_entry_t* entry)
@@ -312,7 +331,9 @@ static inline void list_entry_splice(list_entry_head_t* head,
 				     list_entry_t* prev, list_entry_t* next,
 				     list_entry_head_t* spliced_list)
 {
-	assert(list_entry_is_empty(spliced_list));
+	if (list_entry_is_empty(spliced_list)) {
+		return;
+	}
 	spliced_list->next->prev = prev;
 	prev->next = spliced_list->next;
 	spliced_list->prev->next = next;

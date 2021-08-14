@@ -19,6 +19,10 @@ void test_list_entry(void)
 	list_entry_head_init(&list, test_list_entry_t, entry_node);
 	it_b("list_entry_head_init() should work",
 	     &list.next == &list.next && !list.length, TRUE);
+	
+	//entry init
+	list_entry_t list_entry1; 
+	list_entry_init(&list_entry1);
 
 	// add head
 	list_entry_add_head(&list, &entries[3].entry_node);
@@ -104,7 +108,6 @@ void test_list_entry(void)
 	}
 	it_b("list_entry_for_each_entry_reverse() should work",
 	     node != NULL && i == 0, TRUE);
-
 	it_b("list_entry_is_empty() should work", !list_entry_is_empty(&list),
 	     TRUE);
 	it_b("list_is_singular() should work", !list_is_singular(&list), TRUE);
