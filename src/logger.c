@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <wchar.h>
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
@@ -66,7 +67,7 @@ void logger_set_level(logger_level_t level)
 
 int logger_log(logger_level_t level, const char* fmt, ...)
 {
-	int len = -1;
+	int len;
 	va_list args;
 	logger_buffer_t* node;
 	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
@@ -92,8 +93,8 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		int i = 0;
-		list_entry_t* entry = logger_buffer_head.next;
+		unsigned int i = 0;
+		list_entry_t* entry = NULL;
 		logger_buffer_t* output = { 0 };
 		list_entry_head_t logger_buffer_head_copy;
 
@@ -121,7 +122,7 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 
 int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 {
-	int len = -1;
+	int len;
 	va_list args;
 	logger_buffer_t* node;
 	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
@@ -147,8 +148,8 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		int i = 0;
-		list_entry_t* entry = logger_buffer_head.next;
+		unsigned int i = 0;
+		list_entry_t* entry = NULL;
 		logger_buffer_t* output = { 0 };
 		list_entry_head_t logger_buffer_head_copy;
 
