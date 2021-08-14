@@ -39,18 +39,27 @@
 
 static int HIRES_TIMER_AVAILABLE = 0; /**< 标志，指示高精度计数器是否可用 */
 static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答数 */
+#else
+#include <unistd.h>
+#include <sys/time.h>
+#endif
 
 void time_init(void)
 {
+#ifdef _WIN32
 	LARGE_INTEGER hires;
 	if (QueryPerformanceFrequency(&hires)) {
 		HIRES_TIMER_AVAILABLE = 1;
 		HIRES_TICKS_PER_SECOND = hires.QuadPart;
 	}
+#else
+	return;
+#endif
 }
 
 int64_t time_get(void)
 {
+#ifdef _WIN32
 	int64_t time;
 	LARGE_INTEGER hires_now;
 	FILETIME *ft = (FILETIME *)&time;
@@ -61,28 +70,15 @@ int64_t time_get(void)
 	}
 	GetSystemTimeAsFileTime(ft);
 	return time / 1000 - 11644473600000;
-}
-
 #else
-#include <unistd.h>
-#include <sys/time.h>
-
-void time_init(void)
-{
-	return;
-}
-
-int64_t time_get(void)
-{
 	int64_t t;
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
 	t = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	return t;
-}
-
 #endif
+}
 
 int64_t time_get_delta(int64_t start)
 {
@@ -93,19 +89,19 @@ int64_t time_get_delta(int64_t start)
 	return now - start;
 }
 
-void time_sleep(unsigned int s)
+void sleep(unsigned int s)
 {
 #ifdef _WIN32
-	time_sleep(s * 1000);
+	Sleep(s * 1000);
 #else
 	sleep(s);
 #endif
 }
 
-void time_sleep_m(unsigned int ms)
+void msleep(unsigned int ms)
 {
 #ifdef _WIN32
-	time_sleep(ms);
+	Sleep(ms);
 #else
 	usleep(ms * 1000);
 #endif

@@ -37,8 +37,8 @@ int64_t time_get(void);
 
 int64_t time_get_delta(int64_t start);
 
-void time_sleep(unsigned int s);
+void sleep(unsigned int s);
 
-void time_sleep_m(unsigned int ms);
+void msleep(unsigned int ms);
 
 #endif
