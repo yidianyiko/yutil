@@ -5,8 +5,6 @@
 1. 实现数据库键空间（key space）；
 2. 用作 Hash 类型键的底层实现之一；
 
-
-
 ## LCUI & redis 
 
 ### dict
@@ -16,7 +14,7 @@
 实现方式：
 
 ```c
-/** 哈希表节点结构 */
+/** 哈希表结点结构 */
 typedef struct DictEntry {
 	void *key;
 	union {
@@ -24,7 +22,7 @@ typedef struct DictEntry {
 		uint64_t u64;
 		int64_t s64;
 	} v;
-	struct DictEntry *next; /**< 指向下一个哈希节点(形成链表) */
+	struct DictEntry *next; /**< 指向下一个哈希结点(形成链表) */
 } DictEntry;
 
 /** 字典内数据的类型 */
@@ -39,10 +37,10 @@ typedef struct DictType {
 
 /** 哈希表结构 */
 typedef struct DictHashTable {
-	DictEntry **table;	/**< 节点指针数组 */
+	DictEntry **table;	/**< 结点指针数组 */
 	unsigned long size;	/**< 桶的数量 */
 	unsigned long sizemask;	/**< mask 码，用于地址索引计算 */
-	unsigned long used;	/**< 已有节点数量 */
+	unsigned long used;	/**< 已有结点数量 */
 } DictHashTable;
 
 /** 字典结构 */
@@ -60,8 +58,8 @@ typedef struct DictIterator {
 	int table;		/**< 使用的哈希表号码 */
 	int index;		/**< 迭代进行的索引 */
 	int safe;		/**< 是否安全 */
-	DictEntry *entry;	/**< 指向哈希表的当前节点 */
-	DictEntry *next_entry;	/**< 指向哈希表的下个节点 */
+	DictEntry *entry;	/**< 指向哈希表的当前结点 */
+	DictEntry *next_entry;	/**< 指向哈希表的下个结点 */
 } DictIterator;
 ```
 
@@ -82,8 +80,8 @@ Dict_Release//删除字典，释放内存资源
 Dict_Find//在字典中按指定的 key 查找
 Dict_Fetchvalue//查找给定 key 在字典 d 中的值
 Dict_Resize//重新调整字典的大小，缩减多余空间
-Dict_Getlterator// 创建一个迭代器，用于遍历哈希表节点。
-Dict_Getsafelterator// 创建一个迭代器，用于遍历哈希表节点。
+Dict_Getlterator// 创建一个迭代器，用于遍历哈希表结点。
+Dict_Getsafelterator// 创建一个迭代器，用于遍历哈希表结点。
 Dict_Next//迭代器的推进函数。
 Dict_Releaselterator//删除迭代器
 Dict_Getrandomkey//从字典中随机获取一项
@@ -110,9 +108,6 @@ Dict_initstring CopykeyType//初始化复制字典类型
 **参考：**
 
 - [Redis内部数据结构详解之字典(dict)_fmt.Println(-CSDN博客](https://blog.csdn.net/acceptedxukai/article/details/17484431)
-
-
-
 ## Tbox
 
 ### *dictionary*

@@ -939,7 +939,7 @@ tb_void_t           tb_list_replace_head(tb_list_ref_t list, tb_cpointer_t data)
 
 ```
 
-替换头节点
+替换头结点
 
 #### tb_list_replace_last
 
@@ -948,7 +948,7 @@ tb_void_t           tb_list_replace_last(tb_list_ref_t list, tb_cpointer_t data)
 
 ```
 
-替换尾节点
+替换尾结点
 
 #### tb_list_remove
 
@@ -966,7 +966,7 @@ tb_void_t           tb_list_remove_head(tb_list_ref_t list);
 
 ```
 
-移除头节点
+移除头结点
 
 #### tb_list_remove_last
 
@@ -975,7 +975,7 @@ tb_void_t           tb_list_remove_last(tb_list_ref_t list);
 
 ```
 
-移除尾节点
+移除尾结点
 
 #### tb_list_moveto_prev
 
@@ -1002,7 +1002,7 @@ tb_void_t           tb_list_moveto_head(tb_list_ref_t list, tb_size_t move);
 ```
 
 
-移到头节点
+移到头结点
 
 #### tb_list_moveto_tail
 
@@ -1011,7 +1011,7 @@ tb_void_t           tb_list_moveto_tail(tb_list_ref_t list, tb_size_t move);
 
 ```
 
-移到尾节点
+移到尾结点
 
 #### tb_list_size
 
@@ -1020,7 +1020,7 @@ tb_size_t           tb_list_size(tb_list_ref_t list);
 
 ```
 
-返回节点数
+返回结点数
 
 #### tb_list_maxn
 
@@ -1045,7 +1045,7 @@ tbox的遍历函数是抽象出来的。
 
 元素在外部维护的双向链表。
 
-> 类似Linux的链表结构，链表容器本身不存储元素，不开辟内存空间，仅仅是一个节点头，这样比较节省内存，更加灵活。（尤其是在多个链表间元素迁移的时候，或者多个链表需要统一内存池维护的时候）。
+> 类似Linux的链表结构，链表容器本身不存储元素，不开辟内存空间，仅仅是一个结点头，这样比较节省内存，更加灵活。（尤其是在多个链表间元素迁移的时候，或者多个链表需要统一内存池维护的时候）。
 
 **存储方式**
 
@@ -1098,18 +1098,18 @@ typedef struct __tb_list_entry_head_t
 #### tb_list_entry_init
 
 ```c
-// 初始化链表，需要指定外置元素的结构体类型，链表的节点名字
+// 初始化链表，需要指定外置元素的结构体类型，链表的结点名字
 tb_list_entry_head_t list;
 #define tb_list_entry_init(list, type, entry, copy)     tb_list_entry_init_(list, tb_offsetof(type, entry), sizeof(type), copy)
 ```
 
-初始化链表，需要指定外置元素的结构体类型，链表的节点名字
+初始化链表，需要指定外置元素的结构体类型，链表的结点名字
 
 **参数说明**
 
 - list：指定链表
 - type：外置元素的结构
-- entry：链表的节点名字
+- entry：链表的结点名字
 - copy：the entry copy func
 
 #### tb_list_entry_clear
@@ -1175,7 +1175,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_insert_tail(tb_list_en
 
 链表尾部插入元素
 
-注意：所有操作都是在外置结构体中的list_entry节点上操作
+注意：所有操作都是在外置结构体中的list_entry结点上操作
 
 #### tb_list_entry_replace
 
@@ -1193,7 +1193,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_replace_head(tb_list_e
 
 ```
 
-替换头节点
+替换头结点
 
 #### tb_list_entry_replace_last
 
@@ -1202,7 +1202,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_replace_last(tb_list_e
 
 ```
 
-替换尾节点
+替换尾结点
 
 #### tb_list_entry_remove
 
@@ -1257,7 +1257,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_moveto_head(tb_list_en
 ```
 
 
-移到头节点
+移到头结点
 
 #### tb_list_entry_moveto_tail
 
@@ -1265,7 +1265,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_moveto_head(tb_list_en
 static __tb_inline__ tb_void_t              tb_list_entry_moveto_tail(tb_list_entry_head_ref_t list, tb_list_entry_ref_t entry)
 ```
 
-移到尾节点
+移到尾结点
 
 #### tb_list_entry
 
@@ -1273,7 +1273,7 @@ static __tb_inline__ tb_void_t              tb_list_entry_moveto_tail(tb_list_en
 #define tb_list_entry(head, entry)      ((((tb_byte_t*)(entry)) - (head)->eoff))
 ```
 
-访问具体某个节点的元素数据
+访问具体某个结点的元素数据
 
 #### tb_for_all_if
 

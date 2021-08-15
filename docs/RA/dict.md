@@ -5,7 +5,7 @@
 **实现方式：**
 
 ```c
-/** 哈希表节点结构 */
+/** 哈希表结点结构 */
 typedef struct DictEntry {
 	void *key;
 	union {
@@ -13,7 +13,7 @@ typedef struct DictEntry {
 		uint64_t u64;
 		int64_t s64;
 	} v;
-	struct DictEntry *next; /**< 指向下一个哈希节点(形成链表) */
+	struct DictEntry *next; /**< 指向下一个哈希结点(形成链表) */
 } DictEntry;
 
 /** 字典内数据的类型 */
@@ -28,10 +28,10 @@ typedef struct DictType {
 
 /** 哈希表结构 */
 typedef struct DictHashTable {
-	DictEntry **table;	/**< 节点指针数组 */
+	DictEntry **table;	/**< 结点指针数组 */
 	unsigned long size;	/**< 桶的数量 */
 	unsigned long sizemask;	/**< mask 码，用于地址索引计算 */
-	unsigned long used;	/**< 已有节点数量 */
+	unsigned long used;	/**< 已有结点数量 */
 } DictHashTable;
 
 /** 字典结构 */
@@ -49,8 +49,8 @@ typedef struct DictIterator {
 	int table;		/**< 使用的哈希表号码 */
 	int index;		/**< 迭代进行的索引 */
 	int safe;		/**< 是否安全 */
-	DictEntry *entry;	/**< 指向哈希表的当前节点 */
-	DictEntry *next_entry;	/**< 指向哈希表的下个节点 */
+	DictEntry *entry;	/**< 指向哈希表的当前结点 */
+	DictEntry *next_entry;	/**< 指向哈希表的下个结点 */
 } DictIterator;
 ```
 
@@ -465,7 +465,7 @@ LCUI_API DictIterator *Dict_GetIterator(Dict *d);
 
 ```
 
- 创建一个迭代器，用于遍历哈希表节点。
+ 创建一个迭代器，用于遍历哈希表结点。
 
 > 迭代器是不安全的，只能执行 `Dict_Next` 操作。
 
@@ -496,7 +496,7 @@ LCUI_API DictIterator *Dict_GetSafeIterator(Dict *d);
 
 ```
 
- 创建一个迭代器，用于遍历哈希表节点。
+ 创建一个迭代器，用于遍历哈希表结点。
 
 > safe 属性指示迭代器是否安全，如果迭代器是安全的，那么它可以在遍历的过程中进行增删操作
 
@@ -1027,7 +1027,7 @@ LCUI_API void *StringKeyDict_KeyDup(void *privdata, const void *key);
 
 **返回说明：**
 
-- 成功返回返回新键
+- 成功则返回新键
 
 **存在问题：**
 

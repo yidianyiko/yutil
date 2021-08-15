@@ -23,7 +23,7 @@ typedef struct TimerRec_ {
 	void (*callback)(void *);	/**< 回调函数 */
 	void *arg;			/**< 函数的参数 */
 
-	LinkedListNode node;		/**< 位于定时器列表中的节点 */
+	LinkedListNode node;		/**< 位于定时器列表中的结点 */
 } TimerRec, *Timer;
 
 static struct TimerModule {

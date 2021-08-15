@@ -24,7 +24,7 @@ struct LinkedListRec_ {
 #define LinkedList_Each(node, list) 
 ```
 
-遍历下一个节点
+遍历下一个结点
 
 **参数说明：**
 
@@ -87,7 +87,7 @@ struct LinkedListRec_ {
 #define LinkedList_EachReverse(node, list) 
 ```
 
-遍历上一个节点
+遍历上一个结点
 
 **参数说明：**
 
@@ -118,7 +118,7 @@ struct LinkedListRec_ {
 #define LinkedList_ForEach(node, list) /
 ```
 
-遍历所有节点
+遍历所有结点
 
 **参数说明：**
 
@@ -149,7 +149,7 @@ struct LinkedListRec_ {
 #define LinkedList_ForEachReverse(node, list) /
 ```
 
-反向遍历所有节点
+反向遍历所有结点
 
 **参数说明：**
 

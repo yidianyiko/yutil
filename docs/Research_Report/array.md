@@ -71,7 +71,6 @@ typedef struct __tb_object_t
 
 }tb_object_t, *tb_object_ref_t;
 
-
 ```
 
 ```c
@@ -242,23 +241,13 @@ struct _GRealArray
 
 > 调研与其他库的 array 实现方式，验证是否可以将 linkedlist 更名为 array。
 
-初步来看，不适合改名为array
+不适合改名为 array 。
 
 原因：
 
-- array一般使用变长数组实现，而LCUI中使用双链表实现。
+- array 一般使用变长数组实现，而 LCUI 中使用双链表实现。
 - 一般而言，数组要求内存分配是连续的。
 
-适合更换为array的使用场景
-
-**使用场景：**
-
-- ……
-
 **结论：**
-
-选择一种不依赖其它数据结构的方案。
-
-在 LCUI 中的一些不只需要记录和遍历数据的地方使用 linux 这种链表结构。
-
-用迭代器来遍历数组这种方案可以有，但考虑到时间成本，可以将优先级调低点。建议考虑 LCUI 的 `LinkedList_Each()` 方案，靠宏生成迭代相关代码。
+> 参照 tbox 中的 list 和 list_entry。
+改名为 list 。
