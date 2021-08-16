@@ -1,9 +1,7 @@
-/*
- * dirent.h -- Directory entry operation set.
+﻿/*
+ * time.c -- The time operation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
- * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
- * All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,43 +28,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTIL_DIRENT_H
-#define UTIL_DIRENT_H
+#ifndef UTIL_TIME_H
+#define UTIL_TIME_H
 
-#ifdef _WIN32
-typedef union dir_entry_t dir_entry_t;
-#else
-typedef struct dir_entry_t dir_entry_t;
-#endif
+void time_init(void);
 
-typedef struct dir_t dir_t;
+int64_t time_get(void);
 
-#if defined(_UNICODE) || !defined(_WIN32)
-#define dir_open dir_open_w
-#define dir_read dir_read_w
-#define dir_get_file_name dir_get_file_name_w
-#else
-#define dir_open dir_open_a
-#define dir_read dir_read_a
-#define dir_get_file_name dir_get_file_name_a
-#endif
+int64_t time_get_delta(int64_t start);
 
-int dir_open_w(const wchar_t *path, dir_t *dir);
+void sleep(unsigned int s);
 
-int dir_open_a(const char *path, dir_t *dir);
-
-dir_entry_t *dir_read_a(dir_t *dir);
-
-dir_entry_t *dir_read_w(dir_t *dir);
-
-int dir_close(dir_t *dir);
-
-char *dir_get_file_name_a(dir_entry_t *entry);
-
-wchar_t *dir_get_file_name_w(dir_entry_t *entry);
-
-int dir_entry_is_directory(dir_entry_t *entry);
-
-int dir_entry_is_regular(dir_entry_t *entry);
+void msleep(unsigned int ms);
 
 #endif

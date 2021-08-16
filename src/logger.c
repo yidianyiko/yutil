@@ -31,6 +31,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 #include <wchar.h>
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
@@ -66,10 +67,12 @@ void logger_set_level(logger_level_t level)
 
 int logger_log(logger_level_t level, const char* fmt, ...)
 {
-	int len = -1;
+	int len;
 	va_list args;
-	logger_buffer_t node = { 0 };
-
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -80,18 +83,18 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 	}
 
 	va_start(args, fmt);
-	len = vsnprintf(node.buffer, BUFFER_SIZE, fmt, args);
+	len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
 	va_end(args);
-	node.buffer[BUFFER_SIZE - 1] = 0;
-	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+	node->buffer[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
 
 	if (is_enabled) {
 		return 0;
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		int i = 0;
-		list_entry_t* entry = logger_buffer_head.next;
+		unsigned int i = 0;
+		list_entry_t* entry = NULL;
 		logger_buffer_t* output = { 0 };
 		list_entry_head_t logger_buffer_head_copy;
 
@@ -109,11 +112,11 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 			} else {
 				printf("%s", output->buffer);
 			}
+			free(output);
 		}
 		list_entry_exit(&logger_buffer_head_copy);
 	}
 	is_enabled = FALSE;
-
 	return len;
 }
 
@@ -121,9 +124,10 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 {
 	int len;
 	va_list args;
-
-	logger_buffer_t node = { 0 };
-
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -134,19 +138,18 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 	}
 
 	va_start(args, fmt);
-	len = vswprintf(node.buffer_w, BUFFER_SIZE, fmt, args);
+	len = vswprintf(&node->buffer_w, BUFFER_SIZE, fmt, args);
 	va_end(args);
-
-	node.buffer_w[BUFFER_SIZE - 1] = 0;
-	list_entry_add_tail(&logger_buffer_head, &node.buf_entry);
+	node->buffer_w[BUFFER_SIZE - 1] = 0;
+	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
 
 	if (is_enabled) {
 		return 0;
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		int i = 0;
-		list_entry_t* entry = logger_buffer_head.next;
+		unsigned int i = 0;
+		list_entry_t* entry = NULL;
 		logger_buffer_t* output = { 0 };
 		list_entry_head_t logger_buffer_head_copy;
 
@@ -164,6 +167,7 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 			} else {
 				wprintf(L"%s", output->buffer_w);
 			}
+			free(output);
 		}
 	}
 	is_enabled = FALSE;

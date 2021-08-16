@@ -104,8 +104,8 @@ struct _GTreeNode
 - 在 GTree 中插入键/值对，使用 `g_tree_insert ()`，开销未`(o (n log (n)))`,。
 - 要删除一个键/值对，可以使用 `g_tree_remove ()`，(o (n log (n)))。
 - 若要查找与给定键对应的值，请使用 `g_tree_lookup ()`和 `g_tree_lookup_extended ()`。
-- 若要查找 GTree 中的节点数，请使用 `g_tree_nnodes ()`。若要获得 GTree 的高度，请使用 `g_tree_height ()`。
-- 要遍历 GTree，请为遍历中访问过的每个节点调用一个函数，使用 `g_tree_foreach ()`。
+- 若要查找 GTree 中的结点数，请使用 `g_tree_nnodes ()`。若要获得 GTree 的高度，请使用 `g_tree_height ()`。
+- 要遍历 GTree，请为遍历中访问过的每个结点调用一个函数，使用 `g_tree_foreach ()`。
 - 要销毁一棵 GTree，使用 `g_tree_destroy ()` 。
 
 
@@ -132,15 +132,15 @@ ngx_rbtree_t的结构也与一般红黑树相同，右root结点和哨兵叶子�
 typedef ngx_uint_t  ngx_rbtree_key_t;
 typedef ngx_int_t   ngx_rbtree_key_int_t;
 
-/* 红黑树节点结构 */
+/* 红黑树结点结构 */
 typedef struct ngx_rbtree_node_s  ngx_rbtree_node_t;
 
 struct ngx_rbtree_node_s {
-    ngx_rbtree_key_t       key;     /* 节点的键值 */
-    ngx_rbtree_node_t     *left;    /* 节点的左孩子 */
-    ngx_rbtree_node_t     *right;   /* 节点的右孩子 */
-    ngx_rbtree_node_t     *parent;  /* 节点的父亲 */
-    u_char         color;   /* 节点的颜色 */
+    ngx_rbtree_key_t       key;     /* 结点的键值 */
+    ngx_rbtree_node_t     *left;    /* 结点的左孩子 */
+    ngx_rbtree_node_t     *right;   /* 结点的右孩子 */
+    ngx_rbtree_node_t     *parent;  /* 结点的父亲 */
+    u_char         color;   /* 结点的颜色 */
     u_char         data;    /* */
 };
 
@@ -151,9 +151,9 @@ typedef void (*ngx_rbtree_insert_pt) (ngx_rbtree_node_t *root,
 
 /* 红黑树结构 */
 struct ngx_rbtree_s {
-    ngx_rbtree_node_t     *root;    /* 指向树的根节点 */
-    ngx_rbtree_node_t     *sentinel;/* 指向树的叶子节点NIL */
-    ngx_rbtree_insert_pt   insert;  /* 添加元素节点的函数指针，解决具有相同键值问题，在初始化时需要指定*/
+    ngx_rbtree_node_t     *root;    /* 指向树的根结点 */
+    ngx_rbtree_node_t     *sentinel;/* 指向树的叶子结点NIL */
+    ngx_rbtree_insert_pt   insert;  /* 添加元素结点的函数指针，解决具有相同键值问题，在初始化时需要指定*/
 
 };
 ```
@@ -178,7 +178,7 @@ ngx_rbtree_left_rotate(ngx_rbtree_node_t **root, ngx_rbtree_node_t *sentinel,   
 #### ngx_rbtree_insert
 
 ```c
-//向红黑树中添加节点
+//向红黑树中添加结点
 void  
 ngx_rbtree_insert(ngx_thread_volatile ngx_rbtree_t *tree,  
     ngx_rbtree_node_t *node) ;
@@ -207,7 +207,7 @@ ngx_rbtree删除
 61	    ngx_rbtree_node_t *node);
 ```
 
-访问下一个节点
+访问下一个结点
 
 #### ngx_rbtree_min
 
@@ -215,11 +215,11 @@ ngx_rbtree删除
 static ngx_inline ngx_rbtree_node_t *ngx_rbtree_min(ngx_rbtree_node_t *node, ngx_rbtree_node_t *sentinel)
 ```
 
-遍历：返回以node作为树根的这个红黑树中，最小的那个节点。
+遍历：返回以node作为树根的这个红黑树中，最小的那个结点。
 
 > ### 如何遍历整个红黑树？
 >
-> 先调用 ngx_rbtree_min，传入树根，就可以得到该红黑树的最小节点。
+> 先调用 ngx_rbtree_min，传入树根，就可以得到该红黑树的最小结点。
 >
 > 然后不断调用 ngx_rbtree_next，就可以遍历整颗红黑树。
 

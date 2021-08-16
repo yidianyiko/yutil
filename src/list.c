@@ -31,22 +31,100 @@
 #include <stdlib.h>
 #include "../include/yutil/list.h"
 
-struct list_node_t {
-	void *data;
-	list_node_t *prev, *next;
-};
-
-struct list_t {
-	size_t length;
-	list_node_t head, tail;
-};
-
 void list_init(list_t *list)
 {
 	list->length = 0;
 	list->head.next = list->tail.next = NULL;
 	list->head.data = list->tail.data = NULL;
 	list->head.prev = list->tail.prev = NULL;
+}
+
+void *list_get(const list_t *list, size_t pos)
+{
+	list_node_t *node = list_get_node_by_pos(list, pos);
+	return node ? node->data : NULL;
+}
+
+list_node_t *list_get_node_by_pos(const list_t *list, size_t pos)
+{
+	list_node_t *node;
+	if (pos >= list->length) {
+		return NULL;
+	}
+	if (pos > list->length / 2) {
+		pos = list->length - pos;
+		node = list->tail.prev;
+		while (--pos >= 1 && node) {
+			node = node->prev;
+		}
+	} else {
+		pos += 1;
+		node = list->head.next;
+		while (--pos >= 1 && node) {
+			node = node->next;
+		}
+	}
+	return node;
+}
+
+list_node_t *list_insert(list_t *list, size_t pos, void *data)
+{
+	list_node_t *node;
+	node = malloc(sizeof(list_node_t));
+	if (node == NULL)
+		return NULL;
+	node->data = data;
+	list_insert_node(list, pos, node);
+	return node;
+}
+
+void list_link(list_t *list, list_node_t *cur, list_node_t *node)
+{
+	node->prev = cur;
+	node->next = cur->next;
+	if (cur->next) {
+		cur->next->prev = node;
+	}
+	cur->next = node;
+	list->length += 1;
+}
+
+void list_insert_node(list_t *list, size_t pos, list_node_t *node)
+{
+	list_node_t *target;
+	target = list_get_node_by_pos(list, pos);
+	if (target) {
+		list_link(list, target->prev, node);
+	} else {
+		list_append_node(list, node);
+	}
+}
+
+list_node_t *list_append(list_t *list, void *data)
+{
+	list_node_t *node;
+	node = (list_node_t *)malloc(sizeof(list_node_t));
+	if (node == NULL)
+		return NULL;
+	node->data = data;
+	node->next = NULL;
+	list_append_node(list, node);
+	return node;
+}
+
+void list_append_node(list_t *list, list_node_t *node)
+{
+	if (list->head.next) {
+		node->prev = list->tail.prev;
+		list->tail.prev->next = node;
+		list->tail.prev = node;
+	} else {
+		list->head.next = node;
+		list->tail.prev = node;
+		node->prev = &list->head;
+	}
+	node->next = NULL;
+	list->length += 1;
 }
 
 void list_unlink(list_t *list, list_node_t *node)
@@ -88,73 +166,6 @@ void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node)
 	}
 }
 
-list_node_t *list_get_node_at_tail(const list_t *list, size_t pos)
-{
-	list_node_t *node;
-	if (pos >= list->length) {
-		return NULL;
-	}
-	pos += 1;
-	node = list->tail.prev;
-	while (--pos >= 1 && node) {
-		node = node->prev;
-	}
-	return node;
-}
-
-list_node_t *list_get_node(const list_t *list, size_t pos)
-{
-	list_node_t *node;
-	if (pos >= list->length) {
-		return NULL;
-	}
-	if (pos > list->length / 2) {
-		pos = list->length - pos;
-		node = list->tail.prev;
-		while (--pos >= 1 && node) {
-			node = node->prev;
-		}
-	} else {
-		pos += 1;
-		node = list->head.next;
-		while (--pos >= 1 && node) {
-			node = node->next;
-		}
-	}
-	return node;
-}
-
-void list_link(list_t *list, list_node_t *cur, list_node_t *node)
-{
-	node->prev = cur;
-	node->next = cur->next;
-	if (cur->next) {
-		cur->next->prev = node;
-	}
-	cur->next = node;
-	list->length += 1;
-}
-
-void list_insert_node(list_t *list, size_t pos, list_node_t *node)
-{
-	list_node_t *target;
-	target = list_get_node(list, pos);
-	if (target) {
-		list_link(list, target->prev, node);
-	} else {
-		list_append_node(list, node);
-	}
-}
-
-list_node_t *list_insert(list_t *list, size_t pos, void *data)
-{
-	list_node_t *node;
-	node = malloc(sizeof(list_node_t));
-	node->data = data;
-	list_insert_node(list, pos, node);
-	return node;
-}
-
 void list_delete_node(list_t *list, list_node_t *node)
 {
 	list_unlink(list, node);
@@ -163,44 +174,13 @@ void list_delete_node(list_t *list, list_node_t *node)
 	node = NULL;
 }
 
-void list_append_node(list_t *list, list_node_t *node)
+void list_delete_by_pos(list_t *list, size_t pos)
 {
-	if (list->head.next) {
-		node->prev = list->tail.prev;
-		list->tail.prev->next = node;
-		list->tail.prev = node;
-	} else {
-		list->head.next = node;
-		list->tail.prev = node;
-		node->prev = &list->head;
-	}
-	node->next = NULL;
-	list->length += 1;
-}
-
-void list_delete(list_t *list, size_t pos)
-{
-	list_node_t *node = list_get_node(list, pos);
+	list_node_t *node = list_get_node_by_pos(list, pos);
 	list_delete_node(list, node);
 }
 
-void *list_get(const list_t *list, size_t pos)
-{
-	list_node_t *node = list_get_node(list, pos);
-	return node ? node->data : NULL;
-}
-
-list_node_t *list_append(list_t *list, void *data)
-{
-	list_node_t *node;
-	node = malloc(sizeof(list_node_t));
-	node->data = data;
-	node->next = NULL;
-	list_append_node(list, node);
-	return node;
-}
-
-void list_node_delete(list_node_t *node)
+void list_node_free(list_node_t *node)
 {
 	free(node);
 }

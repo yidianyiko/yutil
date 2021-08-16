@@ -181,8 +181,8 @@ static inline void list_entry_add_next(list_entry_head_t* head,
 				       list_entry_t* node, list_entry_t* entry)
 {
 	assert(head && node && node->next && entry);
-	// assert(node != entry);
-	// assert(list_entry_is_valid(head));
+	assert(node != entry);
+	assert(list_entry_is_valid(head));
 
 	node->next->prev = entry;
 	entry->next = node->next;
@@ -200,15 +200,13 @@ static inline void list_entry_add_next(list_entry_head_t* head,
 static inline void list_entry_add_head(list_entry_head_t* head,
 				       list_entry_t* entry)
 {
+	assert(entry);
 	list_entry_add_next(head, (list_entry_t*)head, entry);
 }
 
 // insert entry to the tail
-static inline void list_entry_add_tail(list_entry_head_t* head,
-				       list_entry_t* entry)
-{
-	list_entry_add_next(head, head->prev, entry);
-}
+#define list_entry_add_tail(head, entry) \
+	list_entry_add_next(head, (head)->prev, entry)
 
 // delete the entry (private interface)
 static inline void list_entry_delete_(list_entry_head_t* head,
@@ -243,24 +241,6 @@ static inline void list_entry_delete_init(list_entry_head_t* head,
 	list_entry_init(entry);
 }
 
-// delete the next entry
-static inline void list_entry_delete_next(list_entry_head_t* head,
-					  list_entry_t* prev)
-{
-	assert(prev && prev->next);
-
-	list_entry_delete_(head, prev, prev->next->next);
-}
-
-// delete the prev entry
-static inline void list_entry_delete_prev(list_entry_head_t* head,
-					  list_entry_t* next)
-{
-	assert(next && next->prev);
-
-	list_entry_delete_(head, next->prev->prev, next);
-}
-
 // delete the head entry
 static inline void list_entry_delete_head(list_entry_head_t* head)
 {
@@ -286,13 +266,8 @@ static inline void list_entry_move_next(list_entry_head_t* head,
 }
 
 // move the prev entry
-static inline void list_entry_move_prev(list_entry_head_t* head,
-					list_entry_t* node, list_entry_t* entry)
-{
-	assert(node);
-
-	list_entry_move_next(head, node->prev, entry);
-}
+#define list_entry_move_prev(head, node, entry) \
+	list_entry_move_next(head, (node)->prev, entry);
 
 // move the head entry
 static inline void list_entry_move_head(list_entry_head_t* head,
@@ -356,16 +331,17 @@ static inline void list_entry_splice(list_entry_head_t* head,
 				     list_entry_t* prev, list_entry_t* next,
 				     list_entry_head_t* spliced_list)
 {
-	if (!list_entry_is_empty(spliced_list)) {
-		spliced_list->next->prev = prev;
-		prev->next = spliced_list->next;
-		spliced_list->prev->next = next;
-		next->prev = spliced_list->prev;
-
-		head->length += spliced_list->length;
-
-		list_entry_clear(spliced_list);
+	if (list_entry_is_empty(spliced_list)) {
+		return;
 	}
+	spliced_list->next->prev = prev;
+	prev->next = spliced_list->next;
+	spliced_list->prev->next = next;
+	next->prev = spliced_list->prev;
+
+	head->length += spliced_list->length;
+
+	list_entry_clear(spliced_list);
 }
 
 // splice the spliced_list at the list head

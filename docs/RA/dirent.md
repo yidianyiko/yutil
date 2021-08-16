@@ -228,7 +228,7 @@ wchar_t *LCUI_GetFileNameW(LCUI_DirEntry *entry);
 int LCUI_FileIsDirectory(LCUI_DirEntry *entry);
 ```
 
-将 entry->dataW.dwFileAttributes 和 FILE_ATTRIBUTE_DIRECTORY 做位的与运算，
+将`entry->dataW.dwFileAttributes`和`FILE_ATTRIBUTE_DIRECTORY` 做与运算，
 
 来判断所找到的项目是不是目录
 
@@ -258,7 +258,8 @@ int LCUI_FileIsDirectory(LCUI_DirEntry *entry);
 int LCUI_FileIsRegular(LCUI_DirEntry *entry);
 ```
 
-将`entry->dataW.dwFileAttributes`和`FILE_ATTRIBUTE_DIRECTORY`做位的与运算的非运算的来判断所找到的项目是不是常规文件夹
+将`entry->dataW.dwFileAttributes`和`FILE_ATTRIBUTE_DIRECTORY`做位的与运算，并作非运算。
+来判断所找到的项目是不是常规文件
 
 **参数说明：**
 

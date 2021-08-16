@@ -1,9 +1,6 @@
-/*
- * dirent.h -- Directory entry operation set.
+﻿/* time.c -- The time operation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
- * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
- * All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,43 +27,78 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTIL_DIRENT_H
-#define UTIL_DIRENT_H
+#include <time.h>
+#include <stdint.h>
+
+#include "../include/yutil/time.h"
+
+#define TIME_WRAP_VALUE (~(int64_t)0)
 
 #ifdef _WIN32
-typedef union dir_entry_t dir_entry_t;
+#include <Windows.h>
+
+static int HIRES_TIMER_AVAILABLE = 0; /**< 标志，指示高精度计数器是否可用 */
+static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答数 */
 #else
-typedef struct dir_entry_t dir_entry_t;
+#include <unistd.h>
+#include <sys/time.h>
 #endif
 
-typedef struct dir_t dir_t;
-
-#if defined(_UNICODE) || !defined(_WIN32)
-#define dir_open dir_open_w
-#define dir_read dir_read_w
-#define dir_get_file_name dir_get_file_name_w
+void time_init(void)
+{
+#ifdef _WIN32
+	LARGE_INTEGER hires;
+	if (QueryPerformanceFrequency(&hires)) {
+		HIRES_TIMER_AVAILABLE = 1;
+		HIRES_TICKS_PER_SECOND = hires.QuadPart;
+	}
 #else
-#define dir_open dir_open_a
-#define dir_read dir_read_a
-#define dir_get_file_name dir_get_file_name_a
+	return;
 #endif
+}
 
-int dir_open_w(const wchar_t *path, dir_t *dir);
+int64_t time_get(void)
+{
+#ifdef _WIN32
+	int64_t time;
+	LARGE_INTEGER hires_now;
+	FILETIME *ft = (FILETIME *)&time;
+	if (HIRES_TIMER_AVAILABLE) {
+		QueryPerformanceCounter(&hires_now);
+		time = hires_now.QuadPart * 1000;
+		return time / HIRES_TICKS_PER_SECOND;
+	}
+	GetSystemTimeAsFileTime(ft);
+	return time / 1000 - 11644473600000;
+#else
+	int64_t t;
+	struct timeval tv;
 
-int dir_open_a(const char *path, dir_t *dir);
-
-dir_entry_t *dir_read_a(dir_t *dir);
-
-dir_entry_t *dir_read_w(dir_t *dir);
-
-int dir_close(dir_t *dir);
-
-char *dir_get_file_name_a(dir_entry_t *entry);
-
-wchar_t *dir_get_file_name_w(dir_entry_t *entry);
-
-int dir_entry_is_directory(dir_entry_t *entry);
-
-int dir_entry_is_regular(dir_entry_t *entry);
-
+	gettimeofday(&tv, NULL);
+	t = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+	return t;
 #endif
+}
+
+int64_t time_get_delta(int64_t start)
+{
+	int64_t now = time_get();
+	if (now < start) {
+		return (TIME_WRAP_VALUE - start) + now;
+	}
+	return now - start;
+}
+
+void msleep(unsigned int ms)
+{
+#ifdef _WIN32
+	Sleep((DWORD)ms);
+#else
+	usleep(ms * 1000);
+#endif
+}
+
+void sleep(unsigned int s)
+{
+	msleep(s* 1000);
+}
