@@ -89,20 +89,16 @@ int64_t time_get_delta(int64_t start)
 	return now - start;
 }
 
-void sleep(unsigned int s)
-{
-#ifdef _WIN32
-	Sleep(s * 1000);
-#else
-	sleep(s);
-#endif
-}
-
 void msleep(unsigned int ms)
 {
 #ifdef _WIN32
-	Sleep(ms);
+	Sleep((DWORD)ms);
 #else
 	usleep(ms * 1000);
 #endif
+}
+
+void sleep(unsigned int s)
+{
+	msleep(s* 1000);
 }
