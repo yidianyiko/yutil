@@ -55,7 +55,7 @@ void test_list(void)
 	     (int)0);
 	it_i("list_delete_node() should work", (int)list_get_size(&list),
 	     (int)0);
-	it_i("list_remove_link() should work", (int)list_get_size(&list),
+	it_i("list_unlink() should work", (int)list_get_size(&list),
 	     (int)0);
 	it_i("list_node_free() should work", (int)list_get_size(&list), (int)0);
 	// insert data
@@ -65,7 +65,7 @@ void test_list(void)
 	it_i("list_insert() should work", (int)list_get_size(&list), (int)n);
 	it_i("list_insert_node() should work", (int)list_get_size(&list),
 	     (int)n);
-	it_i("list_add_link() should work", (int)list_get_size(&list), (int)n);
+	it_i("list_link() should work", (int)list_get_size(&list), (int)n);
 
 	// insert head
 	list_insert_head(&list, 0);
@@ -79,8 +79,8 @@ void test_list(void)
 	list_append(&list, 0);
 
 	// delete tail
-	list_delete_tail(&list);
-	it_i("list_delete_tail() should work", (int)list_get_size(&list),
+	list_delete_last(&list);
+	it_i("list_delete_last() should work", (int)list_get_size(&list),
 	     (int)n);
 
 	// list_for_each
@@ -114,10 +114,10 @@ void test_list(void)
 
 	it_b("list_get() should work", list_get(&list, 3) == (arr + 3), TRUE);
 
-	it_b("list_get_node_at_head() should work",
-	     list_get_node_at_head(&list)->data == (arr), TRUE);
-	it_b("list_get_node_at_tail() should work",
-	     list_get_node_at_tail(&list)->data == (arr + n - 1), TRUE);
+	it_b("list_get_first_node() should work",
+	     list_get_first_node(&list)->data == (arr), TRUE);
+	it_b("list_get_last_node() should work",
+	     list_get_last_node(&list)->data == (arr + n - 1), TRUE);
 
 	test_list_concat();
 

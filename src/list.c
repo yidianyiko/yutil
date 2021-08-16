@@ -78,7 +78,7 @@ list_node_t *list_insert(list_t *list, size_t pos, void *data)
 	return node;
 }
 
-void list_add_link(list_t *list, list_node_t *cur, list_node_t *node)
+void list_link(list_t *list, list_node_t *cur, list_node_t *node)
 {
 	node->prev = cur;
 	node->next = cur->next;
@@ -94,7 +94,7 @@ void list_insert_node(list_t *list, size_t pos, list_node_t *node)
 	list_node_t *target;
 	target = list_get_node_by_pos(list, pos);
 	if (target) {
-		list_add_link(list, target->prev, node);
+		list_link(list, target->prev, node);
 	} else {
 		list_append_node(list, node);
 	}
@@ -127,7 +127,7 @@ void list_append_node(list_t *list, list_node_t *node)
 	list->length += 1;
 }
 
-void list_remove_link(list_t *list, list_node_t *node)
+void list_unlink(list_t *list, list_node_t *node)
 {
 	if (list->length > 0) {
 		list->length -= 1;
@@ -168,7 +168,7 @@ void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node)
 
 void list_delete_node(list_t *list, list_node_t *node)
 {
-	list_remove_link(list, node);
+	list_unlink(list, node);
 	node->data = NULL;
 	free(node);
 	node = NULL;

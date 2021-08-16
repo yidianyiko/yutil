@@ -74,7 +74,7 @@ void list_append_node(list_t *list, list_node_t *node);
 // insert data by pos
 list_node_t *list_insert(list_t *list, size_t pos, void *data);
 // insert node after cur
-void list_add_link(list_t *list, list_node_t *cur, list_node_t *node);
+void list_link(list_t *list, list_node_t *cur, list_node_t *node);
 // insert node by pos
 void list_insert_node(list_t *list, size_t pos, list_node_t *node);
 
@@ -82,30 +82,26 @@ void list_insert_node(list_t *list, size_t pos, list_node_t *node);
 
 void *list_get(const list_t *list, size_t pos);
 list_node_t *list_get_node_by_pos(const list_t *list, size_t pos);
-static inline list_node_t *list_get_node_at_head(const list_t *list)
+static inline list_node_t *list_get_first_node(const list_t *list)
 {
 	if (0 >= list->length) {
 		return NULL;
 	}
-	list_node_t *node;
-	node = list->head.next;
-	return node;
+	return list->head.next;
 }
-static inline list_node_t *list_get_node_at_tail(const list_t *list)
+static inline list_node_t *list_get_last_node(const list_t *list)
 {
 	if (0 >= list->length) {
 		return NULL;
 	}
-	list_node_t *node;
-	node = list->tail.prev;
-	return node;
+	return list->tail.prev;
 }
 
-void list_remove_link(list_t *list, list_node_t *node);
+void list_unlink(list_t *list, list_node_t *node);
 void list_delete_by_pos(list_t *list, size_t pos);
 void list_delete_node(list_t *list, list_node_t *node);
 #define list_delete_head(list) list_delete_node(list, (list)->head.next)
-#define list_delete_tail(list) list_delete_node(list, (list)->tail.prev)
+#define list_delete_last(list) list_delete_node(list, (list)->tail.prev)
 
 void list_node_free(list_node_t *node);
 void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node);
