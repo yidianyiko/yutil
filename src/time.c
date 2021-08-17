@@ -145,18 +145,7 @@ int64_t get_utime()
 		return (hires_now.QuadPart * 1000000) / HIRES_TICKS_PER_SECOND;
 	}
 #endif
-
 	timeval_t tv = { 0 };
 	get_time_of_day(&tv);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
-}
-
-int main()
-{
-	int64_t a = 0, b = 0, c = 0, d = 0;
-	c = get_time();
-	time_init();
-	a = get_time();
-	b = get_mtime();
-	d = (int64_t)GetTickCount64();
 }
