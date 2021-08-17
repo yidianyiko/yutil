@@ -275,7 +275,7 @@ int dict_rehash(dict_t *d, int n)
 
 long long time_in_milliseconds(void)
 {
-	return time_get();
+	return get_time();
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger

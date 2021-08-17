@@ -31,14 +31,17 @@
 #ifndef UTIL_TIME_H
 #define UTIL_TIME_H
 
-void time_init(void);
+typedef struct _timeval_t timeval_t;
 
-int64_t time_get(void);
+int64_t get_time(void);
+int64_t get_utime(void);
 
 int64_t time_get_delta(int64_t start);
 
 void sleep(unsigned int s);
 
 void msleep(unsigned int ms);
+
+void get_time_of_day(timeval_t *tv);
 
 #endif

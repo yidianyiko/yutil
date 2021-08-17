@@ -39,7 +39,7 @@ void test_begin(void)
 {
 	if (test_start_time == 0) {
 		time_init();
-		test_start_time = time_get();
+		test_start_time = get_time();
 	}
 	test_msg_indent++;
 }

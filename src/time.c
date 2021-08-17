@@ -44,6 +44,11 @@ static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答�
 #include <sys/time.h>
 #endif
 
+struct _timeval_t {
+	int64_t tv_sec;
+	int64_t tv_usec;
+};
+
 void time_init(void)
 {
 #ifdef _WIN32
@@ -57,7 +62,7 @@ void time_init(void)
 #endif
 }
 
-int64_t time_get(void)
+int64_t get_time(void)
 {
 #ifdef _WIN32
 	int64_t time;
@@ -71,18 +76,16 @@ int64_t time_get(void)
 	GetSystemTimeAsFileTime(ft);
 	return time / 1000 - 11644473600000;
 #else
-	int64_t t;
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	t = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	return t;
+	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 #endif
 }
 
 int64_t time_get_delta(int64_t start)
 {
-	int64_t now = time_get();
+	int64_t now = get_time();
 	if (now < start) {
 		return (TIME_WRAP_VALUE - start) + now;
 	}
@@ -100,5 +103,60 @@ void msleep(unsigned int ms)
 
 void sleep(unsigned int s)
 {
-	msleep(s* 1000);
+	msleep(s * 1000);
+}
+
+// get the time from 1970-01-01 00:00:00:000
+void get_time_of_day(timeval_t *tv)
+{
+#ifdef _WIN32
+	union {
+		uint64_t ns100;    //< time since 1 Jan 1601 in 100ns units
+		FILETIME ft;
+
+	} now;
+
+	if (tv) {
+		GetSystemTimeAsFileTime(&now.ft);
+		tv->tv_sec = (int64_t)((now.ns100 - 116444736000000000ULL) /
+				       10000000ULL);
+		tv->tv_usec = (int64_t)((now.ns100 / 10ULL) % 1000000ULL);
+	}
+	return;
+#else
+	struct timeval tmp = { 0 };
+	if (gettimeofday(&tmp, NULL))
+		return;
+
+	t->.tv_sec = (int64_t)tmp.tv_sec;
+	tv->tv_usec = (int64_t)tmp.tv_usec;
+	return;
+#endif
+}
+
+int64_t get_utime()
+{
+#ifdef _WIN32
+	if (HIRES_TIMER_AVAILABLE) {
+		LARGE_INTEGER hires_now = { { 0 } };
+		if (!QueryPerformanceFrequency(&hires_now))
+			return 0;
+
+		return (hires_now.QuadPart * 1000000) / HIRES_TICKS_PER_SECOND;
+	}
+#endif
+
+	timeval_t tv = { 0 };
+	get_time_of_day(&tv);
+	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
+int main()
+{
+	int64_t a = 0, b = 0, c = 0, d = 0;
+	c = get_time();
+	time_init();
+	a = get_time();
+	b = get_mtime();
+	d = (int64_t)GetTickCount64();
 }
