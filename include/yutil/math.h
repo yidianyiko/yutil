@@ -36,7 +36,7 @@
 #endif
 
 #ifndef min
-#define min(x, y) (((x) < (y)) ? (x) : (y))
+#define min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
 #endif
 
 #ifndef round
