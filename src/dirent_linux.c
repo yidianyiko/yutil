@@ -28,23 +28,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+#ifndef _WIN32
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "../yutil/dirent.h"
-
-#ifdef _WIN32
-#include <Windows.h>
-typedef HANDLE dir_handle_t;
-
-union dir_entry_t {
-	WIN32_FIND_DATAA data_a;
-	WIN32_FIND_DATAW data_w;
-};
-#else
 #include <dirent.h>
 #include <locale.h>
+#include "../yutil/dirent.h"
 typedef DIR *dir_handle_t;
 
 struct dir_entry_t {
@@ -53,76 +43,18 @@ struct dir_entry_t {
 };
 
 #define DIRENT_NAME_LEN 256
-#endif
-
-struct dir_t {
-	dir_handle_t handle;
-	dir_entry_t entry;
-	int cached;
-};
 
 int dir_open_a(const char *path, dir_t *dir)
 {
-#if defined(_WIN32)
-	size_t len;
-	char *newpath;
-	char name[] = "\\*";
-
-	len = strlen(path) + 1;
-	newpath = malloc(len * sizeof(char) + sizeof(name));
-	if (newpath == NULL) {
-		return -ENOMEM;
-	}
-	strcpy(newpath, path);
-	strcpy(newpath + len - 1, name);
-	dir->handle = FindFirstFileA(newpath, &dir->entry.data_a);
-	free(newpath);
-	if (dir->handle == INVALID_HANDLE_VALUE) {
-		switch (GetLastError()) {
-		case ERROR_FILE_NOT_FOUND:
-			return -ENOENT;
-		case ERROR_ACCESS_DENIED:
-			return -EACCES;
-		default:
-			break;
-		}
+	dir->handle = opendir(path);
+	if (!dir->handle) {
 		return -1;
 	}
-	dir->cached = 1;
-#endif
 	return 0;
 }
 
 int dir_open_w(const wchar_t *path, dir_t *dir)
 {
-#if defined(_WIN32)
-	size_t len;
-	wchar_t *newpath;
-	wchar_t name[] = L"\\*";
-
-	len = wcslen(path) + 1;
-	newpath = malloc(len * sizeof(wchar_t) + sizeof(name));
-	if (!newpath) {
-		return -ENOMEM;
-	}
-	wcscpy(newpath, path);
-	wcscpy(newpath + len - 1, name);
-	dir->handle = FindFirstFileW(newpath, &dir->entry.data_w);
-	free(newpath);
-	if (dir->handle == INVALID_HANDLE_VALUE) {
-		switch (GetLastError()) {
-		case ERROR_FILE_NOT_FOUND:
-			return -ENOENT;
-		case ERROR_ACCESS_DENIED:
-			return -EACCES;
-		default:
-			break;
-		}
-		return -1;
-	}
-	dir->cached = 1;
-#else
-
 	int len;
 	char *newpath;
 
@@ -140,46 +72,25 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 	if (!dir->handle) {
 		return -1;
 	}
-#endif
 	return 0;
 }
 
 dir_entry_t *dir_read_a(dir_t *dir)
 {
-#if defined(_WIN32)
-	if (dir->handle == INVALID_HANDLE_VALUE) {
+	int len;
+	struct dirent *d;
+	d = readdir(dir->handle);
+	if (!d) {
 		return NULL;
 	}
-	if (dir->cached) {
-		dir->cached = 0;
-		return &dir->entry;
-	}
-	if (FindNextFileA(dir->handle, &dir->entry.data_a)) {
-		return &dir->entry;
-	}
-	FindClose(dir->handle);
-	dir->handle = INVALID_HANDLE_VALUE;
-#endif
-	return NULL;
+	dir->entry.dirent = *d;
+	len = sizeof(d->d_name);
+	dir->entry.name[len] = 0;
+	return &dir->entry;
 }
 
 dir_entry_t *dir_read_w(dir_t *dir)
 {
-#if defined(_WIN32)
-	if (dir->handle == INVALID_HANDLE_VALUE) {
-		return NULL;
-	}
-	if (dir->cached) {
-		dir->cached = 0;
-		return &dir->entry;
-	}
-	if (FindNextFileW(dir->handle, &dir->entry.data_w)) {
-		return &dir->entry;
-	}
-	FindClose(dir->handle);
-	dir->handle = INVALID_HANDLE_VALUE;
-	return NULL;
-#else
 	int len;
 	struct dirent *d;
 	d = readdir(dir->handle);
@@ -197,53 +108,30 @@ dir_entry_t *dir_read_w(dir_t *dir)
 	setlocale(LC_ALL, "C");
 	dir->entry.name[len] = 0;
 	return &dir->entry;
-#endif
 }
 
 int dir_close(dir_t *dir)
 {
-#if defined(_WIN32)
-	if (!FindClose(dir->handle)) {
-		return -1;
-	}
-#else
-	closedir(dir->handle);
-#endif
-	return 0;
+	return closedir(dir->handle);
 }
 
 char *dir_get_file_name_a(dir_entry_t *entry)
 {
-#if defined(_WIN32)
-	return entry->data_a.cFileName;
-#endif
-	return NULL;
+	return entry->dirent.d_name;
 }
 
 wchar_t *dir_get_file_name_w(dir_entry_t *entry)
 {
-#if defined(_WIN32)
-	return entry->data_w.cFileName;
-#else
 	return entry->name;
-#endif
-	return NULL;
 }
 
 int dir_entry_is_directory(dir_entry_t *entry)
 {
-#if defined(_WIN32)
-	return entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-#else
 	return entry->dirent.d_type == DT_DIR;
-#endif
 }
 
 int dir_entry_is_regular(dir_entry_t *entry)
 {
-#if defined(_WIN32)
-	return !(entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-#else
 	return entry->dirent.d_type == DT_REG;
-#endif
 }
+#endif
