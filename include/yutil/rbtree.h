@@ -25,8 +25,7 @@ struct rbtree_t_ {
 };
 
 /* macros */
-#define rbtree_is_empty(rbt) ((rbt)->root == (rbt)->sentinel);
-#define rbtree_set_insert_func(rbt, func) (rbt)->insert = func
+#define rbtree_set_insert_func(tree, func) (tree)->insert = func
 
 #define rbtree_red(node) ((node)->color = 1)
 #define rbtree_black(node) ((node)->color = 0)
@@ -36,7 +35,7 @@ struct rbtree_t_ {
 // copy color of n2 to n1
 #define rbtree_copy_color(n1, n2) (n1->color = n2->color)
 // sentinel for black leaf node
-#define rbtree_sentinel_init(node) rbtree_set_black(node)
+#define rbtree_sentinel_init(node) rbtree_black(node)
 
 #define rbtree_init_(tree, s, i) \
 	rbtree_sentinel_init(s); \
@@ -51,9 +50,8 @@ void rbtree_insert(rbtree_t *tree, rbtree_node_t *node);
 void rbtree_delete(rbtree_t *tree, rbtree_node_t *node);
 rbtree_node_t *rbtree_find(rbtree_t *tree, int key);
 
-/* get the node with the minimum key in a subtree of the red-black tree */
-static inline rbtree_node_t *rbtree_subtree_min(rbtree_t *tree,
-						rbtree_node_t *node)
+/* get the minimum key of node in a subtree of the rbtree */
+static inline rbtree_node_t *rbtree_get_min(rbtree_t *tree, rbtree_node_t *node)
 {
 	while (node->left != tree->sentinel) {
 		node = node->left;
