@@ -26,23 +26,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+#if defined(_WIN32)
 #include <time.h>
 #include <stdint.h>
-
+#include <Windows.h>
 #include "../include/yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-#ifdef _WIN32
-#include <Windows.h>
-
 static int HIRES_TIMER_AVAILABLE = 0; /**< 标志，指示高精度计数器是否可用 */
 static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答数 */
-#else
-#include <unistd.h>
-#include <sys/time.h>
-#endif
 
 struct _timeval_t {
 	int64_t tv_sec;
@@ -51,20 +44,15 @@ struct _timeval_t {
 
 void time_init(void)
 {
-#ifdef _WIN32
 	LARGE_INTEGER hires;
 	if (QueryPerformanceFrequency(&hires)) {
 		HIRES_TIMER_AVAILABLE = 1;
 		HIRES_TICKS_PER_SECOND = hires.QuadPart;
 	}
-#else
-	return;
-#endif
 }
 
 int64_t get_time(void)
 {
-#ifdef _WIN32
 	int64_t time;
 	LARGE_INTEGER hires_now;
 	FILETIME *ft = (FILETIME *)&time;
@@ -75,30 +63,18 @@ int64_t get_time(void)
 	}
 	GetSystemTimeAsFileTime(ft);
 	return time / 1000 - 11644473600000;
-#else
-	struct timeval tv;
-
-	gettimeofday(&tv, NULL);
-	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
-#endif
 }
 
 int64_t time_get_delta(int64_t start)
 {
 	int64_t now = get_time();
-	if (now < start) {
-		return (TIME_WRAP_VALUE - start) + now;
-	}
-	return now - start;
+	return (now < start) ? ((TIME_WRAP_VALUE - start) + now)
+			     : (now - start);
 }
 
 void msleep(unsigned int ms)
 {
-#ifdef _WIN32
 	Sleep((DWORD)ms);
-#else
-	usleep(ms * 1000);
-#endif
 }
 
 void sleep(unsigned int s)
@@ -109,9 +85,8 @@ void sleep(unsigned int s)
 // get the time from 1970-01-01 00:00:00:000
 void get_time_of_day(timeval_t *tv)
 {
-#ifdef _WIN32
 	union {
-		uint64_t ns100;    //< time since 1 Jan 1601 in 100ns units
+		uint64_t ns100;
 		FILETIME ft;
 
 	} now;
@@ -123,20 +98,10 @@ void get_time_of_day(timeval_t *tv)
 		tv->tv_usec = (int64_t)((now.ns100 / 10ULL) % 1000000ULL);
 	}
 	return;
-#else
-	struct timeval tmp = { 0 };
-	if (gettimeofday(&tmp, NULL))
-		return;
-
-	t->.tv_sec = (int64_t)tmp.tv_sec;
-	tv->tv_usec = (int64_t)tmp.tv_usec;
-	return;
-#endif
 }
 
 int64_t get_utime()
 {
-#ifdef _WIN32
 	if (HIRES_TIMER_AVAILABLE) {
 		LARGE_INTEGER hires_now = { { 0 } };
 		if (!QueryPerformanceFrequency(&hires_now))
@@ -144,8 +109,9 @@ int64_t get_utime()
 
 		return (hires_now.QuadPart * 1000000) / HIRES_TICKS_PER_SECOND;
 	}
-#endif
+
 	timeval_t tv = { 0 };
 	get_time_of_day(&tv);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
+#endif
