@@ -45,52 +45,100 @@ static inline void rbtree_right_rotate(rbtree_t *tree, rbtree_node_t *node)
 	temp->right = node;
 }
 
-static inline void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
+static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 {
-	rbtree_node_t *gparent = node->parent->parent;
-	while (rbtree_is_red(node->parent)) {
+	rbtree_node_t *gparent;
+	rbtree_node_t *uncle;
+	while (node != tree->root && rbtree_is_red(node->parent)) {
+		gparent = node->parent->parent;
 		if (node->parent == gparent->left) {
-			// case one: the bro of node's parent is red
-			if (rbtree_is_red(gparent->right)) {
+			uncle = gparent->right;
+
+			if (rbtree_is_red(uncle)) {
 				rbtree_black(node->parent);
-				rbtree_black(gparent->right);
+				rbtree_black(uncle);
 				rbtree_red(gparent);
 				node = gparent;
 
-			}
-			// case two: node's uncle is black
-			else {
+			} else {
 				if (node == node->parent->right) {
 					node = node->parent;
 					rbtree_left_rotate(tree, node);
+					gparent = node->parent->parent;
 				}
-				// case 2 -> case 1
+
 				rbtree_black(node->parent);
 				rbtree_red(gparent);
 				rbtree_right_rotate(tree, gparent);
 			}
 		} else {
-			if (rbtree_is_red(gparent->left)) {
+			uncle = node->parent->parent->left;
+
+			if (rbtree_is_red(uncle)) {
 				rbtree_black(node->parent);
-				rbtree_black(gparent->left);
+				rbtree_black(uncle);
 				rbtree_red(gparent);
 				node = gparent;
-
 			} else {
 				if (node == node->parent->left) {
 					node = node->parent;
-					rbtree_left_rotate(tree, node);
+					rbtree_right_rotate(tree, node);
+					gparent = node->parent->parent;
 				}
+
 				rbtree_black(node->parent);
 				rbtree_red(gparent);
 				rbtree_left_rotate(tree, gparent);
 			}
 		}
 	}
+
 	rbtree_black(tree->root);
 }
 
-static inline void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *temp)
+void rbtree_insert(rbtree_t *tree, rbtree_node_t *node)
+{
+	rbtree_node_t *sentinel;
+
+	/* a binary tree insert */
+
+	sentinel = tree->sentinel;
+
+	if (tree->root == sentinel) {
+		node->parent = NULL;
+		node->left = sentinel;
+		node->right = sentinel;
+		rbtree_black(node);
+		tree->root = node;
+
+		return;
+	}
+
+	tree->insert(tree, node);
+
+	/* re-balance tree */
+	rbtree_insert_rebalance(tree, node);
+}
+
+void rbtree_insert_value(rbtree_t *tree, rbtree_node_t *node)
+{
+	rbtree_node_t **temp = &tree->root;
+	rbtree_node_t *parent = NULL;
+
+	while (*temp != tree->sentinel) {
+		parent = *temp;
+		temp =
+		    (node->key < parent->key) ? &parent->left : &parent->right;
+	}
+
+	*temp = node;
+	node->parent = parent;
+	node->left = tree->sentinel;
+	node->right = tree->sentinel;
+	rbtree_red(node);
+}
+
+static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *temp)
 {
 	rbtree_node_t *brother;
 	while (temp != tree->root && rbtree_is_black(temp)) {
@@ -155,73 +203,33 @@ static inline void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *temp)
 			}
 		}
 	}
+
+	rbtree_black(temp);
 }
 
-void rbtree_init(rbtree_t *tree, rbtree_node_t *s)
-{
-	rbtree_sentinel_init(s);
-	(tree)->root = s;
-	(tree)->sentinel = s;
-	(tree)->insert = NULL;
-}
-
-static void rbtree_insert_value(rbtree_t *tree, rbtree_node_t *node)
-{
-	rbtree_node_t **temp = &tree->root;
-	rbtree_node_t *parent = NULL;
-
-	while (*temp != tree->sentinel) {
-		parent = *temp;
-		temp =
-		    (node->key < parent->key) ? &parent->left : &parent->right;
-	}
-
-	*temp = node;
-	node->parent = parent;
-	node->left = tree->sentinel;
-	node->right = tree->sentinel;
-	rbtree_red(node);
-}
-
-void rbtree_insert(rbtree_t *tree, rbtree_node_t *node)
-{
-	rbtree_node_t *sentinel = tree->sentinel;
-
-	if ((tree)->root == sentinel) {
-		tree->root = node;
-		node->parent = sentinel;
-		node->right = sentinel;
-		node->left = sentinel;
-		rbtree_black(node);
-
-		return;
-	}
-	rbtree_insert_value(tree, node);
-	rbtree_insert_rebalance(tree, node);
-}
 void rbtree_delete(rbtree_t *tree, rbtree_node_t *node)
 {
-	rbtree_node_t *sentinel = tree->sentinel;
-	rbtree_node_t *cover = NULL;
-	rbtree_node_t *temp = NULL;
-	int red = rbtree_is_red(node);
-	int is_root = (node == tree->root);
+	int red;
+	rbtree_node_t *sentinel, *subst, *temp;
+
+	/* a binary tree delete */
+
+	sentinel = tree->sentinel;
+
 	if (node->left == sentinel) {
 		temp = node->right;
-		cover = node;
+		subst = node;
 
 	} else if (node->right == sentinel) {
 		temp = node->left;
-		cover = node;
+		subst = node;
 
 	} else {
-		cover = rbtree_get_min(tree, node->right);
-		temp = cover->right;
-		is_root = 0;
-		red = rbtree_is_red(node);
+		subst = rbtree_min(tree, node->right);
+		temp = subst->right;
 	}
 
-	if (is_root) {
+	if (subst == tree->root) {
 		tree->root = temp;
 		rbtree_black(temp);
 
@@ -230,51 +238,60 @@ void rbtree_delete(rbtree_t *tree, rbtree_node_t *node)
 		node->right = NULL;
 		node->parent = NULL;
 		node->key = 0;
-		node->data = NULL;
+
 		return;
 	}
 
-	if (cover == cover->parent->left) {
-		cover->parent->left = temp;
+	red = rbtree_is_red(subst);
+
+	if (subst == subst->parent->left) {
+		subst->parent->left = temp;
+
 	} else {
-		cover->parent->right = temp;
+		subst->parent->right = temp;
 	}
 
-	if (cover == node) {
-		temp->parent = cover->parent;
+	if (subst == node) {
+		temp->parent = subst->parent;
+
 	} else {
-		if (cover->parent == node) {
-			temp->parent = cover;
+		if (subst->parent == node) {
+			temp->parent = subst;
+
 		} else {
-			temp->parent = cover->parent;
+			temp->parent = subst->parent;
 		}
-		cover->parent = node->parent;
-		cover->left = node->left;
-		cover->right = node->right;
-		rbtree_copy_color(cover, node);
+
+		subst->left = node->left;
+		subst->right = node->right;
+		subst->parent = node->parent;
+		rbtree_copy_color(subst, node);
 
 		if (node == tree->root) {
-			tree->root = cover;
+			tree->root = subst;
+
 		} else {
 			if (node == node->parent->left) {
-				node->parent->left = cover;
+				node->parent->left = subst;
 			} else {
-				node->parent->right = cover;
+				node->parent->right = subst;
 			}
 		}
-		if (cover->left != sentinel) {
-			cover->left->parent = cover;
+
+		if (subst->left != sentinel) {
+			subst->left->parent = subst;
 		}
-		if (cover->right != sentinel) {
-			cover->right->parent = cover;
+
+		if (subst->right != sentinel) {
+			subst->right->parent = subst;
 		}
 	}
 
-	node->key = 0;
-	node->parent = NULL;
+	/* DEBUG stuff */
 	node->left = NULL;
 	node->right = NULL;
-	node->data = NULL;
+	node->parent = NULL;
+	node->key = 0;
 
 	if (red) {
 		return;
@@ -282,6 +299,33 @@ void rbtree_delete(rbtree_t *tree, rbtree_node_t *node)
 
 	/* a delete fixup */
 	rbtree_delete_rebalance(tree, temp);
+}
+
+rbtree_node_t *rbtree_next(rbtree_t *tree, rbtree_node_t *node)
+{
+	rbtree_node_t *root, *sentinel, *parent;
+
+	sentinel = tree->sentinel;
+
+	if (node->right != sentinel) {
+		return rbtree_min(tree, node->right);
+	}
+
+	root = tree->root;
+
+	for (;;) {
+		parent = node->parent;
+
+		if (node == root) {
+			return NULL;
+		}
+
+		if (node == parent->left) {
+			return parent;
+		}
+
+		node = parent;
+	}
 }
 
 rbtree_node_t *rbtree_find(rbtree_t *tree, int key)
