@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
 
 size_t strsize(const char *str)

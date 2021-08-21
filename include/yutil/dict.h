@@ -221,4 +221,12 @@ dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
 						   const void *old_ptr,
 						   uint64_t hash);
 
+unsigned int string_key_dict_key_hash(const void *key);
+int string_key_dict_key_compare(void *privdata, const void *key1,
+				const void *key2);
+void *string_key_dict_key_dup(void *privdata, const void *key);
+void string_key_dict_key_destructor(void *privdata, void *key);
+
+void string_key_dict_key_type(dict_type_t *t);
+void dict_init_string_copy_key_type(dict_type_t *t);
 #endif /* UTIL_DICT_H */
