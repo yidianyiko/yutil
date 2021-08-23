@@ -31,41 +31,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
+#include <wchar.h>
 #include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
-
-size_t strsize(const char *str)
-{
-	if (!str) {
-		return sizeof(char);
-	}
-	return (strlen(str) + 1) * sizeof(char);
-}
-
-size_t wcssize(const wchar_t *str)
-{
-	if (!str) {
-		return sizeof(wchar_t);
-	}
-	return (wcslen(str) + 1) * sizeof(wchar_t);
-}
 
 size_t strtolower(char *outstr, const char *instr)
 {
 	char *op = outstr;
 	const char *ip = instr;
 	for (; *ip; ++ip, ++op) {
-		*op = tolower(*ip);
-	}
-	*op = 0;
-	return ip - instr;
-}
-
-size_t strntolower(char *outstr, size_t max_len, const char *instr)
-{
-	char *op = outstr;
-	const char *ip = instr;
-	for (; *ip && max_len > 1; ++ip, ++op, --max_len) {
 		*op = tolower(*ip);
 	}
 	*op = 0;

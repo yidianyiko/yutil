@@ -36,13 +36,18 @@ char *strdup2(const char *str);
 wchar_t *wcsdup2(const wchar_t *str);
 
 /** 计算字符串占用的内存空间大小 */
-size_t strsize(const char *str);
-size_t wcssize(const wchar_t *str);
+static inline size_t strsize(const char *str)
+{
+	return (!str) ? sizeof(char) : ((strlen(str) + 1) * sizeof(char));
+}
+
+static inline size_t wcssize(const wchar_t *str)
+{
+	return (!str) ? sizeof(wchar_t) : (wcslen(str) + 1) * sizeof(wchar_t);
+}
 
 /** 将字符串中的字母转成小写字母 */
 size_t strtolower(char *outstr, const char *instr);
-
-size_t strntolower(char *outstr, size_t max_len, const char *instr);
 
 /**
  * 清除字符串首尾的字符
