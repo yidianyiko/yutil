@@ -32,7 +32,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <Windows.h>
-#include "../yutil/dirent.h"
+
+#include "../include/keywords.h"
+#include "../include/yutil/dirent.h"
 
 typedef HANDLE dir_handle_t;
 

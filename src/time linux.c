@@ -29,7 +29,7 @@
 #ifndef _WIN32
 #include <time.h>
 #include <stdint.h>
-
+#include "../include/keywords.h"
 #include "../include/yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)

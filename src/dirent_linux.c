@@ -34,7 +34,9 @@
 #include <errno.h>
 #include <dirent.h>
 #include <locale.h>
-#include "../yutil/dirent.h"
+#include "../include/keywords.h"
+#include "../include/yutil/dirent.h"
+
 typedef DIR *dir_handle_t;
 
 struct dir_entry_t {

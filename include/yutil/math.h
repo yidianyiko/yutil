@@ -31,6 +31,8 @@
 #ifndef UTIL_MATH_H
 #define UTIL_MATH_H
 
+Y_BEGIN_DECLS
+
 #ifndef max
 #define max(x, y) (((x) > (y)) ? (x) : (y))
 #endif
@@ -44,5 +46,7 @@
 #endif
 
 #define pow2(x) ((x) * (x))
+
+Y_END_DECLS
 
 #endif /* UTIL_MATH_H */

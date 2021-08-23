@@ -28,8 +28,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdio.h>
+#include "../include/keywords.h"
 #include "../include/yutil/rbtree.h"
-#include "../include/yutil/keywords.h"
 
 static inline void rbtree_clear(rbtree_node_t *node)
 {
@@ -461,7 +461,7 @@ rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata)
 void *rbtree_get_data_by_data(rbtree_t *tree, const void *keydata)
 {
 	rbtree_node_t *node;
-	node = rbtree_search_by_data(tree, keydata, tree->compare);
+	node = rbtree_search_(tree, 0, keydata);
 	if (node) {
 		return node->data;
 	}

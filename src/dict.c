@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "../include/keywords.h"
 #include "../include/yutil/time.h"
 #include "../include/yutil/dict.h"
 
@@ -1149,7 +1150,7 @@ void dict_enable_resize(void)
 	dict_can_resize = 1;
 }
 
-void dictDisable_resize(void)
+void dict_disable_resize(void)
 {
 	dict_can_resize = 0;
 }
@@ -1344,6 +1345,8 @@ int string_key_dict_key_compare(void *privdata, const void *key1,
 void *string_key_dict_key_dup(void *privdata, const void *key)
 {
 	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
+	if (newkey == NULL)
+		return;
 	strcpy(newkey, key);
 	return newkey;
 }

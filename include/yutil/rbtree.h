@@ -30,6 +30,8 @@
 #ifndef UTIL_RBTREE_H
 #define UTIL_RBTREE_H
 
+Y_BEGIN_DECLS
+
 typedef struct rbtree_node_t_ rbtree_node_t;
 typedef struct rbtree_t_ rbtree_t;
 
@@ -62,18 +64,19 @@ struct rbtree_t_ {
 #define rbtree_sentinel_init(node) rbtree_black(node)
 
 // public methods
-void rbtree_init(rbtree_t *tree, rbtree_node_t *sentinel);
-void rbtree_insert_value(rbtree_t *tree, rbtree_node_t *node);
-void rbtree_insert(rbtree_t *tree, rbtree_node_t *node);
-void rbtree_delete(rbtree_t *tree, rbtree_node_t *node);
-rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
-rbtree_node_t *rbtree_next(rbtree_t *tree, rbtree_node_t *node);
-rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
-void *rbtree_get_data_by_data(rbtree_t *tree, const void *keydata);
-void *rbtree_get_data_by_key(rbtree_t *tree, int key);
-void rbtree_destory(rbtree_t *tree);
-
+Y_API void rbtree_init(rbtree_t *tree, rbtree_node_t *sentinel);
+Y_API void rbtree_insert_value(rbtree_t *tree, rbtree_node_t *node);
+Y_API void rbtree_insert(rbtree_t *tree, rbtree_node_t *node);
+Y_API void rbtree_delete(rbtree_t *tree, rbtree_node_t *node);
+Y_API rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
+Y_API rbtree_node_t *rbtree_next(rbtree_t *tree, rbtree_node_t *node);
+Y_API rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
+Y_API void *rbtree_get_data_by_data(rbtree_t *tree, const void *keydata);
+Y_API void *rbtree_get_data_by_key(rbtree_t *tree, int key);
+Y_API void rbtree_destory(rbtree_t *tree);
 /* get the minimum key of node in a subtree of the rbtree */
-rbtree_node_t *rbtree_get_min(rbtree_t *tree, rbtree_node_t *node);
+Y_API rbtree_node_t *rbtree_get_min(rbtree_t *tree, rbtree_node_t *node);
+
+Y_END_DECLS
 
 #endif

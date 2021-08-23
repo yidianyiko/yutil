@@ -31,10 +31,13 @@
 #define UTIL_LIST_ENTRY_H
 
 /* ------------------------------- includes --------------------------------*/
-#include "types.h"
 #include <assert.h>
-/* ------------------------------- types -----------------------------------*/
+#include "../include/keywords.h"
+#include "../include/yutil/types.h"
 
+Y_BEGIN_DECLS
+
+/* ------------------------------- types -----------------------------------*/
 // the doubly-linked list entry type
 struct __list_entry_t {
 	struct __list_entry_t* next;
@@ -361,5 +364,7 @@ static inline void list_entry_splice_tail(list_entry_head_t* head,
 
 	list_entry_splice(head, head->prev, (list_entry_t*)head, spliced_list);
 }
+
+Y_END_DECLS
 
 #endif

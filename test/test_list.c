@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "test.h"
 #include "libtest.h"
+#include "../include/keywords.h"
 #include "../include/yutil/list.h"
 
 void test_list_concat(void)
@@ -11,14 +12,13 @@ void test_list_concat(void)
 	list_init(&list1);
 	list_init(&list2);
 	list_append(&list1, (void *)0);
-	//list_concat(&list1, &list2);
-	list_append(&list2, (void*)10);
+	// list_concat(&list1, &list2);
+	list_append(&list2, (void *)10);
 	list_concat(&list1, &list2);
 
 	it_b("list_concat() should work",
-	     (int)list_get_size(&list1) == 2 &&
-		 (int)list_get_size(&list2) == 0 && !list2.head.next &&
-		 !list2.tail.prev,
+	     (int)(&list1)->length == 2 && (int)(&list2)->length == 0 &&
+		 !list2.head.next && !list2.tail.prev,
 	     TRUE);
 	list_clear(&list1, NULL);
 	list_clear(&list2, NULL);
@@ -26,7 +26,7 @@ void test_list_concat(void)
 
 void test_list(void)
 {
-	int arr[] = { 0, 4, 8, 16, 32, 64, 1024 ,2048 };
+	int arr[] = { 0, 4, 8, 16, 32, 64, 1024, 2048 };
 	size_t i;
 	size_t n = sizeof(arr) / sizeof(int);
 
@@ -35,53 +35,45 @@ void test_list(void)
 
 	list_init(&list);
 	it_b("list_init() should work",
-	     (int)list_get_size(&list) == 0 && !list.head.next &&
-		 !list.tail.prev,
+	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
 	     TRUE);
 
-	//append data
+	// append data
 	for (i = 0; i < n; ++i) {
 		list_append(&list, arr + i);
 	}
-	it_i("list_append() should work", (int)list_get_size(&list), (int)n);
-	it_i("list_append_node() should work", (int)list_get_size(&list),
-	     (int)n);
+	it_i("list_append() should work", (int)(&list)->length, (int)n);
+	it_i("list_append_node() should work", (int)(&list)->length, (int)n);
 
 	// delete data
 	for (i = 0; i < n; ++i) {
 		list_delete_by_pos(&list, 0);
 	}
-	it_i("list_delete_by_pos() should work", (int)list_get_size(&list),
-	     (int)0);
-	it_i("list_delete_node() should work", (int)list_get_size(&list),
-	     (int)0);
-	it_i("list_unlink() should work", (int)list_get_size(&list),
-	     (int)0);
-	it_i("list_node_free() should work", (int)list_get_size(&list), (int)0);
+	it_i("list_delete_by_pos() should work", (int)(&list)->length, (int)0);
+	it_i("list_delete_node() should work", (int)(&list)->length, (int)0);
+	it_i("list_unlink() should work", (int)(&list)->length, (int)0);
+	it_i("list_node_free() should work", (int)(&list)->length, (int)0);
 	// insert data
 	for (i = 0; i < n; ++i) {
 		list_insert(&list, i, arr + i);
 	}
-	it_i("list_insert() should work", (int)list_get_size(&list), (int)n);
-	it_i("list_insert_node() should work", (int)list_get_size(&list),
-	     (int)n);
-	it_i("list_link() should work", (int)list_get_size(&list), (int)n);
+	it_i("list_insert() should work", (int)(&list)->length, (int)n);
+	it_i("list_insert_node() should work", (int)(&list)->length, (int)n);
+	it_i("list_link() should work", (int)(&list)->length, (int)n);
 
 	// insert head
 	list_insert_head(&list, 0);
-	it_i("list_insert_head() should work", (int)list_get_size(&list),
+	it_i("list_insert_head() should work", (int)(&list)->length,
 	     (int)n + 1);
 	// delete head
 	list_delete_head(&list);
-	it_i("list_delete_head() should work", (int)list_get_size(&list),
-	     (int)n);
+	it_i("list_delete_head() should work", (int)(&list)->length, (int)n);
 
 	list_append(&list, 0);
 
 	// delete tail
 	list_delete_last(&list);
-	it_i("list_delete_last() should work", (int)list_get_size(&list),
-	     (int)n);
+	it_i("list_delete_last() should work", (int)(&list)->length, (int)n);
 
 	// list_for_each
 	i = 0;
@@ -110,7 +102,7 @@ void test_list(void)
 	}
 	it_i("list_for_each_reverse() should work", (int)i, (int)n);
 
-	it_i("list_get_size() should work", (int)list_get_size(&list), (int)n);
+	it_i("list_get_size() should work", (int)(&list)->length, (int)n);
 
 	it_b("list_get() should work", list_get(&list, 3) == (arr + 3), TRUE);
 
@@ -123,7 +115,6 @@ void test_list(void)
 
 	list_clear(&list, NULL);
 	it_b("list_clear() should work",
-	     (int)list_get_size(&list) == 0 && !list.head.next &&
-		 !list.tail.prev,
+	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
 	     TRUE);
 }

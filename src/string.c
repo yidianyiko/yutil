@@ -33,6 +33,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <wchar.h>
+#include "../include/keywords.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
 

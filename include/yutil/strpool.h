@@ -31,16 +31,20 @@
 #ifndef UTIL_STRPOOL_H
 #define UTIL_STRPOOL_H
 
+Y_BEGIN_DECLS
+
 typedef struct strpool_t strpool_t;
 
-strpool_t *strpool_create(void);
+Y_API strpool_t *strpool_create(void);
 
-char *strpool_alloc_str(strpool_t *pool, const char *str);
+Y_API char *strpool_alloc_str(strpool_t *pool, const char *str);
 
-int strpool_free_str(char *str);
+Y_API int strpool_free_str(char *str);
 
-size_t strpool_size(strpool_t *pool);
+Y_API size_t strpool_size(strpool_t *pool);
 
-void strpool_destroy(strpool_t *pool);
+Y_API void strpool_destroy(strpool_t *pool);
+
+Y_END_DECLS
 
 #endif

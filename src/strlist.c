@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../include/keywords.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strpool.h"
 #include "../include/yutil/strlist.h"
