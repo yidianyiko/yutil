@@ -31,14 +31,24 @@
 #ifndef UTIL_TIME_H
 #define UTIL_TIME_H
 
-void time_init(void);
+Y_BEGIN_DECLS
 
-int64_t time_get(void);
+typedef struct _timeval_t timeval_t;
 
-int64_t time_get_delta(int64_t start);
+Y_API void time_init(void);
 
-void sleep(unsigned int s);
+Y_API int64_t get_time(void);
 
-void msleep(unsigned int ms);
+Y_API int64_t get_utime(void);
+
+Y_API int64_t time_get_delta(int64_t start);
+
+Y_API void sleep(unsigned int s);
+
+Y_API void msleep(unsigned int ms);
+
+Y_API void get_time_of_day(timeval_t *tv);
+
+Y_END_DECLS
 
 #endif

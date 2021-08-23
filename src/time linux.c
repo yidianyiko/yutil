@@ -26,63 +26,38 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+#ifndef _WIN32
 #include <time.h>
 #include <stdint.h>
-
+#include "../include/keywords.h"
 #include "../include/yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-#ifdef _WIN32
-#include <Windows.h>
-
-static int HIRES_TIMER_AVAILABLE = 0; /**< 标志，指示高精度计数器是否可用 */
-static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答数 */
-#else
 #include <unistd.h>
 #include <sys/time.h>
-#endif
+
+struct _timeval_t {
+	int64_t tv_sec;
+	int64_t tv_usec;
+};
 
 void time_init(void)
 {
-#ifdef _WIN32
-	LARGE_INTEGER hires;
-	if (QueryPerformanceFrequency(&hires)) {
-		HIRES_TIMER_AVAILABLE = 1;
-		HIRES_TICKS_PER_SECOND = hires.QuadPart;
-	}
-#else
 	return;
-#endif
 }
 
-int64_t time_get(void)
+int64_t get_time(void)
 {
-#ifdef _WIN32
-	int64_t time;
-	LARGE_INTEGER hires_now;
-	FILETIME *ft = (FILETIME *)&time;
-	if (HIRES_TIMER_AVAILABLE) {
-		QueryPerformanceCounter(&hires_now);
-		time = hires_now.QuadPart * 1000;
-		return time / HIRES_TICKS_PER_SECOND;
-	}
-	GetSystemTimeAsFileTime(ft);
-	return time / 1000 - 11644473600000;
-#else
-	int64_t t;
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
-	t = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-	return t;
-#endif
+	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
 int64_t time_get_delta(int64_t start)
 {
-	int64_t now = time_get();
+	int64_t now = get_time();
 	if (now < start) {
 		return (TIME_WRAP_VALUE - start) + now;
 	}
@@ -91,14 +66,30 @@ int64_t time_get_delta(int64_t start)
 
 void msleep(unsigned int ms)
 {
-#ifdef _WIN32
-	Sleep((DWORD)ms);
-#else
 	usleep(ms * 1000);
-#endif
 }
 
 void sleep(unsigned int s)
 {
-	msleep(s* 1000);
+	msleep(s * 1000);
 }
+
+// get the time from 1970-01-01 00:00:00:000
+void get_time_of_day(timeval_t *tv)
+{
+	struct timeval tmp = { 0 };
+	if (gettimeofday(&tmp, NULL))
+		return;
+
+	t->.tv_sec = (int64_t)tmp.tv_sec;
+	tv->tv_usec = (int64_t)tmp.tv_usec;
+	return;
+}
+
+int64_t get_utime()
+{
+	timeval_t tv = { 0 };
+	get_time_of_day(&tv);
+	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
+}
+#endif

@@ -1,8 +1,9 @@
-﻿#include "libtest.h"
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include "libtest.h"
+#include "../include/keywords.h"
 #include "../include/yutil/time.h"
 
 #ifdef _WIN32
@@ -39,7 +40,7 @@ void test_begin(void)
 {
 	if (test_start_time == 0) {
 		time_init();
-		test_start_time = time_get();
+		test_start_time = get_time();
 	}
 	test_msg_indent++;
 }

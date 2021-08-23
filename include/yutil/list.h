@@ -33,6 +33,8 @@
 #ifndef UTIL_LIST_H
 #define UTIL_LIST_H
 
+Y_BEGIN_DECLS
+
 typedef struct list_node_t list_node_t;
 typedef struct list_t list_t;
 
@@ -59,29 +61,40 @@ struct list_t {
 #define list_for_each(node, list) for (list_each(node, list))
 #define list_for_each_reverse(node, list) for (list_each_reverse(node, list))
 
-void list_init(list_t *list);
-
-static inline size_t list_get_size(list_t *list)
-{
-	return list->length;
-}
+Y_API void list_init(list_t *list);
 
 // append data at tail
-list_node_t *list_append(list_t *list, void *data);
+Y_API list_node_t *list_append(list_t *list, void *data);
 // append node at tail
-void list_append_node(list_t *list, list_node_t *node);
+Y_API void list_append_node(list_t *list, list_node_t *node);
 
 // insert data by pos
-list_node_t *list_insert(list_t *list, size_t pos, void *data);
+Y_API list_node_t *list_insert(list_t *list, size_t pos, void *data);
 // insert node after cur
-void list_link(list_t *list, list_node_t *cur, list_node_t *node);
+Y_API void list_link(list_t *list, list_node_t *cur, list_node_t *node);
 // insert node by pos
-void list_insert_node(list_t *list, size_t pos, list_node_t *node);
+Y_API void list_insert_node(list_t *list, size_t pos, list_node_t *node);
 
 #define list_insert_head(list, data) list_insert(list, 0, data)
 
-void *list_get(const list_t *list, size_t pos);
-list_node_t *list_get_node_by_pos(const list_t *list, size_t pos);
+Y_API void *list_get(const list_t *list, size_t pos);
+Y_API list_node_t *list_get_node_by_pos(const list_t *list, size_t pos);
+
+Y_API void list_unlink(list_t *list, list_node_t *node);
+Y_API void list_delete_by_pos(list_t *list, size_t pos);
+Y_API void list_delete_node(list_t *list, list_node_t *node);
+
+#define list_delete_head(list) list_delete_node(list, (list)->head.next)
+#define list_delete_last(list) list_delete_node(list, (list)->tail.prev)
+
+Y_API void list_node_free(list_node_t *node);
+Y_API void list_clear_ex(list_t *list, void (*on_destroy)(void *),
+			 int free_node);
+Y_API void list_concat(list_t *list1, list_t *list2);
+
+#define list_clear(list, func) list_clear_ex(list, func, 1)
+#define list_clear_data(list, func) list_clear_ex(list, func, 0)
+
 static inline list_node_t *list_get_first_node(const list_t *list)
 {
 	if (0 >= list->length) {
@@ -96,17 +109,6 @@ static inline list_node_t *list_get_last_node(const list_t *list)
 	}
 	return list->tail.prev;
 }
-
-void list_unlink(list_t *list, list_node_t *node);
-void list_delete_by_pos(list_t *list, size_t pos);
-void list_delete_node(list_t *list, list_node_t *node);
-#define list_delete_head(list) list_delete_node(list, (list)->head.next)
-#define list_delete_last(list) list_delete_node(list, (list)->tail.prev)
-
-void list_node_free(list_node_t *node);
-void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node);
-void list_concat(list_t *list1, list_t *list2);
-#define list_clear(list, func) list_clear_ex(list, func, 1)
-#define list_clear_data(list, func) list_clear_ex(list, func, 0)
+Y_END_DECLS
 
 #endif

@@ -1,8 +1,7 @@
-/* math.c -- math
+﻿/*
+ * strlist.h -- string list
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
- * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
- * All rights reserved.
+ * Copyright (c) 2019, Liu chao <lc-soft@live.cn> All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,25 +27,53 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef UTIL_MATH_H
-#define UTIL_MATH_H
+
+#ifndef UTIL_STRLIST_H
+#define UTIL_STRLIST_H
 
 Y_BEGIN_DECLS
 
-#ifndef max
-#define max(x, y) (((x) > (y)) ? (x) : (y))
-#endif
+typedef char** strlist_t;
 
-#ifndef min
-#define min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
-#endif
+Y_API int strlist_sorted_add(strlist_t *strlist, const char *str);
 
-#ifndef round
-#define round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
-#endif
+Y_API int strlist_add_one(strlist_t *strlist, const char *str);
 
-#define pow2(x) ((x) * (x))
+Y_API int strlist_remove_one(strlist_t *strlist, const char *str);
+
+/**
+ * 向字符串组添加字符串
+ * @param[in][out] strlist 字符串组
+ * @param[in] str 字符串
+ */
+Y_API int strlist_add(strlist_t *strlist, const char *str);
+
+/**
+ * 判断字符串组中是否包含指定字符串
+ * @param[in][out] strlist 字符串组
+ * @param[in] str 字符串
+ * @returns 如果包含则返回 1， 否则返回 0
+ */
+Y_API int strlist_has(strlist_t strlist, const char *str);
+
+/**
+ * 从字符串组中移除指定字符串
+ * @param[in][out] strlist 字符串组
+ * @param[in] str 字符串
+ * @returns 如果删除成功则返回 1， 否则返回 0
+ */
+Y_API int strlist_remove(strlist_t *strlist, const char *str);
+
+/**
+ * 向已排序的字符串组添加字符串
+ * @param[in][out] strlist 字符串组
+ * @param[in] str 字符串
+ */
+Y_API int sortedstrlist_add(strlist_t *strlist, const char *str);
+
+/** 释放字符串组 */
+Y_API void strlist_free(strlist_t strs);
 
 Y_END_DECLS
 
-#endif /* UTIL_MATH_H */
+#endif

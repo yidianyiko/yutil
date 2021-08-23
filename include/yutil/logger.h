@@ -33,24 +33,28 @@
 #ifndef UTIL_LOGGER_H
 #define UTIL_LOGGER_H
 
-typedef enum logger_level_t {
+Y_BEGIN_DECLS
+
+enum logger_level_t {
 	LOGGER_LEVEL_ALL,
 	LOGGER_LEVEL_DEBUG,
 	LOGGER_LEVEL_INFO,
 	LOGGER_LEVEL_WARNING,
 	LOGGER_LEVEL_ERROR,
 	LOGGER_LEVEL_OFF
-} logger_level_t;
+};
 
-void logger_set_level(logger_level_t level);
+typedef enum logger_level_t logger_level_t;
 
-int logger_log(logger_level_t level, const char* fmt, ...);
+Y_API void logger_set_level(logger_level_t level);
 
-int logger_log_w(logger_level_t level, const wchar_t* fmt, ...);
+Y_API int logger_log(logger_level_t level, const char* fmt, ...);
 
-void logger_set_handler(void (*handler)(const char*));
+Y_API int logger_log_w(logger_level_t level, const wchar_t* fmt, ...);
 
-void logger_set_handler_w(void (*handler)(const wchar_t*));
+Y_API void logger_set_handler(void (*handler)(const char*));
+
+Y_API void logger_set_handler_w(void (*handler)(const wchar_t*));
 
 #define logger_info(fmt, ...) logger_log(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
 #define logger_debug(fmt, ...) \
@@ -68,4 +72,5 @@ void logger_set_handler_w(void (*handler)(const wchar_t*));
 #define logger_error_w(fmt, ...) \
 	logger_log_w(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
 
+Y_END_DECLS
 #endif

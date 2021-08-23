@@ -1,8 +1,7 @@
-/* math.c -- math
+/*
+ * strpool.h -- string pool
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
- * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
- * All rights reserved.
+ * Copyright (c) 2019, Liu chao <lc-soft@live.cn> All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -28,25 +27,24 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef UTIL_MATH_H
-#define UTIL_MATH_H
+
+#ifndef UTIL_STRPOOL_H
+#define UTIL_STRPOOL_H
 
 Y_BEGIN_DECLS
 
-#ifndef max
-#define max(x, y) (((x) > (y)) ? (x) : (y))
-#endif
+typedef struct strpool_t strpool_t;
 
-#ifndef min
-#define min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
-#endif
+Y_API strpool_t *strpool_create(void);
 
-#ifndef round
-#define round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
-#endif
+Y_API char *strpool_alloc_str(strpool_t *pool, const char *str);
 
-#define pow2(x) ((x) * (x))
+Y_API int strpool_free_str(char *str);
+
+Y_API size_t strpool_size(strpool_t *pool);
+
+Y_API void strpool_destroy(strpool_t *pool);
 
 Y_END_DECLS
 
-#endif /* UTIL_MATH_H */
+#endif

@@ -33,6 +33,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
+#include "../include/keywords.h"
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
 

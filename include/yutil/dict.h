@@ -37,7 +37,7 @@
 #ifndef UTIL_DICT_H
 #define UTIL_DICT_H
 
-#include <stdint.h>
+Y_BEGIN_DECLS
 
 /* ------------------------------- Types ------------------------------------*/
 /** the dictionary entry type */
@@ -182,43 +182,56 @@ unsigned long long genrand64_int64(void);
 #endif
 
 /* API */
-dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
-int dict_expand(dict_t *d, unsigned long size);
-int dict_try_expand(dict_t *d, unsigned long size);
-int dict_add(dict_t *d, void *key, void *val);
-dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing);
-dict_entry_t *dict_add_or_find(dict_t *d, void *key);
-int dict_replace(dict_t *d, void *key, void *val);
-int dict_delete(dict_t *d, const void *key);
-dict_entry_t *dict_unlink(dict_t *ht, const void *key);
-void dict_free_unlinked_entry(dict_t *d, dict_entry_t *he);
-void dict_release(dict_t *d);
-dict_entry_t *dict_find(dict_t *d, const void *key);
-void *dict_fetch_value(dict_t *d, const void *key);
-int dict_resize(dict_t *d);
-dict_iterator_t *dict_get_iterator(dict_t *d);
-dict_iterator_t *dict_get_safe_iterator(dict_t *d);
-dict_entry_t *dict_next(dict_iterator_t *iter);
-void dict_release_iterator(dict_iterator_t *iter);
-dict_entry_t *dict_get_random_key(dict_t *d);
-dict_entry_t *dict_get_fair_random_key(dict_t *d);
-unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
-				unsigned int count);
-void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
-unsigned int dict_gen_hash_function(const unsigned char *buf, int len);
-unsigned int dict_gen_case_hash_function(const unsigned char *buf, int len);
-void dict_empty(dict_t *d, void(callback)(void *));
-void dict_enable_resize(void);
-void dict_disable_resize(void);
-int dict_rehash(dict_t *d, int n);
-int dict_rehash_milliseconds(dict_t *d, int ms);
-void dict_set_hash_function_seed(unsigned int seed);
-unsigned int dict_get_hash_function_seed(void);
-unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
-			dict_scan_bucket_function *bucketfn, void *priv_data);
-uint64_t dict_get_hash(dict_t *d, const void *key);
-dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
-						   const void *old_ptr,
-						   uint64_t hash);
+Y_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
+Y_API int dict_expand(dict_t *d, unsigned long size);
+Y_API int dict_try_expand(dict_t *d, unsigned long size);
+Y_API int dict_add(dict_t *d, void *key, void *val);
+Y_API dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing);
+Y_API dict_entry_t *dict_add_or_find(dict_t *d, void *key);
+Y_API int dict_replace(dict_t *d, void *key, void *val);
+Y_API int dict_delete(dict_t *d, const void *key);
+Y_API dict_entry_t *dict_unlink(dict_t *ht, const void *key);
+Y_API void dict_free_unlinked_entry(dict_t *d, dict_entry_t *he);
+Y_API void dict_release(dict_t *d);
+Y_API dict_entry_t *dict_find(dict_t *d, const void *key);
+Y_API void *dict_fetch_value(dict_t *d, const void *key);
+Y_API int dict_resize(dict_t *d);
+Y_API dict_iterator_t *dict_get_iterator(dict_t *d);
+Y_API dict_iterator_t *dict_get_safe_iterator(dict_t *d);
+Y_API dict_entry_t *dict_next(dict_iterator_t *iter);
+Y_API void dict_release_iterator(dict_iterator_t *iter);
+Y_API dict_entry_t *dict_get_random_key(dict_t *d);
+Y_API dict_entry_t *dict_get_fair_random_key(dict_t *d);
+Y_API unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
+				      unsigned int count);
+Y_API void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
+Y_API unsigned int dict_gen_hash_function(const unsigned char *buf, int len);
+Y_API unsigned int dict_gen_case_hash_function(const unsigned char *buf,
+					       int len);
+Y_API void dict_empty(dict_t *d, void(callback)(void *));
+Y_API void dict_enable_resize(void);
+Y_API void dict_disable_resize(void);
+Y_API int dict_rehash(dict_t *d, int n);
+Y_API int dict_rehash_milliseconds(dict_t *d, int ms);
+Y_API void dict_set_hash_function_seed(unsigned int seed);
+Y_API unsigned int dict_get_hash_function_seed(void);
+Y_API unsigned long dict_scan(dict_t *d, unsigned long v,
+			      dict_scan_function *fn,
+			      dict_scan_bucket_function *bucketfn,
+			      void *priv_data);
+Y_API uint64_t dict_get_hash(dict_t *d, const void *key);
+Y_API dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
+							 const void *old_ptr,
+							 uint64_t hash);
+
+Y_API unsigned int string_key_dict_key_hash(const void *key);
+Y_API int string_key_dict_key_compare(void *privdata, const void *key1,
+				      const void *key2);
+Y_API void *string_key_dict_key_dup(void *privdata, const void *key);
+Y_API void string_key_dict_key_destructor(void *privdata, void *key);
+Y_API void string_key_dict_key_type(dict_type_t *t);
+Y_API void dict_init_string_copy_key_type(dict_type_t *t);
+
+Y_END_DECLS
 
 #endif /* UTIL_DICT_H */

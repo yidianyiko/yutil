@@ -33,6 +33,8 @@
 #ifndef UTIL_DIRENT_H
 #define UTIL_DIRENT_H
 
+Y_BEGIN_DECLS
+
 #ifdef _WIN32
 typedef union dir_entry_t dir_entry_t;
 #else
@@ -51,22 +53,21 @@ typedef struct dir_t dir_t;
 #define dir_get_file_name dir_get_file_name_a
 #endif
 
-int dir_open_w(const wchar_t *path, dir_t *dir);
+Y_API int dir_open_w(const wchar_t *path, dir_t *dir);
 
-int dir_open_a(const char *path, dir_t *dir);
+Y_API int dir_open_a(const char *path, dir_t *dir);
 
-dir_entry_t *dir_read_a(dir_t *dir);
+Y_API dir_entry_t *dir_read_a(dir_t *dir);
+Y_API dir_entry_t *dir_read_w(dir_t *dir);
 
-dir_entry_t *dir_read_w(dir_t *dir);
+Y_API int dir_close(dir_t *dir);
 
-int dir_close(dir_t *dir);
+Y_API char *dir_get_file_name_a(dir_entry_t *entry);
+Y_API wchar_t *dir_get_file_name_w(dir_entry_t *entry);
 
-char *dir_get_file_name_a(dir_entry_t *entry);
+Y_API int dir_entry_is_directory(dir_entry_t *entry);
+Y_API int dir_entry_is_regular(dir_entry_t *entry);
 
-wchar_t *dir_get_file_name_w(dir_entry_t *entry);
-
-int dir_entry_is_directory(dir_entry_t *entry);
-
-int dir_entry_is_regular(dir_entry_t *entry);
+Y_END_DECLS
 
 #endif

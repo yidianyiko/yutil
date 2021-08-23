@@ -1,5 +1,6 @@
 #include "test.h"
 #include "libtest.h"
+#include "../include/keywords.h"
 #include "../include/yutil/list_entry.h"
 
 struct __test_list_entry_t {
@@ -22,7 +23,7 @@ void test_list_entry(void)
 	it_b("list_entry_head_init() should work",
 	     &list.next == &list.next && !list.length, TRUE);
 
-	//entry init
+	// entry init
 	list_entry_t list_entry1;
 	list_entry_init(&list_entry1);
 

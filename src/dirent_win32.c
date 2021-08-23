@@ -1,4 +1,4 @@
-﻿/* dirent.c -- Directory entry operation set.
+﻿/* dirent_win32.c -- Directory entry operation set for windows.
  *
  * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
  * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
@@ -28,32 +28,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
+#if defined(_WIN32)
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include "../yutil/dirent.h"
-
-#ifdef _WIN32
 #include <Windows.h>
+
+#include "../include/keywords.h"
+#include "../include/yutil/dirent.h"
+
 typedef HANDLE dir_handle_t;
 
 union dir_entry_t {
 	WIN32_FIND_DATAA data_a;
 	WIN32_FIND_DATAW data_w;
 };
-#else
-#include <dirent.h>
-#include <locale.h>
-typedef DIR *dir_handle_t;
-
-struct dir_entry_t {
-	struct dirent dirent;
-	wchar_t name[DIRENT_NAME_LEN];
-};
-
-#define DIRENT_NAME_LEN 256
-#endif
 
 struct dir_t {
 	dir_handle_t handle;
@@ -63,7 +51,6 @@ struct dir_t {
 
 int dir_open_a(const char *path, dir_t *dir)
 {
-#if defined(_WIN32)
 	size_t len;
 	char *newpath;
 	char name[] = "\\*";
@@ -89,13 +76,12 @@ int dir_open_a(const char *path, dir_t *dir)
 		return -1;
 	}
 	dir->cached = 1;
-#endif
+
 	return 0;
 }
 
 int dir_open_w(const wchar_t *path, dir_t *dir)
 {
-#if defined(_WIN32)
 	size_t len;
 	wchar_t *newpath;
 	wchar_t name[] = L"\\*";
@@ -121,32 +107,12 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 		return -1;
 	}
 	dir->cached = 1;
-#else
 
-	int len;
-	char *newpath;
-
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = wcstombs(NULL, path, 0) + 1;
-	newpath = malloc(len * sizeof(wchar_t));
-	wcstombs(newpath, path, len);
-	setlocale(LC_ALL, "C");
-	dir->handle = opendir(newpath);
-	free(newpath);
-	if (!dir->handle) {
-		return -1;
-	}
-#endif
 	return 0;
 }
 
 dir_entry_t *dir_read_a(dir_t *dir)
 {
-#if defined(_WIN32)
 	if (dir->handle == INVALID_HANDLE_VALUE) {
 		return NULL;
 	}
@@ -159,13 +125,12 @@ dir_entry_t *dir_read_a(dir_t *dir)
 	}
 	FindClose(dir->handle);
 	dir->handle = INVALID_HANDLE_VALUE;
-#endif
+
 	return NULL;
 }
 
 dir_entry_t *dir_read_w(dir_t *dir)
 {
-#if defined(_WIN32)
 	if (dir->handle == INVALID_HANDLE_VALUE) {
 		return NULL;
 	}
@@ -179,71 +144,35 @@ dir_entry_t *dir_read_w(dir_t *dir)
 	FindClose(dir->handle);
 	dir->handle = INVALID_HANDLE_VALUE;
 	return NULL;
-#else
-	int len;
-	struct dirent *d;
-	d = readdir(dir->handle);
-	if (!d) {
-		return NULL;
-	}
-	dir->entry.dirent = *d;
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = mbstowcs((dir->entry.name, d->d_name,
-				DIRENT_NAME_LEN);
-	setlocale(LC_ALL, "C");
-	dir->entry.name[len] = 0;
-	return &dir->entry;
-#endif
 }
 
 int dir_close(dir_t *dir)
 {
-#if defined(_WIN32)
 	if (!FindClose(dir->handle)) {
 		return -1;
 	}
-#else
-	closedir(dir->handle);
-#endif
+
 	return 0;
 }
 
 char *dir_get_file_name_a(dir_entry_t *entry)
 {
-#if defined(_WIN32)
 	return entry->data_a.cFileName;
-#endif
-	return NULL;
 }
 
 wchar_t *dir_get_file_name_w(dir_entry_t *entry)
 {
-#if defined(_WIN32)
 	return entry->data_w.cFileName;
-#else
-	return entry->name;
-#endif
-	return NULL;
 }
 
 int dir_entry_is_directory(dir_entry_t *entry)
 {
-#if defined(_WIN32)
 	return entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY;
-#else
-	return entry->dirent.d_type == DT_DIR;
-#endif
 }
 
 int dir_entry_is_regular(dir_entry_t *entry)
 {
-#if defined(_WIN32)
 	return !(entry->data_w.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-#else
-	return entry->dirent.d_type == DT_REG;
-#endif
 }
+
+#endif

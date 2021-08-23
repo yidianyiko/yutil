@@ -29,6 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdlib.h>
+#include "../include/keywords.h"
 #include "../include/yutil/list.h"
 
 void list_init(list_t *list)

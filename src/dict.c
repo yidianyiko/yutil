@@ -42,6 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include "../include/keywords.h"
 #include "../include/yutil/time.h"
 #include "../include/yutil/dict.h"
 
@@ -275,7 +276,7 @@ int dict_rehash(dict_t *d, int n)
 
 long long time_in_milliseconds(void)
 {
-	return time_get();
+	return get_time();
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger
@@ -1149,7 +1150,7 @@ void dict_enable_resize(void)
 	dict_can_resize = 1;
 }
 
-void dictDisable_resize(void)
+void dict_disable_resize(void)
 {
 	dict_can_resize = 0;
 }
@@ -1321,3 +1322,56 @@ unsigned long long genrand64_int64(void)
 }
 
 #endif
+
+unsigned int string_key_dict_key_hash(const void *key)
+{
+	const char *buf = key;
+	unsigned int hash = dict_hash_function_seed;
+	while (*buf) {
+		hash = ((hash << 5) + hash) + (*buf++);
+	}
+	return hash;
+}
+
+int string_key_dict_key_compare(void *privdata, const void *key1,
+				const void *key2)
+{
+	if (strcmp(key1, key2) == 0) {
+		return 1;
+	}
+	return 0;
+}
+
+void *string_key_dict_key_dup(void *privdata, const void *key)
+{
+	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
+	if (newkey == NULL)
+		return;
+	strcpy(newkey, key);
+	return newkey;
+}
+
+void string_key_dict_key_destructor(void *privdata, void *key)
+{
+	free(key);
+}
+
+void string_key_dict_key_type(dict_type_t *t)
+{
+	t->hash_function = string_key_dict_key_hash;
+	t->key_dup = NULL;
+	t->val_dup = NULL;
+	t->key_compare = string_key_dict_key_compare;
+	t->key_destructor = NULL;
+	t->val_destructor = NULL;
+}
+
+void dict_init_string_copy_key_type(dict_type_t *t)
+{
+	t->hash_function = string_key_dict_key_hash;
+	t->key_dup = string_key_dict_key_dup;
+	t->val_dup = NULL;
+	t->key_compare = string_key_dict_key_compare;
+	t->key_destructor = string_key_dict_key_destructor;
+	t->val_destructor = NULL;
+}
