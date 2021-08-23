@@ -34,7 +34,6 @@
 #include "../include/yutil/string.h"
 #include "../include/yutil/strpool.h"
 #include "../include/yutil/dict.h"
-#include "../include/yutil/keywords.h"
 
 #define STRPOOL_MARK 6699
 
