@@ -34,10 +34,11 @@
 #include "../include/yutil/string.h"
 #include "../include/yutil/strpool.h"
 #include "../include/yutil/dict.h"
+#include "../include/yutil/keywords.h"
 
 #define STRPOOL_MARK 6699
 
-typedef struct strpool_entry strpool_entry_t;
+typedef struct strpool_entry_t strpool_entry_t;
 
 struct strpool_t {
 	size_t size;
@@ -45,7 +46,7 @@ struct strpool_t {
 	dict_t *dict;
 };
 
-struct strpool_entry {
+struct strpool_entry_t {
 	int32_t mark;
 	strpool_t *pool;
 	size_t count;
@@ -62,9 +63,7 @@ strpool_t *strpool_create(void)
 		return NULL;
 	}
 	pool->size = 0;
-
 	string_key_dict_key_type(&pool->type);
-
 	pool->dict = dict_create(&pool->type, NULL);
 	return pool;
 }
