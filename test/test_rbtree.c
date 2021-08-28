@@ -1,99 +1,74 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
+#include "libtest.h"
 #include "../include/keywords.h"
 #include "../include/yutil/rbtree.h"
+#include "../include/yutil/time.h"
 
-int main(int argc, char const* argv[])
+static const int count = 1 << 20;
+static const int max_len = 15;
+
+void test_rbtree(void)
 {
-	const int delete_cnt = 1024;
-	double duration;
-	double room;
-
-	rbtree_t t = { 0 };
-	rbtree_node_t s = { 0 };
-	rbtree_init(&t, &s);
-	// rbtree_set_destroy_func(&t,free);
-	const int cnt = 1 << 20;
-	const int max_len = 15;
-
-#define TEST_VALUES                                                     \
-	{                                                               \
-		"apple", "banana", "cherry", "grape", "lemon", "mango", \
-		    "pear", "pineapple", "strawberry", "watermelon"     \
-	}
-
-	/* for gcc */
-	char* v[] = TEST_VALUES;
-	/* for g++ */
-	// char v[][max_len] = TEST_VALUES;
-
-	/* Default stack size in Ubuntu Kylin 14.04 is 8MB. */
-	/* It's not enough. So I use memory in heap which offers a lot larger
-	 * room. */
-	rbtree_node_t* n = (rbtree_node_t*)calloc(cnt, sizeof(rbtree_node_t));
 	int i;
-
-	long time1 = clock();
-	printf("\nInsert:\n");
-	for (i = 0; i < cnt; i++) {
-		n[i].key = i + 1;
-		n[i].data = v[i % 10];
-		rbtree_insert(&t, &n[i]);
-	}
-
-	long time2 = clock();
-	room = 48.0 * cnt / (1 << 20);
-	duration = (double)(time2 - time1) / CLOCKS_PER_SEC;
-	printf("Inserting %d nodes costs %.2fMB and spends %f seconds.\n", cnt,
-	       room, duration);
-	rbtree_node_t* node;
 	int c = 0;
-	for (node = rbtree_get_min(&t, t.root); node;
-	     node = rbtree_next(&t, node)) {
-		printf("\n%d\n", c++);
+	const int delete_count = 1024;
+	const int search_count = 1 << 10;
+	rbtree_t tree = { 0 };
+	rbtree_node_t *s, *node;
+	rbtree_init(&tree);
+
+	char* v[] = {
+		"apple", "banana", "cherry",    "grape",      "lemon",
+		"mango", "pear",   "pineapple", "strawberry", "watermelon"
+	};
+
+	long long time1 = (long long)get_time();
+	for (i = 0; i < count; i++) {
+		rbtree_insert(&tree, i + 1, NULL, v[i % 10]);
 	}
-	const int search_cnt = 1 << 10;
+	printf("Inserting %d nodes spends %lld ms.\n", count,
+	       (long long)time_get_delta(time1));
+
+	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
+		c++;
+	}
+	it_i("rbtree_insert() should work", c, count);
+
+	c = 0;
+
 	srand((unsigned int)time(0));
-	for (i = 0; i < search_cnt; i++) {
-		rbtree_search_by_key(&t, (rand() % cnt) + 1);
-	}
-
-	long time3 = clock();
-	duration = (double)(time3 - time2) / CLOCKS_PER_SEC;
-	printf("Searching %d nodes among %d spends %f seconds.\n", search_cnt,
-	       cnt, duration);
-
-	int nums[1024];
-	int num;
-	/* Let's hash! */
-	char* mark = (char*)calloc(cnt, sizeof(char));
-	memset(mark, 0, cnt * sizeof(char));
-	for (i = 0; i < delete_cnt; i++) {
-		for (;;) {
-			num = rand() % cnt;
-			if (mark[num] == 0) {
-				mark[num] = 1;
-				nums[i] = num;
-				break;
-			}
+	for (i = 0; i < search_count; i++) {
+		s = rbtree_search_by_key(&tree, (rand() % count) + 1);
+		if (s) {
+			c++;
 		}
 	}
 
-	long time4 = clock();
-	duration = (double)(time4 - time3) / CLOCKS_PER_SEC;
-	printf("Hash %d times spends %f seconds.\n", delete_cnt, duration);
+	long long time2 = (long long)get_time();
+	printf("Searching %d nodes among %d spends %lld seconds.\n",
+	       search_count, count, time_get_delta(time2));
+	it_i("rbtree_search_by_key() should work", c, search_count);
 
-	for (i = 0; i < delete_cnt; i++) {
-		rbtree_delete(&t, &n[nums[i]]);
+	for (i = 1; i <= delete_count; i++) {
+		rbtree_delete(&tree, i, NULL);
 	}
 
-	long time5 = clock();
-	duration = (double)(time5 - time4) / CLOCKS_PER_SEC;
-	printf("Deleting %d nodes among %d spends %f seconds.\n", delete_cnt,
-	       cnt, duration);
-	free(mark);
-	free(n);
+	long long time3 = (long long)get_time();
+	printf("Deleting %d nodes among %d spends %lld seconds.\n",
+	       delete_count, count, time_get_delta(time3));
+	c = 0;
+	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
+		c++;
+	}
+	it_i("rbtree_delete() should work", c, count - delete_count);
 
-	return 0;
+	rbtree_destroy(&tree);
+	c = 0;
+	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
+		c++;
+	}
+	it_i("rbtree_destroy() should work", c, 0);
 }
