@@ -58,11 +58,10 @@ struct timer_t {
 	list_node_t node; /**< 位于定时器列表中的节点 */
 };
 
-struct timer_list_t {
+struct timer_list_t_ {
 	int id_count;  /**< 定时器ID计数 */
 	list_t timers; /**< 定时器数据记录 */
 	bool_t active; /**< 定时器线程是否正在运行 */
-	bool_t lock;   /**< 定时器记录操作互斥锁 */
 };
 
 /*----------------------------- Private ------------------------------*/
@@ -106,12 +105,18 @@ static timer_t *timer_find(int timer_id, timer_list_t *list)
 
 /*----------------------------- Public ------------------------------*/
 
-void timer_list_new(timer_list_t *list)
+timer_list_t *timer_list_new()
 {
+	timer_list_t *list;
+	list = (timer_list_t *)malloc(sizeof(timer_list_t));
+	if (!list) {
+		return NULL;
+	}
 	list->active = TRUE;
-	list->lock = FALSE;
+	list->id_count = 0;
 	time_init();
 	list_init(&list->timers);
+	return list;
 }
 
 int timer_list_add(long int n_ms, void (*func)(void *), void *arg, bool_t reuse,
@@ -121,10 +126,7 @@ int timer_list_add(long int n_ms, void (*func)(void *), void *arg, bool_t reuse,
 	if (!list->active) {
 		return -1;
 	}
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	timer = (timer_t *)malloc(sizeof(timer_t));
 	if (timer == NULL)
 		return -1;
@@ -140,7 +142,7 @@ int timer_list_add(long int n_ms, void (*func)(void *), void *arg, bool_t reuse,
 	timer->node.prev = NULL;
 	timer->node.data = timer;
 	timer_list_add_node(&timer->node, list);
-	list->lock = FALSE;
+
 	// debug
 	printf("set timer, id: %ld, total_ms: %ld\n", timer->id,
 	       timer->total_ms);
@@ -153,17 +155,14 @@ int timer_free(int timer_id, timer_list_t *list)
 	if (!list->active) {
 		return -2;
 	}
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	timer = timer_find(timer_id, list);
 	if (!timer) {
 		return -1;
 	}
 	list_unlink(&list->timers, &timer->node);
 	free(timer);
-	list->lock = FALSE;
+
 	return 0;
 }
 
@@ -173,17 +172,13 @@ int timer_pause(int timer_id, timer_list_t *list)
 	if (!list->active) {
 		return -2;
 	}
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		/* 记录暂停时的时间 */
 		timer->pause_time = get_time();
 		timer->state = STATE_PAUSE;
 	}
-	list->lock = FALSE;
 
 	return timer ? 0 : -1;
 }
@@ -194,17 +189,13 @@ int timer_continue(int timer_id, timer_list_t *list)
 	if (!list->active) {
 		return -2;
 	}
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		/* 计算处于暂停状态的时长 */
 		timer->pause_ms += (long int)time_get_delta(timer->pause_time);
 		timer->state = STATE_RUN;
 	}
-	list->lock = FALSE;
 
 	return timer ? 0 : -1;
 }
@@ -215,17 +206,13 @@ int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 	if (!list->active) {
 		return -2;
 	}
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		timer->pause_ms = 0;
 		timer->total_ms = n_ms;
 		timer->start_time = get_time();
 	}
-	list->lock = FALSE;
 
 	return timer ? 0 : -1;
 }
@@ -249,11 +236,11 @@ size_t timer_list_process(timer_list_t *list)
 
 	timer_t *timer = NULL;
 	list_node_t *node;
-	while (list->lock == TRUE) {
-		continue;
-	}
-	list->lock = TRUE;
+
 	while (list->active) {
+		if (!list) {
+			break;
+		}
 		list_for_each(node, &list->timers)
 		{
 			timer = node->data;
@@ -281,7 +268,6 @@ size_t timer_list_process(timer_list_t *list)
 			free(timer);
 		}
 	}
-	list->lock = FALSE;
 
 	return count;
 }
@@ -293,4 +279,10 @@ void timer_list_remove(timer_list_t *list)
 	}
 	list->active = FALSE;
 	list_clear_data(&list->timers, free);
+}
+
+void timer_list_destory(timer_list_t *list)
+{
+	timer_list_remove(list);
+	free(list);
 }
