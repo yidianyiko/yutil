@@ -1,5 +1,4 @@
-#include "../include//yutil//types.h"
-extern int tests_count;
+#include "../include/yutil/types.h"
 
 void test_list(void);
 void test_math(void);

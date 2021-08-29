@@ -123,7 +123,7 @@ static inline void list_entry_head_init_(list_entry_head_t* list,
 	list->entry_offset = entry_offset;
 }
 
-// destory
+// destroy
 static inline void list_entry_exit(list_entry_head_t* head)
 {
 	head->next = NULL;

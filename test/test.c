@@ -1,8 +1,6 @@
 #include "test.h"
 #include "libtest.h"
 
-int tests_count = 0;
-
 int main()
 {
 	int ret = 0;
