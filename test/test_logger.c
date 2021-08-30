@@ -18,7 +18,7 @@ static void win32_logger_log_w(const wchar_t *wcs)
 
 #endif
 
-void test_logger_set_level(void)
+static void test_logger_set_level(void)
 {
 	logger_set_level(LOGGER_LEVEL_OFF);
 	logger_set_level(LOGGER_LEVEL_ERROR);
@@ -29,17 +29,17 @@ void test_logger_set_level(void)
 	it_b("logger_set_level() should work", 1, TRUE);
 }
 
-void test_logger_log(void)
+static void test_logger_log(void)
 {
 	int len = 0;
 	len = logger_log(LOGGER_LEVEL_ALL, "test\n");
-	logger_info("test i\n");
-	logger_debug("test d\n");
-	logger_warning("test w\n");
-	logger_error("test e\n");
+	// logger_info("test i\n");
+	// logger_debug("test d\n");
+	// logger_warning("test w\n");
+	// logger_error("test e\n");
 	it_b("logger_log() should work", len == 5, TRUE);
 }
-void test_logger_log_w(void)
+static void test_logger_log_w(void)
 {
 	int len = 0;
 	len = logger_log_w(LOGGER_LEVEL_ALL, L"test\n");

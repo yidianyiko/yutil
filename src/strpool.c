@@ -125,6 +125,6 @@ size_t strpool_size(strpool_t *pool)
 void strpool_destroy(strpool_t *pool)
 {
 	pool->size = 0;
-	dict_release(pool->dict);
+	dict_destroy(pool->dict);
 	free(pool);
 }

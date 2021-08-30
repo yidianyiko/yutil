@@ -469,7 +469,7 @@ int dict_delete(dict_t *ht, const void *key)
 /* Remove an element from the table, but without actually releasing
  * the key, value and dictionary entry. The dictionary entry is returned
  * if the element was found (and unlinked from the table), and the user
- * should later call `dict_free_unlinked_entry()` with it in order to release
+ * should later call `dict_free_unlinked_entry()` with it in order to destroy
  * it. Otherwise if the key is not found, NULL is returned.
  *
  * This function is useful when we want to remove something from the hash
@@ -534,7 +534,7 @@ int _dict_clear(dict_t *d, dict_hash_map_t *ht, void(callback)(void *))
 }
 
 /* Clear & Release the hash table */
-void dict_release(dict_t *d)
+void dict_destroy(dict_t *d)
 {
 	_dict_clear(d, &d->ht[0], NULL);
 	_dict_clear(d, &d->ht[1], NULL);
@@ -577,7 +577,7 @@ void *dict_fetch_value(dict_t *d, const void *key)
 /* A fingerprint is a 64 bit number that represents the state of the dictionary
  * at a given time, it's just a few dict_t properties xored together.
  * When an unsafe iterator is initialized, we get the dict_t fingerprint, and
- * check the fingerprint again when the iterator is released. If the two
+ * check the fingerprint again when the iterator is destroyd. If the two
  * fingerprints are different it means that the user of the iterator performed
  * forbidden operations against the dictionary while iterating. */
 long long dict_fingerprint(dict_t *d)
@@ -674,7 +674,7 @@ dict_entry_t *dict_next(dict_iterator_t *iter)
 	return NULL;
 }
 
-void dict_release_iterator(dict_iterator_t *iter)
+void dict_destroy_iterator(dict_iterator_t *iter)
 {
 	if (!(iter->index == -1 && iter->table == 0)) {
 		if (iter->safe)

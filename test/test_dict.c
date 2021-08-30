@@ -130,5 +130,5 @@ void test_dict(void)
 		assert(retval == DICT_OK);
 	}
 	end_benchmark("Removing and adding");
-	dict_release(dict);
+	dict_destroy(dict);
 }
