@@ -145,7 +145,7 @@ int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 	return timer->id;
 }
 
-int timer_release(int timer_id, timer_list_t *list)
+int timer_destroy(int timer_id, timer_list_t *list)
 {
 	timer_t *timer;
 	if (!list->active) {
@@ -263,16 +263,11 @@ size_t timer_list_process(timer_list_t *list)
 	return count;
 }
 
-void timer_list_release(timer_list_t *list)
+void timer_list_destroy(timer_list_t *list)
 {
 	if (!list->active) {
 		return;
 	}
 	list->active = FALSE;
 	list_clear_data(&list->timers, free);
-}
-
-void timer_list_destroy(timer_list_t *list)
-{
-	free(list);
 }

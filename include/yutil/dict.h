@@ -192,14 +192,14 @@ Y_API int dict_replace(dict_t *d, void *key, void *val);
 Y_API int dict_delete(dict_t *d, const void *key);
 Y_API dict_entry_t *dict_unlink(dict_t *ht, const void *key);
 Y_API void dict_free_unlinked_entry(dict_t *d, dict_entry_t *he);
-Y_API void dict_release(dict_t *d);
+Y_API void dict_destroy(dict_t *d);
 Y_API dict_entry_t *dict_find(dict_t *d, const void *key);
 Y_API void *dict_fetch_value(dict_t *d, const void *key);
 Y_API int dict_resize(dict_t *d);
 Y_API dict_iterator_t *dict_get_iterator(dict_t *d);
 Y_API dict_iterator_t *dict_get_safe_iterator(dict_t *d);
 Y_API dict_entry_t *dict_next(dict_iterator_t *iter);
-Y_API void dict_release_iterator(dict_iterator_t *iter);
+Y_API void dict_destroy_iterator(dict_iterator_t *iter);
 Y_API dict_entry_t *dict_get_random_key(dict_t *d);
 Y_API dict_entry_t *dict_get_fair_random_key(dict_t *d);
 Y_API unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,

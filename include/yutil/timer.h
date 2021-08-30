@@ -40,8 +40,6 @@ typedef struct timer_list_t_ timer_list_t;
 timer_list_t *timer_list_create();
 
 /* Free the timer list */
-void timer_list_release(timer_list_t *list);
-
 void timer_list_destroy(timer_list_t *list);
 
 /* Process all active timer */
@@ -80,7 +78,7 @@ int timer_list_add_interval(long int n_ms, TimerCallback callback, void *arg,
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  */
-int timer_release(int timer_id, timer_list_t *list);
+int timer_destroy(int timer_id, timer_list_t *list);
 
 /**
  * 暂停定时器的倒计时

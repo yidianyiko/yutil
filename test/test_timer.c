@@ -16,9 +16,9 @@ void on_time_out(void *arg)
 {
 	int *timer_id = arg;
 
-	it_b("check timer_free()", timer_release(*timer_id, timer_list) == 0,
+	it_b("check timer_free()", timer_destroy(*timer_id, timer_list) == 0,
 	     TRUE);
-	timer_list_release(timer_list);
+	timer_list_destroy(timer_list);
 	count = -1;
 	_endthread();
 }
@@ -84,6 +84,4 @@ void test_timer(void)
 
 	msleep(50L);
 	it_b("check timer_list_process()", count == -1, TRUE);
-
-	timer_list_destroy(timer_list);
 }
