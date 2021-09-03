@@ -64,7 +64,7 @@ strpool_t *strpool_create(void)
 		return NULL;
 	}
 	pool->size = 0;
-	string_key_dict_key_type(&pool->type);
+	dict_init_string_key_type(&pool->type);
 	pool->dict = dict_create(&pool->type, NULL);
 	return pool;
 }

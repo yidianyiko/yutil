@@ -55,7 +55,7 @@ int64_t get_time(void)
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
-int64_t time_get_delta(int64_t start)
+int64_t get_time_delta(int64_t start)
 {
 	int64_t now = get_time();
 	if (now < start) {

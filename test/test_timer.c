@@ -1,5 +1,3 @@
-#include <windows.h>
-#include <process.h> /* _beginthread, _endthread */
 #include <stdint.h>
 #include <stdio.h>
 #include "test.h"
@@ -8,9 +6,14 @@
 #include "../include/yutil/timer.h"
 #include "../include/yutil/time.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#include <process.h> /* _beginthread, _endthread */
+static HANDLE mutex;
+#endif
+
 static timer_list_t *timer_list = NULL;
 static int count = 0;
-static HANDLE mutex;
 
 void on_time_out(void *arg)
 {
@@ -31,10 +34,12 @@ void on_interval(void *arg)
 void process(void *ignored)
 {
 	while (1) {
+#ifdef _WIN32
 		WaitForSingleObject(mutex, INFINITE);
 		timer_list_process(timer_list);
 		ReleaseMutex(mutex);
 		msleep(20L);
+#endif
 	}
 }
 
@@ -42,6 +47,7 @@ void test_timer(void)
 {
 	int timer_id;
 	int ret = count;
+#ifdef _WIN32
 	mutex = CreateMutex(NULL, FALSE, NULL);
 
 	it_b("check timer_list_new()",
@@ -84,4 +90,5 @@ void test_timer(void)
 
 	msleep(50L);
 	it_b("check timer_list_process()", count == -1, TRUE);
+#endif
 }

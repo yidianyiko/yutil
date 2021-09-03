@@ -1356,7 +1356,7 @@ void string_key_dict_key_destructor(void *privdata, void *key)
 	free(key);
 }
 
-void string_key_dict_key_type(dict_type_t *t)
+void dict_init_string_key_type(dict_type_t *t)
 {
 	t->hash_function = string_key_dict_key_hash;
 	t->key_dup = NULL;

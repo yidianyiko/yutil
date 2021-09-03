@@ -229,7 +229,7 @@ Y_API int string_key_dict_key_compare(void *privdata, const void *key1,
 				      const void *key2);
 Y_API void *string_key_dict_key_dup(void *privdata, const void *key);
 Y_API void string_key_dict_key_destructor(void *privdata, void *key);
-Y_API void string_key_dict_key_type(dict_type_t *t);
+Y_API void dict_init_string_key_type(dict_type_t *t);
 Y_API void dict_init_string_copy_key_type(dict_type_t *t);
 
 Y_END_DECLS

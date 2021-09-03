@@ -41,7 +41,7 @@ Y_API int64_t get_time(void);
 
 Y_API int64_t get_utime(void);
 
-Y_API int64_t time_get_delta(int64_t start);
+Y_API int64_t get_time_delta(int64_t start);
 
 Y_API void sleep(unsigned int s);
 

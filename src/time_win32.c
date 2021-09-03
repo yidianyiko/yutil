@@ -65,7 +65,7 @@ int64_t get_time(void)
 	return time / 1000 - 11644473600000;
 }
 
-int64_t time_get_delta(int64_t start)
+int64_t get_time_delta(int64_t start)
 {
 	int64_t now = get_time();
 	return (now < start) ? ((TIME_WRAP_VALUE - start) + now)
