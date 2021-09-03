@@ -13,6 +13,7 @@ int main()
 	describe("test test_string", test_strs);
 	describe("test test_strpool", test_strpool);
 	describe("test test_timer", test_timer);
+	describe("test test_charset", test_charset);
 	describe("test test_dict", test_dict);
 	describe("test test_rbtree", test_rbtree);
 	return ret - print_test_result();

@@ -61,7 +61,7 @@ int test_result(void)
 int print_test_result(void)
 {
 	printf(GREEN("  %zu passing") " (%ums)\n", tests_passed,
-	       (unsigned)time_get_delta(test_start_time));
+	       (unsigned)get_time_delta(test_start_time));
 	if (tests_total > tests_passed) {
 		printf(RED("  %zu faling\n\n"), tests_total - tests_passed);
 		return (int)(tests_total - tests_passed);

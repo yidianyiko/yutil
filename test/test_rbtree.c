@@ -30,7 +30,7 @@ void test_rbtree(void)
 		rbtree_insert(&tree, i + 1, NULL, v[i % 10]);
 	}
 	printf("Inserting %d nodes spends %lld ms.\n", count,
-	       (long long)time_get_delta(time1));
+	       (long long)get_time_delta(time1));
 
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;
@@ -49,7 +49,7 @@ void test_rbtree(void)
 
 	long long time2 = (long long)get_time();
 	printf("Searching %d nodes among %d spends %lld seconds.\n",
-	       search_count, count, time_get_delta(time2));
+	       search_count, count, get_time_delta(time2));
 	it_i("rbtree_search_by_key() should work", c, search_count);
 
 	for (i = 1; i <= delete_count; i++) {
@@ -58,7 +58,7 @@ void test_rbtree(void)
 
 	long long time3 = (long long)get_time();
 	printf("Deleting %d nodes among %d spends %lld seconds.\n",
-	       delete_count, count, time_get_delta(time3));
+	       delete_count, count, get_time_delta(time3));
 	c = 0;
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;

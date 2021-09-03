@@ -73,12 +73,12 @@ static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
 	timer = node->data;
-	t = time_get_delta(timer->start_time);
+	t = get_time_delta(timer->start_time);
 	t = timer->total_ms - t + timer->pause_ms;
 	list_for_each(cur, &list->timers)
 	{
 		timer = cur->data;
-		tt = time_get_delta(timer->start_time);
+		tt = get_time_delta(timer->start_time);
 		tt = timer->total_ms - tt + timer->pause_ms;
 		if (t <= tt) {
 			list_link(&list->timers, cur->prev, node);
@@ -189,7 +189,7 @@ int timer_continue(int timer_id, timer_list_t *list)
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		/* 计算处于暂停状态的时长 */
-		timer->pause_ms += (long int)time_get_delta(timer->pause_time);
+		timer->pause_ms += (long int)get_time_delta(timer->pause_time);
 		timer->state = STATE_RUN;
 	}
 
@@ -243,7 +243,7 @@ size_t timer_list_process(timer_list_t *list)
 			break;
 		}
 		count += 1;
-		lost_ms = (long)time_get_delta(timer->start_time);
+		lost_ms = (long)get_time_delta(timer->start_time);
 		/* 若流失的时间未达到总定时时长 */
 		if (lost_ms - timer->pause_ms < timer->total_ms) {
 			break;
