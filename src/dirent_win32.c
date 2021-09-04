@@ -49,6 +49,21 @@ struct dir_t {
 	int cached;
 };
 
+dir_t *dir_create()
+{
+	dir_t *dir = (dir_t *)malloc(sizeof(dir_t));
+	dir_entry_t t = { 0 };
+	dir->cached = 0;
+	dir->entry = t;
+	dir->handle = NULL;
+	return dir;
+}
+
+void dir_destroy(dir_t *dir)
+{
+	free(dir);
+}
+
 int dir_open_a(const char *path, dir_t *dir)
 {
 	size_t len;

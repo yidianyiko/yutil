@@ -26,9 +26,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdint.h>
 #ifndef _WIN32
 #include <time.h>
-#include <stdint.h>
 #include "../include/keywords.h"
 #include "../include/yutil/time.h"
 

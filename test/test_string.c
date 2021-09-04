@@ -7,7 +7,6 @@
 #include "../include/yutil/string.h"
 #include "../include/yutil/strlist.h"
 
-
 static void test_cmdsplit(void)
 {
 	char **argv;

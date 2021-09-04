@@ -54,6 +54,8 @@
 /* Unused arguments generate annoying warnings... */
 #define dict_not_used(V) ((void)V)
 
+#define time_in_milliseconds get_time
+
 /* Using dict_enable_resize() / dictDisable_resize() we make possible to
  * enable/disable resizing of the hash table as needed. */
 static int dict_can_resize = 1;
@@ -123,7 +125,7 @@ static void _dict_reset(dict_hash_map_t *ht)
 /* Create a new hash table */
 dict_t *dict_create(dict_type_t *type, void *priv_data_ptr)
 {
-	dict_t *d = malloc(sizeof(*d));
+	dict_t *d = (dict_t *)malloc(sizeof(*d));
 
 	_dict_init(d, type, priv_data_ptr);
 	return d;
@@ -272,11 +274,6 @@ int dict_rehash(dict_t *d, int n)
 
 	/* More to rehash... */
 	return 1;
-}
-
-long long time_in_milliseconds(void)
-{
-	return get_time();
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger
@@ -1336,6 +1333,7 @@ unsigned int string_key_dict_key_hash(const void *key)
 int string_key_dict_key_compare(void *privdata, const void *key1,
 				const void *key2)
 {
+	dict_not_used(privdata);
 	if (strcmp(key1, key2) == 0) {
 		return 1;
 	}
@@ -1344,15 +1342,17 @@ int string_key_dict_key_compare(void *privdata, const void *key1,
 
 void *string_key_dict_key_dup(void *privdata, const void *key)
 {
+	dict_not_used(privdata);
 	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
 	if (newkey == NULL)
-		return;
+		return NULL;
 	strcpy(newkey, key);
 	return newkey;
 }
 
 void string_key_dict_key_destructor(void *privdata, void *key)
 {
+	dict_not_used(privdata);
 	free(key);
 }
 

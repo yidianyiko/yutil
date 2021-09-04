@@ -28,6 +28,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/keywords.h"
 #include "../include/yutil/rbtree.h"
 
@@ -128,7 +129,8 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 {
 	rbtree_node_t *gparent;
 	rbtree_node_t *uncle;
-	while (node != tree->root && rbtree_is_red(node->parent)) {
+	while (node != tree->root &&
+	       (node->parent && rbtree_is_red(node->parent))) {
 		gparent = node->parent->parent;
 
 		if (node->parent == gparent->left) {
@@ -142,7 +144,8 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 				node = gparent;
 
 			} else {
-				if (node == node->parent->right) {
+				if (node->parent && node->parent->left &&
+				    node == node->parent->right) {
 					node = node->parent;
 					rbtree_left_rotate(tree, node);
 					gparent = node->parent->parent;
@@ -161,13 +164,15 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 				rbtree_red(gparent);
 				node = gparent;
 			} else {
-				if (node == node->parent->left) {
+				if (node->parent && node->parent->left &&
+				    node == node->parent->left) {
 					node = node->parent;
 					rbtree_right_rotate(tree, node);
 					gparent = node->parent->parent;
 				}
-
-				rbtree_black(node->parent);
+				if (node->parent) {
+					rbtree_black(node->parent);
+				}
 				rbtree_red(gparent);
 				rbtree_left_rotate(tree, gparent);
 			}
@@ -181,7 +186,7 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node)
 {
 	rbtree_node_t *brother;
 	while (node != tree->root && (!node || rbtree_is_black(node))) {
-		if (node == node->parent->left) {
+		if (node && (node == node->parent->left)) {
 			brother = node->parent->right;
 
 			if (rbtree_is_red(brother)) {
@@ -328,10 +333,7 @@ void rbtree_insert(rbtree_t *tree, int key, const void *keydata, void *data)
 
 void rbtree_insert_by_key(rbtree_t *tree, int key, void *data)
 {
-	if (!key) {
-		return;
-	}
-	return rbtree_insert(tree, key, NULL, data);
+	rbtree_insert(tree, key, NULL, data);
 }
 
 void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata, void *data)
@@ -339,13 +341,11 @@ void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata, void *data)
 	if (!keydata) {
 		return;
 	}
-
-	return rbtree_insert(tree, 0, keydata, data);
+	rbtree_insert(tree, 0, keydata, data);
 }
 
 void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 {
-	rbtree_node_t *subst = NULL;
 	rbtree_node_t *parent = NULL;
 	rbtree_node_t *temp = NULL;
 	rbtree_node_t *old = node;
@@ -479,7 +479,7 @@ rbtree_node_t *rbtree_next(const rbtree_node_t *node)
 	if (node->right) {
 		return rbtree_get_min(node->right);
 	}
-	while ((parent = node->parent) && node == parent->right) {
+	while ((parent = node->parent) != NULL && node == parent->right) {
 		node = parent;
 	}
 	return parent;

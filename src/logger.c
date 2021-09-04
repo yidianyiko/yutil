@@ -109,7 +109,7 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 					    logger_buffer_t);
 
 			if (logger.handler) {
-				logger.handler(&output->buffer);
+				logger.handler((const char*)&output->buffer);
 			} else {
 				printf("%s", output->buffer);
 			}
@@ -139,7 +139,8 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 	}
 
 	va_start(args, fmt);
-	len = vswprintf(&node->buffer_w, BUFFER_SIZE, fmt, args);
+	len =
+	    vswprintf((wchar_t* const)&node->buffer_w, BUFFER_SIZE, fmt, args);
 	va_end(args);
 	node->buffer_w[BUFFER_SIZE - 1] = 0;
 	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
@@ -164,7 +165,8 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 					    logger_buffer_t);
 
 			if (logger.handler) {
-				logger.handler_w(&output->buffer_w);
+				logger.handler_w(
+				    (const wchar_t*)&output->buffer_w);
 			} else {
 				wprintf(L"%s", output->buffer_w);
 			}

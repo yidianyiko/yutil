@@ -59,7 +59,7 @@ strpool_t *strpool_create(void)
 {
 	strpool_t *pool;
 
-	pool = malloc(sizeof(strpool_t));
+	pool = (strpool_t *)malloc(sizeof(strpool_t));
 	if (!pool) {
 		return NULL;
 	}
@@ -75,11 +75,11 @@ char *strpool_alloc_str(strpool_t *pool, const char *str)
 	size_t length;
 	strpool_entry_t *entry;
 
-	entry = dict_fetch_value(pool->dict, str);
+	entry = (strpool_entry_t *)dict_fetch_value(pool->dict, str);
 	if (!entry) {
 		length = strlen(str);
 		size = sizeof(strpool_entry_t) + length + 1;
-		entry = malloc(size);
+		entry = (strpool_entry_t *)malloc(size);
 		if (!entry) {
 			return NULL;
 		}

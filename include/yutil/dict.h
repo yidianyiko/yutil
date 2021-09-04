@@ -71,7 +71,7 @@ struct dict_entry_t {
 };
 
 struct dict_type_t {
-	uint64_t (*hash_function)(const void *key);
+	unsigned int (*hash_function)(const void *key);
 	void *(*key_dup)(void *priv_data, const void *key);
 	void *(*val_dup)(void *priv_data, const void *obj);
 	int (*key_compare)(void *priv_data, const void *key1, const void *key2);
