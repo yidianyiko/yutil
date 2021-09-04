@@ -36,6 +36,7 @@
 #include <locale.h>
 #include "../include/keywords.h"
 #include "../include/yutil/dirent.h"
+#include "../include/yutil/charset.h"
 
 typedef DIR *dir_handle_t;
 
@@ -60,15 +61,10 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 	int len;
 	char *newpath;
 
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = wcstombs(NULL, path, 0) + 1;
+	len = encode_string(NULL, path, 0, ENCODING_UTF8) + 1;
 	newpath = malloc(len * sizeof(wchar_t));
-	wcstombs(newpath, path, len);
-	setlocale(LC_ALL, "C");
+	encode_string(newpath, path, len, ENCODING_UTF8);
+
 	dir->handle = opendir(newpath);
 	free(newpath);
 	if (!dir->handle) {
@@ -100,14 +96,8 @@ dir_entry_t *dir_read_w(dir_t *dir)
 		return NULL;
 	}
 	dir->entry.dirent = *d;
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = mbstowcs((dir->entry.name, d->d_name,
-				DIRENT_NAME_LEN);
-	setlocale(LC_ALL, "C");
+	len = decode_string(dir->entry.name, d->d_name, DIRENT_NAME_LEN,
+			    ENCODING_UTF8);
 	dir->entry.name[len] = 0;
 	return &dir->entry;
 }

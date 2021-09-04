@@ -15,21 +15,21 @@ void test_charset(void)
 	it_b("test decode ascii string", len == 5 && wcscmp(wcs, L"hello") == 0,
 	     TRUE);
 #ifdef _WIN32
-	len = decode_string(wcs, "¼òÌåÖĞÎÄ", 64, ENCODING_ANSI);
+	len = decode_string(wcs, "ç®€ä½“ä¸­æ–‡", 64, ENCODING_ANSI);
 	it_b("test decode ansi string",
-	     len == 4 && wcscmp(wcs, L"¼òÌåÖĞÎÄ") == 0, TRUE);
+	     len == 4 && wcscmp(wcs, L"ç®€ä½“ä¸­æ–‡") == 0, TRUE);
 
-	len = encode_string(str, L"¼òÌåÖĞÎÄ", 64, ENCODING_ANSI);
+	len = encode_string(str, L"ç®€ä½“ä¸­æ–‡", 64, ENCODING_ANSI);
 	it_b("test encode unicode string to ansi",
-	     len == strlen("¼òÌåÖĞÎÄ") && strcmp(str, "¼òÌåÖĞÎÄ") == 0, TRUE);
+	     len == strlen("ç®€ä½“ä¸­æ–‡") && strcmp(str, "ç®€ä½“ä¸­æ–‡") == 0, TRUE);
 #else
-	len = decode_utf8(wcs, "¼òÌåÖĞÎÄ", 64);
+	len = decode_utf8(wcs, "ç®€ä½“ä¸­æ–‡", 64);
 	it_b("test decode utf-8 string",
-	     len == 4 && wcscmp(wcs, L"¼òÌåÖĞÎÄ") == 0, TRUE);
+	     len == 4 && wcscmp(wcs, L"ç®€ä½“ä¸­æ–‡") == 0, TRUE);
 
-	len = encode_utf8(str, L"¼òÌåÖĞÎÄ", 64);
+	len = encode_utf8(str, L"ç®€ä½“ä¸­æ–‡", 64);
 	it_b("test encode unicode string to utf-8",
-	     len == strlen("¼òÌåÖĞÎÄ") && strcmp(str, "¼òÌåÖĞÎÄ") == 0, TRUE);
+	     len == strlen("ç®€ä½“ä¸­æ–‡") && strcmp(str, "ç®€ä½“ä¸­æ–‡") == 0, TRUE);
 #endif
 	len = encode_utf8(str, L"hello", 64);
 	it_b("test encode ascii string to utf-8",

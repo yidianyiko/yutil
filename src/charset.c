@@ -35,7 +35,6 @@
 #include <string.h>
 #include <locale.h>
 #include "../include/keywords.h"
-#include "../include/yutil/types.h"
 #include "../include/yutil/charset.h"
 
 /* clang-format off */
