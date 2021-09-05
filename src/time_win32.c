@@ -1,6 +1,8 @@
 ﻿/* time.c -- The time operation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,10 +28,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #if defined(_WIN32)
 #include <stdint.h>
-#include <Windows.h>
-#include "../include/keywords.h"
+#include <windows.h>
+#include "../include/yutil_build.h"
 #include "../include/yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)

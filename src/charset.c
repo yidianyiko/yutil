@@ -1,7 +1,9 @@
 ﻿/*
  * charset.c -- The charset opreation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -34,7 +36,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/charset.h"
 
@@ -54,7 +56,7 @@
 /* clang-format on */
 
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 
 static size_t encode(char *str, const wchar_t *wcs, size_t maxlen, int codepage)
 {
@@ -244,7 +246,7 @@ static size_t encode_to_utf8(char *str, const wchar_t *wcs, size_t max_len)
 }
 
 size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
-		     int encoding)
+		     encoding_e encoding)
 {
 #ifdef _WIN32
 	switch (encoding) {
@@ -262,7 +264,7 @@ size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
 }
 
 size_t encode_string(char *str, const wchar_t *wstr, size_t max_len,
-		     int encoding)
+		     encoding_e encoding)
 {
 #ifdef _WIN32
 	int cp;

@@ -2,11 +2,11 @@
 #include "libtest.h"
 #include <locale.h>
 #include <stdio.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/dirent.h"
 
 #if defined(_WIN32)
-#include <Windows.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif

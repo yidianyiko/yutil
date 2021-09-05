@@ -32,7 +32,7 @@
 
 /* ------------------------------- includes --------------------------------*/
 #include <assert.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/types.h"
 
 Y_BEGIN_DECLS

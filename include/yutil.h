@@ -1,5 +1,5 @@
 /*
- * logger.h -- Logger module
+ * yutil.h -- Utilities
  *
  * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
  * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
@@ -30,47 +30,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef UTIL_LOGGER_H
-#define UTIL_LOGGER_H
+#ifndef YUTIL_H
+#define YUTIL_H
 
-Y_BEGIN_DECLS
+#include "yutil/charset.h"
+#include "yutil/dict.h"
+#include "yutil/dirent.h"
+#include "yutil/list.h"
+#include "yutil/list_entry.h"
+#include "yutil/logger.h"
+#include "yutil/math.h"
+#include "yutil/rbtree.h"
+#include "yutil/string.h"
+#include "yutil/strlist.h"
+#include "yutil/strpool.h"
+#include "yutil/time.h"
+#include "yutil/timer.h"
 
-enum logger_level_e {
-	LOGGER_LEVEL_ALL,
-	LOGGER_LEVEL_DEBUG,
-	LOGGER_LEVEL_INFO,
-	LOGGER_LEVEL_WARNING,
-	LOGGER_LEVEL_ERROR,
-	LOGGER_LEVEL_OFF
-};
-
-typedef enum logger_level_e logger_level_e;
-
-Y_API void logger_set_level(logger_level_e level);
-
-Y_API int logger_log(logger_level_e level, const char* fmt, ...);
-
-Y_API int logger_log_w(logger_level_e level, const wchar_t* fmt, ...);
-
-Y_API void logger_set_handler(void (*handler)(const char*));
-
-Y_API void logger_set_handler_w(void (*handler)(const wchar_t*));
-
-#define logger_info(fmt, ...) logger_log(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
-#define logger_debug(fmt, ...) \
-	logger_log(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-#define logger_warning(fmt, ...) \
-	logger_log(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
-#define logger_error(fmt, ...) \
-	logger_log(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
-#define logger_info_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
-#define logger_debug_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-#define logger_warning_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
-#define logger_error_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
-
-Y_END_DECLS
-#endif
+#endif    // YUTIL_H

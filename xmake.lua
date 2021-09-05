@@ -4,7 +4,7 @@ set_project("yutil")
 add_rules("mode.release", "mode.debug")
 
 set_warnings("all")
-add_defines("Y_EXPORTS","_UNICODE")
+add_defines("Y_EXPORTS", "_UNICODE")
 
 
 -- for the windows platform (msvc)
@@ -19,10 +19,10 @@ includes("include")
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
-    add_files("src/*.c")
-    add_headerfiles("include/keywords.h")
+    add_headerfiles("include/yutil_build.h")
     add_headerfiles("include/yutil.h")
     add_headerfiles("include/(yutil/*.h)")
+    add_files("src/*.c")
 
 target("test")
     -- make as a binary

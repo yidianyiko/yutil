@@ -34,7 +34,7 @@
 #include <locale.h>
 #ifndef _WIN32
 #include <dirent.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/dirent.h"
 #include "../include/yutil/charset.h"
 

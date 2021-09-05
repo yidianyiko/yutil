@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/timer.h"
 #include "../include/yutil/time.h"
 
@@ -14,6 +14,9 @@ static HANDLE mutex;
 
 static timer_list_t *timer_list = NULL;
 static int count = 0;
+
+/* Unused arguments generate annoying warnings... */
+#define arg_not_used(V) ((void)V)
 
 void on_time_out(void *arg)
 {
@@ -28,13 +31,13 @@ void on_time_out(void *arg)
 
 void on_interval(void *arg)
 {
-	((void)arg);
+	arg_not_used(arg);
 	count++;
 }
 
 void process(void *ignored)
 {
-	((void)ignored);
+	arg_not_used(ignored);
 	while (1) {
 #ifdef _WIN32
 		WaitForSingleObject(mutex, INFINITE);

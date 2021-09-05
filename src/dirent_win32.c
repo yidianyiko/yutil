@@ -31,9 +31,9 @@
 #if defined(_WIN32)
 #include <stdio.h>
 #include <stdlib.h>
-#include <Windows.h>
+#include <windows.h>
 
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/dirent.h"
 
 typedef HANDLE dir_handle_t;

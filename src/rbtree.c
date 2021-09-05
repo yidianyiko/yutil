@@ -29,7 +29,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/rbtree.h"
 
 #define rbtree_red(node) ((node)->color = 1)

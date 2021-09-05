@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/time.h"
 
 #ifdef _WIN32

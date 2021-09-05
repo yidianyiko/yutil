@@ -1,7 +1,9 @@
 ﻿/*
  * charset.h -- The charset opreation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -27,13 +29,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #ifndef UTIL_CHARSET_H
 #define UTIL_CHARSET_H
 
 Y_BEGIN_DECLS
 
-enum charset_e { ENCODING_ANSI, ENCODING_UTF8 };
+enum encoding_e { ENCODING_ANSI, ENCODING_UTF8 };
+
+typedef enum encoding_e encoding_e;
 
 #define decode_utf8(WSTR, STR, MAX_LEN) \
 	decode_string(WSTR, STR, MAX_LEN, ENCODING_UTF8)
@@ -42,10 +45,10 @@ enum charset_e { ENCODING_ANSI, ENCODING_UTF8 };
 	encode_string(STR, WSTR, MAX_LEN, ENCODING_UTF8)
 
 Y_API size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
-			   int encoding);
+			   encoding_e encoding);
 
 Y_API size_t encode_string(char *str, const wchar_t *wstr, size_t max_len,
-			   int encoding);
+			   encoding_e encoding);
 Y_END_DECLS
 
 #endif

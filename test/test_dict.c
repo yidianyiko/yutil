@@ -5,7 +5,7 @@
 #include <assert.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/dict.h"
 #include "../include/yutil/time.h"
 

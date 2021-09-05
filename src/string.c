@@ -1,7 +1,8 @@
 ﻿/* string.c -- The string operation set.
  *
- *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,7 +34,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <wchar.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strlist.h"

@@ -33,7 +33,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
-#include "../include/keywords.h"
+#include "../include/yutil_build.h"
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
 
@@ -43,7 +43,7 @@ struct logger_t {
 	char inited;
 	void (*handler)(const char*);
 	void (*handler_w)(const wchar_t*);
-	logger_level_t level;
+	logger_level_e level;
 };
 
 struct logger_buffer_t {
@@ -61,12 +61,12 @@ static list_entry_head_t logger_buffer_head = { 0 };
 /* buffered output enabled flag */
 static bool_t is_enabled = FALSE;
 
-void logger_set_level(logger_level_t level)
+void logger_set_level(logger_level_e level)
 {
 	logger.level = level;
 }
 
-int logger_log(logger_level_t level, const char* fmt, ...)
+int logger_log(logger_level_e level, const char* fmt, ...)
 {
 	int len;
 	va_list args;
@@ -121,7 +121,7 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 	return len;
 }
 
-int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
+int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 {
 	int len;
 	va_list args;
