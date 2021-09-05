@@ -29,8 +29,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if defined(_WIN32)
 #include <stdint.h>
+#if defined(_WIN32)
 #include <windows.h>
 #include "../include/yutil_build.h"
 #include "../include/yutil/time.h"
@@ -75,14 +75,14 @@ int64_t get_time_delta(int64_t start)
 			     : (now - start);
 }
 
-void msleep(unsigned int ms)
+void msleep_time(unsigned int ms)
 {
 	Sleep((DWORD)ms);
 }
 
-void sleep(unsigned int s)
+void sleep_time(unsigned int s)
 {
-	msleep(s * 1000);
+	msleep_time(s * 1000);
 }
 
 // get the time from 1970-01-01 00:00:00:000

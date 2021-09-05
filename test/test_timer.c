@@ -26,7 +26,9 @@ void on_time_out(void *arg)
 	     TRUE);
 	timer_list_destroy(timer_list);
 	count = -1;
+#ifdef _WIN32
 	_endthread();
+#endif
 }
 
 void on_interval(void *arg)
@@ -43,7 +45,7 @@ void process(void *ignored)
 		WaitForSingleObject(mutex, INFINITE);
 		timer_list_process(timer_list);
 		ReleaseMutex(mutex);
-		msleep(20L);
+		msleep_time(20L);
 #endif
 	}
 }
@@ -69,21 +71,21 @@ void test_timer(void)
 
 	// process
 	_beginthread(process, 0, NULL);
-	msleep(50L);
+	msleep_time(50L);
 
 	// test pause
 	WaitForSingleObject(mutex, INFINITE);
 	timer_pause(timer_id, timer_list);
 	ReleaseMutex(mutex);
 	ret = count;
-	msleep(50L);
+	msleep_time(50L);
 	it_b("check timer_pause()", (ret != 0) && (ret == count), TRUE);
 
 	// test continue
 	WaitForSingleObject(mutex, INFINITE);
 	timer_continue(timer_id, timer_list);
 	ReleaseMutex(mutex);
-	msleep(50L);
+	msleep_time(50L);
 	it_b("check timer_continue()", ret < count, TRUE);
 
 	count = 0;
@@ -91,10 +93,10 @@ void test_timer(void)
 	WaitForSingleObject(mutex, INFINITE);
 	timer_reset(timer_id, 70, timer_list);
 	ReleaseMutex(mutex);
-	msleep(60L);
+	msleep_time(60L);
 	it_i("check timer_reset()", count, 0);
 
-	msleep(70L);
+	msleep_time(70L);
 	it_b("check timer_list_process()", count == -1, TRUE);
 #endif
 }

@@ -174,12 +174,8 @@ struct dict_iterator_t {
 #define dict_resume_rehashing(d) (d)->pause_rehash--
 
 /* If our unsigned long type can store a 64 bit number, use a 64 bit PRNG. */
-#if ULONG_MAX >= 0xffffffffffffffff
-unsigned long long genrand64_int64(void);
-#define random_u_long() ((unsigned long)gen_rand64_int64())
-#else
 #define random_u_long() rand()
-#endif
+
 
 /* API */
 Y_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);

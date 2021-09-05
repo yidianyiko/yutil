@@ -42,9 +42,9 @@
 #define STATE_PAUSE 0
 
 /*----------------------------- struct * --------------------------------*/
-typedef struct timer_t timer_t;
+typedef struct timer_t_ timer_t_;
 
-struct timer_t {
+struct timer_t_ {
 	int state;    /**< 状态 */
 	long int id;  /**< 定时器ID */
 	bool_t reuse; /**< 是否重复使用该定时器 */
@@ -70,7 +70,7 @@ struct timer_list_t_ {
 /** 更新定时器在定时器列表中的位置 */
 static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	int64_t t, tt;
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
@@ -90,9 +90,9 @@ static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 	list_append_node(&list->timers, node);
 }
 
-static timer_t *timer_find(int timer_id, timer_list_t *list)
+static timer_t_ *timer_find(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	list_node_t *node;
 	list_for_each(node, &list->timers)
 	{
@@ -123,12 +123,12 @@ timer_list_t *timer_list_create()
 int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 		   bool_t reuse, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -1;
 	}
 
-	timer = (timer_t *)malloc(sizeof(timer_t));
+	timer = (timer_t_ *)malloc(sizeof(timer_t_));
 	if (timer == NULL)
 		return -1;
 	timer->arg = arg;
@@ -149,7 +149,7 @@ int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 
 int timer_destroy(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -166,7 +166,7 @@ int timer_destroy(int timer_id, timer_list_t *list)
 
 int timer_pause(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -183,7 +183,7 @@ int timer_pause(int timer_id, timer_list_t *list)
 
 int timer_continue(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -200,7 +200,7 @@ int timer_continue(int timer_id, timer_list_t *list)
 
 int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -231,7 +231,7 @@ size_t timer_list_process(timer_list_t *list)
 	size_t count = 0;
 	long lost_ms;
 
-	timer_t *timer = NULL;
+	timer_t_ *timer = NULL;
 	list_node_t *node;
 	while (list && list->active) {
 		list_for_each(node, &list->timers)

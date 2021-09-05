@@ -45,9 +45,9 @@ Y_API int64_t get_utime(void);
 
 Y_API int64_t get_time_delta(int64_t start);
 
-Y_API void sleep(unsigned int s);
+Y_API void sleep_time(unsigned int s);
 
-Y_API void msleep(unsigned int ms);
+Y_API void msleep_time(unsigned int ms);
 
 Y_API void get_time_of_day(timeval_t *tv);
 

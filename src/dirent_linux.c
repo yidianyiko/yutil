@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <locale.h>
+#include <wchar.h>
 #ifndef _WIN32
 #include <dirent.h>
 #include "../include/yutil_build.h"

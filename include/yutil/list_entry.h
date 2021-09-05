@@ -32,8 +32,9 @@
 
 /* ------------------------------- includes --------------------------------*/
 #include <assert.h>
-#include "../include/yutil_build.h"
-#include "../include/yutil/types.h"
+#include <stddef.h>
+#include "../yutil_build.h"
+#include "types.h"
 
 Y_BEGIN_DECLS
 

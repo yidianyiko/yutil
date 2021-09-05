@@ -2,6 +2,7 @@
 #include "libtest.h"
 #include <locale.h>
 #include <stdio.h>
+#include <wchar.h>
 #include "../include/yutil_build.h"
 #include "../include/yutil/dirent.h"
 

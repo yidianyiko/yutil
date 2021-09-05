@@ -10,10 +10,13 @@ add_defines("Y_EXPORTS", "_UNICODE")
 -- for the windows platform (msvc)
 if is_plat("windows") then
     add_defines("_CRT_SECURE_NO_WARNINGS")
+else
+    add_cxflags("-fPIC")
 end
 
--- include project sources
-includes("include")
+if is_mode("release") then
+    set_symbols("none")
+end
 
 
 target("yutil")

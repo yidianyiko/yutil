@@ -67,14 +67,14 @@ int64_t get_time_delta(int64_t start)
 	return now - start;
 }
 
-void msleep(unsigned int ms)
+void msleep_time(unsigned int ms)
 {
 	usleep(ms * 1000);
 }
 
-void sleep(unsigned int s)
+void sleep_time(unsigned int s)
 {
-	msleep(s * 1000);
+	msleep_time(s * 1000);
 }
 
 // get the time from 1970-01-01 00:00:00:000
@@ -84,7 +84,7 @@ void get_time_of_day(timeval_t *tv)
 	if (gettimeofday(&tmp, NULL))
 		return;
 
-	t->.tv_sec = (int64_t)tmp.tv_sec;
+	tv->tv_sec = (int64_t)tmp.tv_sec;
 	tv->tv_usec = (int64_t)tmp.tv_usec;
 	return;
 }
