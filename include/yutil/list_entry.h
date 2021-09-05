@@ -209,8 +209,24 @@ static inline void list_entry_add_head(list_entry_head_t* head,
 }
 
 // insert entry to the tail
-#define list_entry_add_tail(head, entry) \
-	list_entry_add_next(head, (head)->prev, entry)
+static inline void list_entry_add_tail(list_entry_head_t* head,
+				       list_entry_t* entry)
+{
+#if _WIN32
+	list_entry_add_prev(head, head, entry);
+#else
+	assert(head && head->prev && head->prev->next && entry);
+	assert(head->prev != entry);
+	assert(list_entry_is_valid(head));
+
+	head->prev->next->prev = entry;
+	entry->next = head->prev->next;
+	entry->prev = head->prev;
+	head->prev->next = entry;
+
+	head->length++;
+#endif
+}
 
 // delete the entry (private interface)
 static inline void list_entry_delete_(list_entry_head_t* head,
