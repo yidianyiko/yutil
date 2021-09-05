@@ -1,9 +1,9 @@
-#include <wchar.h>
+﻿#include <wchar.h>
 #include <string.h>
+#include "test.h"
+#include "libtest.h"
 #include "../include/keywords.h"
 #include "../include/yutil/charset.h"
-
-#include "test.h"
 
 void test_charset(void)
 {

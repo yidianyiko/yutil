@@ -185,7 +185,7 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node)
 {
 	rbtree_node_t *brother;
-	while (node != tree->root && (!node || rbtree_is_black(node))) {
+	while (node != tree->root && (node && rbtree_is_black(node))) {
 		if (node && (node == node->parent->left)) {
 			brother = node->parent->right;
 
@@ -196,15 +196,14 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node)
 				brother = node->parent->right;
 			}
 
-			if ((!brother->left ||
-			     rbtree_is_black(brother->left)) &&
-			    (!brother->left ||
+			if ((brother->left && rbtree_is_black(brother->left)) &&
+			    (brother->left &&
 			     rbtree_is_black(brother->right))) {
 				rbtree_red(brother);
 				node = node->parent;
 
 			} else {
-				if ((!brother->right ||
+				if ((brother->right &&
 				     rbtree_is_black(brother->right))) {
 					rbtree_black(brother->left);
 					rbtree_red(brother);
@@ -228,14 +227,13 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node)
 				brother = node->parent->left;
 			}
 
-			if ((!brother->left ||
-			     rbtree_is_black(brother->left)) &&
-			    (!brother->left ||
+			if ((brother->left && rbtree_is_black(brother->left)) &&
+			    (brother->left &&
 			     rbtree_is_black(brother->right))) {
 				rbtree_red(brother);
 				node = node->parent;
 			} else {
-				if ((!brother->right ||
+				if ((brother->right &&
 				     rbtree_is_black(brother->left))) {
 					rbtree_black(brother->right);
 					rbtree_red(brother);
@@ -424,6 +422,7 @@ void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 
 	return;
 }
+
 /** 删除红黑树中的结点 */
 int rbtree_delete(rbtree_t *tree, int key, const void *keydata)
 {
