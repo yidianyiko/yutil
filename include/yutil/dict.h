@@ -176,7 +176,6 @@ struct dict_iterator_t {
 /* If our unsigned long type can store a 64 bit number, use a 64 bit PRNG. */
 #define random_u_long() rand()
 
-
 /* API */
 Y_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
 Y_API int dict_expand(dict_t *d, unsigned long size);

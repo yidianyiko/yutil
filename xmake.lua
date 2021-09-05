@@ -6,7 +6,6 @@ add_rules("mode.release", "mode.debug")
 set_warnings("all")
 add_defines("Y_EXPORTS", "_UNICODE")
 
-
 -- for the windows platform (msvc)
 if is_plat("windows") then
     add_defines("_CRT_SECURE_NO_WARNINGS")
@@ -17,7 +16,6 @@ end
 if is_mode("release") then
     set_symbols("none")
 end
-
 
 target("yutil")
     -- make as a static/shared library
