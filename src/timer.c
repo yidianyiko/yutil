@@ -1,6 +1,8 @@
 ﻿/* timer.c -- timer support.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -30,7 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/list.h"
 #include "../include/yutil/time.h"
@@ -40,9 +42,9 @@
 #define STATE_PAUSE 0
 
 /*----------------------------- struct * --------------------------------*/
-typedef struct timer_t timer_t;
+typedef struct timer_t_ timer_t_;
 
-struct timer_t {
+struct timer_t_ {
 	int state;    /**< 状态 */
 	long int id;  /**< 定时器ID */
 	bool_t reuse; /**< 是否重复使用该定时器 */
@@ -68,17 +70,17 @@ struct timer_list_t_ {
 /** 更新定时器在定时器列表中的位置 */
 static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	int64_t t, tt;
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
 	timer = node->data;
-	t = time_get_delta(timer->start_time);
+	t = get_time_delta(timer->start_time);
 	t = timer->total_ms - t + timer->pause_ms;
 	list_for_each(cur, &list->timers)
 	{
 		timer = cur->data;
-		tt = time_get_delta(timer->start_time);
+		tt = get_time_delta(timer->start_time);
 		tt = timer->total_ms - tt + timer->pause_ms;
 		if (t <= tt) {
 			list_link(&list->timers, cur->prev, node);
@@ -88,9 +90,9 @@ static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 	list_append_node(&list->timers, node);
 }
 
-static timer_t *timer_find(int timer_id, timer_list_t *list)
+static timer_t_ *timer_find(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	list_node_t *node;
 	list_for_each(node, &list->timers)
 	{
@@ -113,7 +115,6 @@ timer_list_t *timer_list_create()
 	}
 	list->active = TRUE;
 	list->id_count = 0;
-	time_init();
 	list_init(&list->timers);
 	return list;
 }
@@ -121,12 +122,12 @@ timer_list_t *timer_list_create()
 int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 		   bool_t reuse, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -1;
 	}
 
-	timer = (timer_t *)malloc(sizeof(timer_t));
+	timer = (timer_t_ *)malloc(sizeof(timer_t_));
 	if (timer == NULL)
 		return -1;
 	timer->arg = arg;
@@ -136,7 +137,7 @@ int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 	timer->total_ms = n_ms;
 	timer->state = STATE_RUN;
 	timer->id = ++list->id_count;
-	timer->start_time = get_time();
+	timer->start_time = get_time_ms();
 	timer->node.next = NULL;
 	timer->node.prev = NULL;
 	timer->node.data = timer;
@@ -147,7 +148,7 @@ int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 
 int timer_destroy(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -164,7 +165,7 @@ int timer_destroy(int timer_id, timer_list_t *list)
 
 int timer_pause(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -172,7 +173,7 @@ int timer_pause(int timer_id, timer_list_t *list)
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		/* 记录暂停时的时间 */
-		timer->pause_time = get_time();
+		timer->pause_time = get_time_ms();
 		timer->state = STATE_PAUSE;
 	}
 
@@ -181,7 +182,7 @@ int timer_pause(int timer_id, timer_list_t *list)
 
 int timer_continue(int timer_id, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -189,7 +190,7 @@ int timer_continue(int timer_id, timer_list_t *list)
 	timer = timer_find(timer_id, list);
 	if (timer) {
 		/* 计算处于暂停状态的时长 */
-		timer->pause_ms += (long int)time_get_delta(timer->pause_time);
+		timer->pause_ms += (long int)get_time_delta(timer->pause_time);
 		timer->state = STATE_RUN;
 	}
 
@@ -198,7 +199,7 @@ int timer_continue(int timer_id, timer_list_t *list)
 
 int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 {
-	timer_t *timer;
+	timer_t_ *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -207,7 +208,7 @@ int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 	if (timer) {
 		timer->pause_ms = 0;
 		timer->total_ms = n_ms;
-		timer->start_time = get_time();
+		timer->start_time = get_time_ms();
 	}
 
 	return timer ? 0 : -1;
@@ -229,7 +230,7 @@ size_t timer_list_process(timer_list_t *list)
 	size_t count = 0;
 	long lost_ms;
 
-	timer_t *timer = NULL;
+	timer_t_ *timer = NULL;
 	list_node_t *node;
 	while (list && list->active) {
 		list_for_each(node, &list->timers)
@@ -243,7 +244,7 @@ size_t timer_list_process(timer_list_t *list)
 			break;
 		}
 		count += 1;
-		lost_ms = (long)time_get_delta(timer->start_time);
+		lost_ms = (long)get_time_delta(timer->start_time);
 		/* 若流失的时间未达到总定时时长 */
 		if (lost_ms - timer->pause_ms < timer->total_ms) {
 			break;
@@ -253,7 +254,7 @@ size_t timer_list_process(timer_list_t *list)
 		timer->callback(timer->arg);
 		if (timer->reuse) {
 			timer->pause_ms = 0;
-			timer->start_time = get_time();
+			timer->start_time = get_time_ms();
 			timer_list_add_node(node, list);
 		} else {
 			free(timer);
@@ -270,4 +271,5 @@ void timer_list_destroy(timer_list_t *list)
 	}
 	list->active = FALSE;
 	list_clear_data(&list->timers, free);
+	free(list);
 }

@@ -1,5 +1,5 @@
-/*
- * logger.h -- Logger module
+﻿/*
+ * charset.h -- The charset opreation set.
  *
  * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
  * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
@@ -29,48 +29,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifndef UTIL_LOGGER_H
-#define UTIL_LOGGER_H
+#ifndef UTIL_CHARSET_H
+#define UTIL_CHARSET_H
 
 Y_BEGIN_DECLS
 
-enum logger_level_e {
-	LOGGER_LEVEL_ALL,
-	LOGGER_LEVEL_DEBUG,
-	LOGGER_LEVEL_INFO,
-	LOGGER_LEVEL_WARNING,
-	LOGGER_LEVEL_ERROR,
-	LOGGER_LEVEL_OFF
-};
+enum encoding_e { ENCODING_ANSI, ENCODING_UTF8 };
 
-typedef enum logger_level_e logger_level_e;
+typedef enum encoding_e encoding_e;
 
-Y_API void logger_set_level(logger_level_e level);
+#define decode_utf8(WSTR, STR, MAX_LEN) \
+	decode_string(WSTR, STR, MAX_LEN, ENCODING_UTF8)
 
-Y_API int logger_log(logger_level_e level, const char* fmt, ...);
+#define encode_utf8(STR, WSTR, MAX_LEN) \
+	encode_string(STR, WSTR, MAX_LEN, ENCODING_UTF8)
 
-Y_API int logger_log_w(logger_level_e level, const wchar_t* fmt, ...);
+Y_API size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
+			   encoding_e encoding);
 
-Y_API void logger_set_handler(void (*handler)(const char*));
-
-Y_API void logger_set_handler_w(void (*handler)(const wchar_t*));
-
-#define logger_info(fmt, ...) logger_log(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
-#define logger_debug(fmt, ...) \
-	logger_log(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-#define logger_warning(fmt, ...) \
-	logger_log(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
-#define logger_error(fmt, ...) \
-	logger_log(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
-#define logger_info_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
-#define logger_debug_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-#define logger_warning_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_WARNING, fmt, ##__VA_ARGS__)
-#define logger_error_w(fmt, ...) \
-	logger_log_w(LOGGER_LEVEL_ERROR, fmt, ##__VA_ARGS__)
-
+Y_API size_t encode_string(char *str, const wchar_t *wstr, size_t max_len,
+			   encoding_e encoding);
 Y_END_DECLS
+
 #endif

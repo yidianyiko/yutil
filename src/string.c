@@ -1,7 +1,8 @@
 ﻿/* string.c -- The string operation set.
  *
- *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -33,16 +34,18 @@
 #include <errno.h>
 #include <ctype.h>
 #include <wchar.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
+#include "../include/yutil/strlist.h"
+#include "../include/yutil/math.h"
 
 size_t strtolower(char *outstr, const char *instr)
 {
 	char *op = outstr;
 	const char *ip = instr;
 	for (; *ip; ++ip, ++op) {
-		*op = tolower(*ip);
+		*op = (char)tolower(*ip);
 	}
 	*op = 0;
 	return ip - instr;
@@ -51,7 +54,7 @@ size_t strtolower(char *outstr, const char *instr)
 char *strdup2(const char *str)
 {
 	size_t len = strlen(str) + 1;
-	char *out = malloc(sizeof(char) * len);
+	char *out = (char *)malloc(sizeof(char) * len);
 	if (!out) {
 		return NULL;
 	}
@@ -62,7 +65,7 @@ char *strdup2(const char *str)
 wchar_t *wcsdup2(const wchar_t *str)
 {
 	size_t len = wcslen(str) + 1;
-	wchar_t *out = malloc(sizeof(wchar_t) * len);
+	wchar_t *out = (wchar_t *)malloc(sizeof(wchar_t) * len);
 	if (!out) {
 		return NULL;
 	}
@@ -172,7 +175,7 @@ size_t strreplace(char *str, size_t max_len, const char *substr,
 	}
 	len = strlen(newstr);
 	buf_len = strlen(str) + len + 1;
-	buf = malloc(buf_len * sizeof(wchar_t));
+	buf = (char *)malloc(buf_len * sizeof(wchar_t));
 	strcpy(buf, str);
 	pout = buf + (pin - str);
 	strcpy(pout, newstr);
@@ -197,7 +200,7 @@ size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
 	}
 	len = wcslen(newstr);
 	buf_len = wcslen(str) + len + 1;
-	buf = malloc(buf_len * sizeof(wchar_t));
+	buf = (wchar_t *)malloc(buf_len * sizeof(wchar_t));
 	wcscpy(buf, str);
 	pout = buf + (pin - str);
 	wcscpy(pout, newstr);

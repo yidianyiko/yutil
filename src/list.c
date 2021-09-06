@@ -29,7 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdlib.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/list.h"
 
 void list_init(list_t *list)
@@ -71,7 +71,7 @@ list_node_t *list_get_node_by_pos(const list_t *list, size_t pos)
 list_node_t *list_insert(list_t *list, size_t pos, void *data)
 {
 	list_node_t *node;
-	node = malloc(sizeof(list_node_t));
+	node = (list_node_t *)malloc(sizeof(list_node_t));
 	if (node == NULL)
 		return NULL;
 	node->data = data;

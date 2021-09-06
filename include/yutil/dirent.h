@@ -53,6 +53,9 @@ typedef struct dir_t dir_t;
 #define dir_get_file_name dir_get_file_name_a
 #endif
 
+Y_API dir_t *dir_create();
+Y_API void dir_destroy(dir_t *dir);
+
 Y_API int dir_open_w(const wchar_t *path, dir_t *dir);
 
 Y_API int dir_open_a(const char *path, dir_t *dir);

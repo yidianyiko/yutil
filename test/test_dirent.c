@@ -1,11 +1,13 @@
 #include "test.h"
 #include "libtest.h"
 #include <locale.h>
-#include "../include/keywords.h"
+#include <stdio.h>
+#include <wchar.h>
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dirent.h"
 
 #if defined(_WIN32)
-#include <Windows.h>
+#include <windows.h>
 #else
 #include <unistd.h>
 #endif
@@ -40,9 +42,9 @@ static void test_dirent_a()
 #endif
 	len = strlen(path);
 
-	it_b("dir_open_a() should work", dir_open_a(path, &dir) == 0, TRUE);
+	it_b("dir_open_a() should work", dir_open_a(path, dir) == 0, TRUE);
 
-	while ((entry = dir_read_a(&dir))) {
+	while ((entry = dir_read_a(dir)) != NULL) {
 		dir_len++;
 		name = dir_get_file_name_a(entry);
 		if (name[0] == '.') {
@@ -78,9 +80,9 @@ static void test_dirent_w(void)
 	setlocale(LC_ALL, "C");
 #endif
 	len = wcslen(path_w);
-	it_b("dir_open_w() should work", dir_open_w(path_w, &dir) == 0, TRUE);
+	it_b("dir_open_w() should work", dir_open_w(path_w, dir) == 0, TRUE);
 
-	while ((entry = dir_read_w(&dir))) {
+	while ((entry = dir_read_w(dir)) != NULL) {
 		dir_len++;
 		name_w = dir_get_file_name_w(entry);
 		if (name_w[0] == '.') {
@@ -109,6 +111,8 @@ static void test_dirent_w(void)
 
 void test_dirent(void)
 {
+	it_b("dir_create() should work", (dir = dir_create()) != NULL, TRUE);
 	test_dirent_a();
 	test_dirent_w();
+	dir_destroy(dir);
 }

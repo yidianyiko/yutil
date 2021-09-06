@@ -1,11 +1,11 @@
 #include <wchar.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/logger.h"
 
 #ifdef _WIN32
-#include <Windows.h>
+#include <windows.h>
 static void win32_logger_log(const char *str)
 {
 	OutputDebugStringA(str);

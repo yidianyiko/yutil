@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/time.h"
 #include "../include/yutil/dict.h"
 
@@ -53,6 +53,8 @@
 #define DICT_HT_INITIAL_SIZE 4
 /* Unused arguments generate annoying warnings... */
 #define dict_not_used(V) ((void)V)
+
+#define time_in_milliseconds get_time_ms
 
 /* Using dict_enable_resize() / dictDisable_resize() we make possible to
  * enable/disable resizing of the hash table as needed. */
@@ -123,7 +125,7 @@ static void _dict_reset(dict_hash_map_t *ht)
 /* Create a new hash table */
 dict_t *dict_create(dict_type_t *type, void *priv_data_ptr)
 {
-	dict_t *d = malloc(sizeof(*d));
+	dict_t *d = (dict_t *)malloc(sizeof(*d));
 
 	_dict_init(d, type, priv_data_ptr);
 	return d;
@@ -272,11 +274,6 @@ int dict_rehash(dict_t *d, int n)
 
 	/* More to rehash... */
 	return 1;
-}
-
-long long time_in_milliseconds(void)
-{
-	return get_time();
 }
 
 /* Rehash in ms+"delta" milliseconds. The value of "delta" is larger
@@ -1282,47 +1279,6 @@ void dict_get_stats(char *buf, size_t buf_size, dict_t *d)
 		orig_buf[orig_bufsize - 1] = '\0';
 }
 
-#if ULONG_MAX >= 0xffffffffffffffff
-unsigned long long genrand64_int64(void)
-{
-	int i;
-	unsigned long long x;
-	static unsigned long long mag01[2] = { 0ULL, MATRIX_A };
-
-	if (mti >= NN) { /* generate NN words at one time */
-
-		/* if init_genrand64() has not been called, */
-		/* a default initial seed is used     */
-		if (mti == NN + 1)
-			init_genrand64(5489ULL);
-
-		for (i = 0; i < NN - MM; i++) {
-			x = (mt[i] & UM) | (mt[i + 1] & LM);
-			mt[i] = mt[i + MM] ^ (x >> 1) ^ mag01[(int)(x & 1ULL)];
-		}
-		for (; i < NN - 1; i++) {
-			x = (mt[i] & UM) | (mt[i + 1] & LM);
-			mt[i] = mt[i + (MM - NN)] ^ (x >> 1) ^
-				mag01[(int)(x & 1ULL)];
-		}
-		x = (mt[NN - 1] & UM) | (mt[0] & LM);
-		mt[NN - 1] = mt[MM - 1] ^ (x >> 1) ^ mag01[(int)(x & 1ULL)];
-
-		mti = 0;
-	}
-
-	x = mt[mti++];
-
-	x ^= (x >> 29) & 0x5555555555555555ULL;
-	x ^= (x << 17) & 0x71D67FFFEDA60000ULL;
-	x ^= (x << 37) & 0xFFF7EEE000000000ULL;
-	x ^= (x >> 43);
-
-	return x;
-}
-
-#endif
-
 unsigned int string_key_dict_key_hash(const void *key)
 {
 	const char *buf = key;
@@ -1336,6 +1292,7 @@ unsigned int string_key_dict_key_hash(const void *key)
 int string_key_dict_key_compare(void *privdata, const void *key1,
 				const void *key2)
 {
+	dict_not_used(privdata);
 	if (strcmp(key1, key2) == 0) {
 		return 1;
 	}
@@ -1344,19 +1301,21 @@ int string_key_dict_key_compare(void *privdata, const void *key1,
 
 void *string_key_dict_key_dup(void *privdata, const void *key)
 {
+	dict_not_used(privdata);
 	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
 	if (newkey == NULL)
-		return;
+		return NULL;
 	strcpy(newkey, key);
 	return newkey;
 }
 
 void string_key_dict_key_destructor(void *privdata, void *key)
 {
+	dict_not_used(privdata);
 	free(key);
 }
 
-void string_key_dict_key_type(dict_type_t *t)
+void dict_init_string_key_type(dict_type_t *t)
 {
 	t->hash_function = string_key_dict_key_hash;
 	t->key_dup = NULL;

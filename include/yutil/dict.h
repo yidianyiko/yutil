@@ -71,7 +71,7 @@ struct dict_entry_t {
 };
 
 struct dict_type_t {
-	uint64_t (*hash_function)(const void *key);
+	unsigned int (*hash_function)(const void *key);
 	void *(*key_dup)(void *priv_data, const void *key);
 	void *(*val_dup)(void *priv_data, const void *obj);
 	int (*key_compare)(void *priv_data, const void *key1, const void *key2);
@@ -174,12 +174,7 @@ struct dict_iterator_t {
 #define dict_resume_rehashing(d) (d)->pause_rehash--
 
 /* If our unsigned long type can store a 64 bit number, use a 64 bit PRNG. */
-#if ULONG_MAX >= 0xffffffffffffffff
-unsigned long long genrand64_int64(void);
-#define random_u_long() ((unsigned long)gen_rand64_int64())
-#else
 #define random_u_long() rand()
-#endif
 
 /* API */
 Y_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
@@ -229,7 +224,7 @@ Y_API int string_key_dict_key_compare(void *privdata, const void *key1,
 				      const void *key2);
 Y_API void *string_key_dict_key_dup(void *privdata, const void *key);
 Y_API void string_key_dict_key_destructor(void *privdata, void *key);
-Y_API void string_key_dict_key_type(dict_type_t *t);
+Y_API void dict_init_string_key_type(dict_type_t *t);
 Y_API void dict_init_string_copy_key_type(dict_type_t *t);
 
 Y_END_DECLS

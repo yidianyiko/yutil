@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/time.h"
 
 #ifdef _WIN32
@@ -39,8 +39,7 @@ static int test_msg(const char *fmt, ...)
 void test_begin(void)
 {
 	if (test_start_time == 0) {
-		time_init();
-		test_start_time = get_time();
+		test_start_time = get_time_ms();
 	}
 	test_msg_indent++;
 }
@@ -61,7 +60,7 @@ int test_result(void)
 int print_test_result(void)
 {
 	printf(GREEN("  %zu passing") " (%ums)\n", tests_passed,
-	       (unsigned)time_get_delta(test_start_time));
+	       (unsigned)get_time_delta(test_start_time));
 	if (tests_total > tests_passed) {
 		printf(RED("  %zu faling\n\n"), tests_total - tests_passed);
 		return (int)(tests_total - tests_passed);

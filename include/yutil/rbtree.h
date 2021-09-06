@@ -48,6 +48,7 @@ struct rbtree_t_ {
 	rbtree_node_t *root;    // the pointer of the root of the tree
 	int (*compare)(void *, const void *);
 	void (*destroy)(void *);
+	int total_node;
 };
 
 /* macros */
@@ -81,7 +82,7 @@ Y_API void *rbtree_get_data_by_key(rbtree_t *tree, int key);
 
 Y_API void rbtree_destroy(rbtree_t *tree);
 
-Y_API rbtree_node_t *rbtree_next(rbtree_node_t *node);
+Y_API rbtree_node_t *rbtree_next(const rbtree_node_t *node);
 /* get the minimum key of node in a subtree of the rbtree */
 static inline rbtree_node_t *rbtree_get_min(rbtree_node_t *subtree)
 {

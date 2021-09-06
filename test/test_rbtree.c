@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/rbtree.h"
 #include "../include/yutil/time.h"
 
@@ -25,12 +25,12 @@ void test_rbtree(void)
 		"mango", "pear",   "pineapple", "strawberry", "watermelon"
 	};
 
-	long long time1 = (long long)get_time();
+	long long time1 = (long long)get_time_ms();
 	for (i = 0; i < count; i++) {
 		rbtree_insert(&tree, i + 1, NULL, v[i % 10]);
 	}
 	printf("Inserting %d nodes spends %lld ms.\n", count,
-	       (long long)time_get_delta(time1));
+	       (long long)get_time_delta(time1));
 
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;
@@ -47,18 +47,18 @@ void test_rbtree(void)
 		}
 	}
 
-	long long time2 = (long long)get_time();
-	printf("Searching %d nodes among %d spends %lld seconds.\n",
-	       search_count, count, time_get_delta(time2));
+	long long time2 = (long long)get_time_ms();
+	printf("Searching %d nodes among %d spends %lld ms.\n", search_count,
+	       count, get_time_delta(time2));
 	it_i("rbtree_search_by_key() should work", c, search_count);
 
 	for (i = 1; i <= delete_count; i++) {
 		rbtree_delete(&tree, i, NULL);
 	}
 
-	long long time3 = (long long)get_time();
-	printf("Deleting %d nodes among %d spends %lld seconds.\n",
-	       delete_count, count, time_get_delta(time3));
+	long long time3 = (long long)get_time_ms();
+	printf("Deleting %d nodes among %d spends %lld ms.\n", delete_count,
+	       count, get_time_delta(time3));
 	c = 0;
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;

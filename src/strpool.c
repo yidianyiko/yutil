@@ -1,7 +1,9 @@
 ﻿/*
  * strpool.c -- string pool
  *
- * Copyright (c) 2019, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strpool.h"
 #include "../include/yutil/dict.h"
@@ -59,12 +61,12 @@ strpool_t *strpool_create(void)
 {
 	strpool_t *pool;
 
-	pool = malloc(sizeof(strpool_t));
+	pool = (strpool_t *)malloc(sizeof(strpool_t));
 	if (!pool) {
 		return NULL;
 	}
 	pool->size = 0;
-	string_key_dict_key_type(&pool->type);
+	dict_init_string_key_type(&pool->type);
 	pool->dict = dict_create(&pool->type, NULL);
 	return pool;
 }
@@ -75,11 +77,11 @@ char *strpool_alloc_str(strpool_t *pool, const char *str)
 	size_t length;
 	strpool_entry_t *entry;
 
-	entry = dict_fetch_value(pool->dict, str);
+	entry = (strpool_entry_t *)dict_fetch_value(pool->dict, str);
 	if (!entry) {
 		length = strlen(str);
 		size = sizeof(strpool_entry_t) + length + 1;
-		entry = malloc(size);
+		entry = (strpool_entry_t *)malloc(size);
 		if (!entry) {
 			return NULL;
 		}

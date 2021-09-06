@@ -1,13 +1,15 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dict.h"
+#include "../include/yutil/time.h"
 
-uint64_t hash_callback(const void *key)
+unsigned int hash_callback(const void *key)
 {
 	return dict_gen_hash_function((unsigned char *)key,
 				      strlen((char *)key));
@@ -15,6 +17,7 @@ uint64_t hash_callback(const void *key)
 
 int compare_callback(void *privdata, const void *key1, const void *key2)
 {
+	(void)privdata;
 	int l1, l2;
 
 	l1 = strlen((char *)key1);
@@ -47,10 +50,10 @@ char *string_from_long_long(long long value)
 dict_type_t BenchmarkDictType = { hash_callback, NULL, NULL, compare_callback,
 				  free_callback, NULL, NULL };
 
-#define start_benchmark() start = time_in_milliseconds()
+#define start_benchmark() start = get_time_ms()
 #define end_benchmark(msg)                                              \
 	do {                                                            \
-		elapsed = time_in_milliseconds() - start;               \
+		elapsed = get_time_ms() - start;                        \
 		printf(msg ": %ld items in %lld ms\n", count, elapsed); \
 	} while (0)
 

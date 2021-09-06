@@ -1,6 +1,8 @@
 ﻿/* time.c -- The time operation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -26,10 +28,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+#include <stdint.h>
 #ifndef _WIN32
 #include <time.h>
-#include <stdint.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
@@ -39,39 +42,41 @@
 
 struct _timeval_t {
 	int64_t tv_sec;
-	int64_t tv_usec;
+	signed long tv_usec;
 };
 
-void time_init(void)
-{
-	return;
-}
-
-int64_t get_time(void)
+int64_t get_time_ms(void)
 {
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
+	return ((int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+int64_t get_time_us()
+{
+	timeval_t tv = { 0 };
+	get_time_of_day(&tv);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
-int64_t time_get_delta(int64_t start)
+int64_t get_time_delta(int64_t start)
 {
-	int64_t now = get_time();
+	int64_t now = get_time_ms();
 	if (now < start) {
 		return (TIME_WRAP_VALUE - start) + now;
 	}
 	return now - start;
 }
 
-void msleep(unsigned int ms)
+void sleep_ms(unsigned int ms)
 {
 	usleep(ms * 1000);
 }
 
-void sleep(unsigned int s)
+void sleep_s(unsigned int s)
 {
-	msleep(s * 1000);
+	sleep_ms(s * 1000);
 }
 
 // get the time from 1970-01-01 00:00:00:000
@@ -81,15 +86,9 @@ void get_time_of_day(timeval_t *tv)
 	if (gettimeofday(&tmp, NULL))
 		return;
 
-	t->.tv_sec = (int64_t)tmp.tv_sec;
-	tv->tv_usec = (int64_t)tmp.tv_usec;
+	tv->tv_sec = (int64_t)tmp.tv_sec;
+	tv->tv_usec = (signed long)tmp.tv_usec;
 	return;
 }
 
-int64_t get_utime()
-{
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
-	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
-}
 #endif

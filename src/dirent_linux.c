@@ -28,14 +28,18 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _WIN32
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <dirent.h>
 #include <locale.h>
-#include "../include/keywords.h"
+#include <wchar.h>
+#ifndef _WIN32
+#include <dirent.h>
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dirent.h"
+#include "../include/yutil/charset.h"
+
+#define DIRENT_NAME_LEN 256
 
 typedef DIR *dir_handle_t;
 
@@ -43,8 +47,26 @@ struct dir_entry_t {
 	struct dirent dirent;
 	wchar_t name[DIRENT_NAME_LEN];
 };
+struct dir_t {
+	dir_handle_t handle;
+	dir_entry_t entry;
+	int cached;
+};
 
-#define DIRENT_NAME_LEN 256
+dir_t *dir_create()
+{
+	dir_t *dir = (dir_t *)malloc(sizeof(dir_t));
+	dir_entry_t t = { 0 };
+	dir->cached = 0;
+	dir->entry = t;
+	dir->handle = NULL;
+	return dir;
+}
+
+void dir_destroy(dir_t *dir)
+{
+	free(dir);
+}
 
 int dir_open_a(const char *path, dir_t *dir)
 {
@@ -60,15 +82,10 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 	int len;
 	char *newpath;
 
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = wcstombs(NULL, path, 0) + 1;
+	len = encode_string(NULL, path, 0, ENCODING_UTF8) + 1;
 	newpath = malloc(len * sizeof(wchar_t));
-	wcstombs(newpath, path, len);
-	setlocale(LC_ALL, "C");
+	encode_string(newpath, path, len, ENCODING_UTF8);
+
 	dir->handle = opendir(newpath);
 	free(newpath);
 	if (!dir->handle) {
@@ -100,14 +117,8 @@ dir_entry_t *dir_read_w(dir_t *dir)
 		return NULL;
 	}
 	dir->entry.dirent = *d;
-	if (!(setlocale(LC_ALL, "C.UTF-8") ||
-	      setlocale(LC_ALL, "en_US.UTF-8") ||
-	      setlocale(LC_ALL, "zh_CN.UTF-8"))) {
-		setlocale(LC_ALL, "");
-	}
-	len = mbstowcs((dir->entry.name, d->d_name,
-				DIRENT_NAME_LEN);
-	setlocale(LC_ALL, "C");
+	len = decode_string(dir->entry.name, d->d_name, DIRENT_NAME_LEN,
+			    ENCODING_UTF8);
 	dir->entry.name[len] = 0;
 	return &dir->entry;
 }

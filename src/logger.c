@@ -33,7 +33,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
 
@@ -43,7 +43,7 @@ struct logger_t {
 	char inited;
 	void (*handler)(const char*);
 	void (*handler_w)(const wchar_t*);
-	logger_level_t level;
+	logger_level_e level;
 };
 
 struct logger_buffer_t {
@@ -61,19 +61,13 @@ static list_entry_head_t logger_buffer_head = { 0 };
 /* buffered output enabled flag */
 static bool_t is_enabled = FALSE;
 
-void logger_set_level(logger_level_t level)
+void logger_set_level(logger_level_e level)
 {
 	logger.level = level;
 }
 
-int logger_log(logger_level_t level, const char* fmt, ...)
+int logger_log(logger_level_e level, const char* fmt, ...)
 {
-	int len;
-	va_list args;
-	logger_buffer_t* node;
-	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
-	if (node == NULL)
-		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -82,6 +76,12 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 				     buf_entry);
 		logger.inited = 1;
 	}
+	int len;
+	va_list args;
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 
 	va_start(args, fmt);
 	len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
@@ -109,7 +109,7 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 					    logger_buffer_t);
 
 			if (logger.handler) {
-				logger.handler(&output->buffer);
+				logger.handler((const char*)&output->buffer);
 			} else {
 				printf("%s", output->buffer);
 			}
@@ -121,14 +121,8 @@ int logger_log(logger_level_t level, const char* fmt, ...)
 	return len;
 }
 
-int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
+int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 {
-	int len;
-	va_list args;
-	logger_buffer_t* node;
-	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
-	if (node == NULL)
-		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -137,9 +131,16 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 				     buf_entry);
 		logger.inited = 1;
 	}
+	int len;
+	va_list args;
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 
 	va_start(args, fmt);
-	len = vswprintf(&node->buffer_w, BUFFER_SIZE, fmt, args);
+	len =
+	    vswprintf((wchar_t* const)&node->buffer_w, BUFFER_SIZE, fmt, args);
 	va_end(args);
 	node->buffer_w[BUFFER_SIZE - 1] = 0;
 	list_entry_add_tail(&logger_buffer_head, &node->buf_entry);
@@ -164,7 +165,8 @@ int logger_log_w(logger_level_t level, const wchar_t* fmt, ...)
 					    logger_buffer_t);
 
 			if (logger.handler) {
-				logger.handler_w(&output->buffer_w);
+				logger.handler_w(
+				    (const wchar_t*)&output->buffer_w);
 			} else {
 				wprintf(L"%s", output->buffer_w);
 			}

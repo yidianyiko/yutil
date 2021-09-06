@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/list.h"
 
 void test_list_concat(void)

@@ -28,12 +28,13 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#if defined(_WIN32)
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <Windows.h>
+#ifdef _WIN32
+#include <windows.h>
 
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dirent.h"
 
 typedef HANDLE dir_handle_t;
@@ -48,6 +49,21 @@ struct dir_t {
 	dir_entry_t entry;
 	int cached;
 };
+
+dir_t *dir_create()
+{
+	dir_t *dir = (dir_t *)malloc(sizeof(dir_t));
+	dir_entry_t t = { 0 };
+	dir->cached = 0;
+	dir->entry = t;
+	dir->handle = NULL;
+	return dir;
+}
+
+void dir_destroy(dir_t *dir)
+{
+	free(dir);
+}
 
 int dir_open_a(const char *path, dir_t *dir)
 {

@@ -3,10 +3,9 @@
 #include <stdlib.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strlist.h"
-
 
 static void test_cmdsplit(void)
 {

@@ -1,40 +1,52 @@
-#include <windows.h>
-#include <process.h> /* _beginthread, _endthread */
 #include <stdint.h>
 #include <stdio.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/keywords.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/timer.h"
 #include "../include/yutil/time.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#include <process.h> /* _beginthread, _endthread */
+static HANDLE mutex;
+#endif
+
 static timer_list_t *timer_list = NULL;
 static int count = 0;
-static HANDLE mutex;
+
+/* Unused arguments generate annoying warnings... */
+#define arg_not_used(V) ((void)V)
 
 void on_time_out(void *arg)
 {
 	int *timer_id = arg;
 
-	it_b("check timer_free()", timer_destroy(*timer_id, timer_list) == 0,
+	it_b("check timer_destroy()", timer_destroy(*timer_id, timer_list) == 0,
 	     TRUE);
 	timer_list_destroy(timer_list);
 	count = -1;
+#ifdef _WIN32
 	_endthread();
+#endif
 }
 
 void on_interval(void *arg)
 {
+	arg_not_used(arg);
 	count++;
 }
 
 void process(void *ignored)
 {
+	arg_not_used(ignored);
 	while (1) {
+#ifdef _WIN32
 		WaitForSingleObject(mutex, INFINITE);
 		timer_list_process(timer_list);
 		ReleaseMutex(mutex);
-		msleep(20L);
+		sleep_ms(20L);
+#endif
 	}
 }
 
@@ -42,6 +54,7 @@ void test_timer(void)
 {
 	int timer_id;
 	int ret = count;
+#ifdef _WIN32
 	mutex = CreateMutex(NULL, FALSE, NULL);
 
 	it_b("check timer_list_new()",
@@ -58,30 +71,32 @@ void test_timer(void)
 
 	// process
 	_beginthread(process, 0, NULL);
-	msleep(50L);
-	ret = count;
+	sleep_ms(50L);
+
 	// test pause
 	WaitForSingleObject(mutex, INFINITE);
 	timer_pause(timer_id, timer_list);
 	ReleaseMutex(mutex);
-	msleep(50L);
+	ret = count;
+	sleep_ms(50L);
 	it_b("check timer_pause()", (ret != 0) && (ret == count), TRUE);
 
 	// test continue
 	WaitForSingleObject(mutex, INFINITE);
 	timer_continue(timer_id, timer_list);
 	ReleaseMutex(mutex);
-	msleep(50L);
+	sleep_ms(50L);
 	it_b("check timer_continue()", ret < count, TRUE);
 
 	count = 0;
 	// test reset
 	WaitForSingleObject(mutex, INFINITE);
-	timer_reset(timer_id, 30, timer_list);
+	timer_reset(timer_id, 70, timer_list);
 	ReleaseMutex(mutex);
-	msleep(50L);
-	it_i("check timer_reset()", count, 1);
+	sleep_ms(60L);
+	it_i("check timer_reset()", count, 0);
 
-	msleep(50L);
+	sleep_ms(70L);
 	it_b("check timer_list_process()", count == -1, TRUE);
+#endif
 }

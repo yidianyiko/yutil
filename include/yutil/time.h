@@ -1,7 +1,9 @@
 ﻿/*
  * time.c -- The time operation set.
  *
- * Copyright (c) 2018, Liu chao <lc-soft@live.cn> All rights reserved.
+ * Copyright (c) 2018, Liu chao <lc-soft@live.cn>
+ * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com>
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,17 +37,15 @@ Y_BEGIN_DECLS
 
 typedef struct _timeval_t timeval_t;
 
-Y_API void time_init(void);
+Y_API int64_t get_time_ms(void);
 
-Y_API int64_t get_time(void);
+Y_API int64_t get_time_us(void);
 
-Y_API int64_t get_utime(void);
+Y_API int64_t get_time_delta(int64_t start);
 
-Y_API int64_t time_get_delta(int64_t start);
+Y_API void sleep_s(unsigned int s);
 
-Y_API void sleep(unsigned int s);
-
-Y_API void msleep(unsigned int ms);
+Y_API void sleep_ms(unsigned int ms);
 
 Y_API void get_time_of_day(timeval_t *tv);
 
