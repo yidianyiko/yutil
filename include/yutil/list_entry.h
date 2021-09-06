@@ -32,7 +32,6 @@
 
 /* ------------------------------- includes --------------------------------*/
 #include <assert.h>
-#include <stdio.h>
 #include <stddef.h>
 #include "keywords.h"
 #include "types.h"

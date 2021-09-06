@@ -20,17 +20,17 @@ end
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
+
+        -- export all symbols for windows/dll
+    if is_plat("windows") and is_kind("shared") then
+        if is_mode("release") then
+            set_optimize("fastest")
+        end
+        add_rules("utils.symbols.export_all")
+    end
+    
     add_headerfiles("include/yutil.h")
     add_headerfiles("include/(yutil/*.h)")
     add_files("src/*.c")
 
-target("test")
-    -- make as a binary
-    set_kind("binary")
-    -- add the dependent target
-    add_deps("yutil")
-    add_headerfiles("test/*.h")
-    -- add the source files
-    add_files("test/test.c")
-    add_files("test/*.c")
-    add_deps("yutil")
+
