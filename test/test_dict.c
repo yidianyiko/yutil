@@ -50,10 +50,10 @@ char *string_from_long_long(long long value)
 dict_type_t BenchmarkDictType = { hash_callback, NULL, NULL, compare_callback,
 				  free_callback, NULL, NULL };
 
-#define start_benchmark() start = get_time()
+#define start_benchmark() start = get_time_ms()
 #define end_benchmark(msg)                                              \
 	do {                                                            \
-		elapsed = get_time() - start;                           \
+		elapsed = get_time_ms() - start;                        \
 		printf(msg ": %ld items in %lld ms\n", count, elapsed); \
 	} while (0)
 

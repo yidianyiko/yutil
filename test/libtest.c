@@ -39,8 +39,7 @@ static int test_msg(const char *fmt, ...)
 void test_begin(void)
 {
 	if (test_start_time == 0) {
-		time_init();
-		test_start_time = get_time();
+		test_start_time = get_time_ms();
 	}
 	test_msg_indent++;
 }

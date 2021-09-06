@@ -45,7 +45,7 @@ void process(void *ignored)
 		WaitForSingleObject(mutex, INFINITE);
 		timer_list_process(timer_list);
 		ReleaseMutex(mutex);
-		msleep_time(20L);
+		sleep_ms(20L);
 #endif
 	}
 }
@@ -71,21 +71,21 @@ void test_timer(void)
 
 	// process
 	_beginthread(process, 0, NULL);
-	msleep_time(50L);
+	sleep_ms(50L);
 
 	// test pause
 	WaitForSingleObject(mutex, INFINITE);
 	timer_pause(timer_id, timer_list);
 	ReleaseMutex(mutex);
 	ret = count;
-	msleep_time(50L);
+	sleep_ms(50L);
 	it_b("check timer_pause()", (ret != 0) && (ret == count), TRUE);
 
 	// test continue
 	WaitForSingleObject(mutex, INFINITE);
 	timer_continue(timer_id, timer_list);
 	ReleaseMutex(mutex);
-	msleep_time(50L);
+	sleep_ms(50L);
 	it_b("check timer_continue()", ret < count, TRUE);
 
 	count = 0;
@@ -93,10 +93,10 @@ void test_timer(void)
 	WaitForSingleObject(mutex, INFINITE);
 	timer_reset(timer_id, 70, timer_list);
 	ReleaseMutex(mutex);
-	msleep_time(60L);
+	sleep_ms(60L);
 	it_i("check timer_reset()", count, 0);
 
-	msleep_time(70L);
+	sleep_ms(70L);
 	it_b("check timer_list_process()", count == -1, TRUE);
 #endif
 }

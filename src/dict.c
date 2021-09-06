@@ -54,7 +54,7 @@
 /* Unused arguments generate annoying warnings... */
 #define dict_not_used(V) ((void)V)
 
-#define time_in_milliseconds get_time
+#define time_in_milliseconds get_time_ms
 
 /* Using dict_enable_resize() / dictDisable_resize() we make possible to
  * enable/disable resizing of the hash table as needed. */

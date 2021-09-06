@@ -42,39 +42,41 @@
 
 struct _timeval_t {
 	int64_t tv_sec;
-	int64_t tv_usec;
+	signed long tv_usec;
 };
 
-void time_init(void)
-{
-	return;
-}
-
-int64_t get_time(void)
+int64_t get_time_ms(void)
 {
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
+	return ((int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+int64_t get_time_us()
+{
+	timeval_t tv = { 0 };
+	get_time_of_day(&tv);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
 int64_t get_time_delta(int64_t start)
 {
-	int64_t now = get_time();
+	int64_t now = get_time_ms();
 	if (now < start) {
 		return (TIME_WRAP_VALUE - start) + now;
 	}
 	return now - start;
 }
 
-void msleep_time(unsigned int ms)
+void sleep_ms(unsigned int ms)
 {
 	usleep(ms * 1000);
 }
 
-void sleep_time(unsigned int s)
+void sleep_s(unsigned int s)
 {
-	msleep_time(s * 1000);
+	sleep_ms(s * 1000);
 }
 
 // get the time from 1970-01-01 00:00:00:000
@@ -85,14 +87,8 @@ void get_time_of_day(timeval_t *tv)
 		return;
 
 	tv->tv_sec = (int64_t)tmp.tv_sec;
-	tv->tv_usec = (int64_t)tmp.tv_usec;
+	tv->tv_usec = (signed long)tmp.tv_usec;
 	return;
 }
 
-int64_t get_utime()
-{
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
-	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
-}
 #endif

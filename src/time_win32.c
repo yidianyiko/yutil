@@ -45,44 +45,52 @@ struct _timeval_t {
 	int64_t tv_usec;
 };
 
-void time_init(void)
-{
-	LARGE_INTEGER hires;
-	if (QueryPerformanceFrequency(&hires)) {
-		HIRES_TIMER_AVAILABLE = 1;
-		HIRES_TICKS_PER_SECOND = hires.QuadPart;
-	}
-}
-
-int64_t get_time(void)
+int64_t get_time_ms(void)
 {
 	int64_t time;
-	LARGE_INTEGER hires_now;
+	LARGE_INTEGER hires = { { 0 } };
+	LARGE_INTEGER hires_now = { { 0 } };
 	FILETIME *ft = (FILETIME *)&time;
-	if (HIRES_TIMER_AVAILABLE) {
+	if (QueryPerformanceFrequency(&hires)) {
 		QueryPerformanceCounter(&hires_now);
 		time = hires_now.QuadPart * 1000;
-		return time / HIRES_TICKS_PER_SECOND;
+		return time / hires.QuadPart;
 	}
 	GetSystemTimeAsFileTime(ft);
 	return time / 1000 - 11644473600000;
 }
 
+int64_t get_time_us()
+{
+	LARGE_INTEGER hires = { { 0 } };
+	LARGE_INTEGER hires_now = { { 0 } };
+	if (QueryPerformanceFrequency(&hires)) {
+		if (!QueryPerformanceFrequency(&hires_now))
+			return 0;
+
+		return (hires_now.QuadPart * 1000000) / hires.QuadPart;
+	}
+
+	timeval_t tv = { 0 };
+	get_time_of_day(&tv);
+	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
+}
+
 int64_t get_time_delta(int64_t start)
 {
-	int64_t now = get_time();
+	int64_t now = get_time_ms();
 	return (now < start) ? ((TIME_WRAP_VALUE - start) + now)
 			     : (now - start);
 }
 
-void msleep_time(unsigned int ms)
+void sleep_ms(unsigned int ms)
 {
 	Sleep((DWORD)ms);
 }
 
-void sleep_time(unsigned int s)
+void sleep_s(unsigned int s)
 {
-	msleep_time(s * 1000);
+	sleep_ms(s * 1000);
 }
 
 // get the time from 1970-01-01 00:00:00:000
@@ -103,18 +111,4 @@ void get_time_of_day(timeval_t *tv)
 	return;
 }
 
-int64_t get_utime()
-{
-	if (HIRES_TIMER_AVAILABLE) {
-		LARGE_INTEGER hires_now = { { 0 } };
-		if (!QueryPerformanceFrequency(&hires_now))
-			return 0;
-
-		return (hires_now.QuadPart * 1000000) / HIRES_TICKS_PER_SECOND;
-	}
-
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
-	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
-}
 #endif
