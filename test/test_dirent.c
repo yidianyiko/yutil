@@ -3,7 +3,7 @@
 #include <locale.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dirent.h"
 
 #if defined(_WIN32)

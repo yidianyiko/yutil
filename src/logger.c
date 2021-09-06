@@ -33,7 +33,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/list_entry.h"
 #include "../include/yutil/logger.h"
 
@@ -68,12 +68,6 @@ void logger_set_level(logger_level_e level)
 
 int logger_log(logger_level_e level, const char* fmt, ...)
 {
-	int len;
-	va_list args;
-	logger_buffer_t* node;
-	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
-	if (node == NULL)
-		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -82,6 +76,12 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 				     buf_entry);
 		logger.inited = 1;
 	}
+	int len;
+	va_list args;
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 
 	va_start(args, fmt);
 	len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
@@ -123,12 +123,6 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 
 int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 {
-	int len;
-	va_list args;
-	logger_buffer_t* node;
-	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
-	if (node == NULL)
-		return 0;
 	if (level < logger.level) {
 		return 0;
 	}
@@ -137,6 +131,12 @@ int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 				     buf_entry);
 		logger.inited = 1;
 	}
+	int len;
+	va_list args;
+	logger_buffer_t* node;
+	node = (logger_buffer_t*)malloc(sizeof(logger_buffer_t));
+	if (node == NULL)
+		return 0;
 
 	va_start(args, fmt);
 	len =

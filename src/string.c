@@ -34,7 +34,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <wchar.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strlist.h"

@@ -1,6 +1,6 @@
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/math.h"
 
 static void test_math_max(void)

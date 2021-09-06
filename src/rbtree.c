@@ -29,7 +29,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/rbtree.h"
 
 #define rbtree_red(node) ((node)->color = 1)
@@ -283,12 +283,14 @@ void rbtree_init(rbtree_t *tree)
 	tree->root = NULL;
 	tree->compare = NULL;
 	tree->destroy = NULL;
+	tree->total_node = 0;
 }
 
 void rbtree_destroy(rbtree_t *tree)
 {
 	rbtree_node_destroy(tree, tree->root);
 	tree->root = NULL;
+	tree->total_node = 0;
 }
 
 void rbtree_insert(rbtree_t *tree, int key, const void *keydata, void *data)
@@ -312,8 +314,10 @@ void rbtree_insert(rbtree_t *tree, int key, const void *keydata, void *data)
 	if (!node_parent) {
 		rbtree_black(node);
 		tree->root = node;
+		tree->total_node++;
 		return;
 	} else {
+		tree->total_node++;
 		rbtree_red(node);
 		ret = (tree->compare && keydata)
 			  ? tree->compare(node_parent->data, keydata)
@@ -420,7 +424,7 @@ void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 		rbtree_delete_rebalance(tree, temp);
 	}
 
-	return;
+	tree->total_node--;
 }
 
 /** 删除红黑树中的结点 */

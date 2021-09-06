@@ -1,7 +1,7 @@
 #include <wchar.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/logger.h"
 
 #ifdef _WIN32

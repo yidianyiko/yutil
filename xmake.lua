@@ -20,7 +20,6 @@ end
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
-    add_headerfiles("include/yutil_build.h")
     add_headerfiles("include/yutil.h")
     add_headerfiles("include/(yutil/*.h)")
     add_files("src/*.c")

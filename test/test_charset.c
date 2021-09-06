@@ -2,7 +2,7 @@
 #include <string.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/charset.h"
 
 void test_charset(void)

@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/string.h"
 #include "../include/yutil/strpool.h"
 #include "../include/yutil/dict.h"

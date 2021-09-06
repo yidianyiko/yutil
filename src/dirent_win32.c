@@ -34,7 +34,7 @@
 #ifdef _WIN32
 #include <windows.h>
 
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/dirent.h"
 
 typedef HANDLE dir_handle_t;

@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/yutil_build.h"
+#include "../include/yutil/keywords.h"
 #include "../include/yutil/types.h"
 #include "../include/yutil/list.h"
 #include "../include/yutil/time.h"
@@ -271,4 +271,5 @@ void timer_list_destroy(timer_list_t *list)
 	}
 	list->active = FALSE;
 	list_clear_data(&list->timers, free);
+	free(list);
 }

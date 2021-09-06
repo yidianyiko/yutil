@@ -48,6 +48,7 @@ struct rbtree_t_ {
 	rbtree_node_t *root;    // the pointer of the root of the tree
 	int (*compare)(void *, const void *);
 	void (*destroy)(void *);
+	int total_node;
 };
 
 /* macros */
