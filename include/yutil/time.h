@@ -35,7 +35,7 @@
 
 Y_BEGIN_DECLS
 
-typedef struct _timeval_t timeval_t;
+typedef struct timeval_t_ timeval_t;
 
 Y_API int64_t get_time_ms(void);
 

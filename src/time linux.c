@@ -40,9 +40,9 @@
 #include <unistd.h>
 #include <sys/time.h>
 
-struct _timeval_t {
+struct timeval_t_ {
 	int64_t tv_sec;
-	signed long tv_usec;
+	int64_t tv_usec;
 };
 
 int64_t get_time_ms(void)
@@ -53,10 +53,11 @@ int64_t get_time_ms(void)
 	return ((int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-int64_t get_time_us()
+int64_t get_time_us(void)
 {
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
@@ -87,7 +88,7 @@ void get_time_of_day(timeval_t *tv)
 		return;
 
 	tv->tv_sec = (int64_t)tmp.tv_sec;
-	tv->tv_usec = (signed long)tmp.tv_usec;
+	tv->tv_usec = (int64_t)tmp.tv_usec;
 	return;
 }
 

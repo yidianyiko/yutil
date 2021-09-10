@@ -37,10 +37,7 @@
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-static int HIRES_TIMER_AVAILABLE = 0; /**< 标志，指示高精度计数器是否可用 */
-static LONGLONG HIRES_TICKS_PER_SECOND; /**< 高精度计数器每秒的滴答数 */
-
-struct _timeval_t {
+struct timeval_t_ {
 	int64_t tv_sec;
 	int64_t tv_usec;
 };
@@ -50,14 +47,12 @@ int64_t get_time_ms(void)
 	int64_t time;
 	LARGE_INTEGER hires = { { 0 } };
 	LARGE_INTEGER hires_now = { { 0 } };
-	FILETIME *ft = (FILETIME *)&time;
 	if (QueryPerformanceFrequency(&hires)) {
 		QueryPerformanceCounter(&hires_now);
 		time = hires_now.QuadPart * 1000;
 		return time / hires.QuadPart;
 	}
-	GetSystemTimeAsFileTime(ft);
-	return time / 1000 - 11644473600000;
+	return 0;
 }
 
 int64_t get_time_us()
@@ -70,10 +65,7 @@ int64_t get_time_us()
 
 		return (hires_now.QuadPart * 1000000) / hires.QuadPart;
 	}
-
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
-	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
+	return 0;
 }
 
 int64_t get_time_delta(int64_t start)
