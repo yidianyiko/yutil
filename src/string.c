@@ -221,7 +221,7 @@ int cmdsplit(const char *cmd, char ***outargv)
 	int argc = 0, spaces = 0, qoutes = 0, len = 0;
 
 	if (outargv) {
-		argv = malloc(sizeof(char *));
+		argv = (char **)malloc(sizeof(char *));
 		if (!argv) {
 			return -ENOMEM;
 		}
@@ -246,7 +246,7 @@ int cmdsplit(const char *cmd, char ***outargv)
 			}
 			if (argv && len > 0) {
 				size = sizeof(char *) * (argc + 2);
-				tmp = realloc(argv, size);
+				tmp = (char **)realloc(argv, size);
 				if (!tmp) {
 					goto faild;
 				}
@@ -254,7 +254,7 @@ int cmdsplit(const char *cmd, char ***outargv)
 				argv = tmp;
 				argv[argc + 1] = NULL;
 				size = sizeof(char) * len;
-				argv[argc] = malloc(size);
+				argv[argc] = (char *)malloc(size);
 				if (!argv[argc]) {
 					goto faild;
 				}
@@ -308,7 +308,7 @@ int strsplit(const char *instr, const char *sep, char ***outstrs)
 	int i = 0;
 	const char *prev = instr;
 	size_t len, sep_len = strlen(sep);
-	char *next = strstr(prev, sep);
+	char *next = (char *)strstr(prev, sep);
 	char **newstrs = NULL;
 
 	while (1) {
@@ -318,8 +318,8 @@ int strsplit(const char *instr, const char *sep, char ***outstrs)
 		} else {
 			len = strlen(prev) + 1;
 		}
-		str = malloc(sizeof(char) * len);
-		tmp = realloc(newstrs, sizeof(char *) * (i + 2));
+		str = (char *)malloc(sizeof(char) * len);
+		tmp = (char **)realloc(newstrs, sizeof(char *) * (i + 2));
 		if (!tmp) {
 			strlist_free(newstrs);
 			return 0;
@@ -334,7 +334,7 @@ int strsplit(const char *instr, const char *sep, char ***outstrs)
 		} else {
 			break;
 		}
-		next = strstr(prev, sep);
+		next = (char *)strstr(prev, sep);
 		i += 1;
 	}
 	*outstrs = newstrs;

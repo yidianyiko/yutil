@@ -72,7 +72,7 @@ int dir_open_a(const char *path, dir_t *dir)
 	char name[] = "\\*";
 
 	len = strlen(path) + 1;
-	newpath = malloc(len * sizeof(char) + sizeof(name));
+	newpath = (char *)malloc(len * sizeof(char) + sizeof(name));
 	if (newpath == NULL) {
 		return -ENOMEM;
 	}
@@ -103,7 +103,7 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 	wchar_t name[] = L"\\*";
 
 	len = wcslen(path) + 1;
-	newpath = malloc(len * sizeof(wchar_t) + sizeof(name));
+	newpath = (wchar_t *)malloc(len * sizeof(wchar_t) + sizeof(name));
 	if (!newpath) {
 		return -ENOMEM;
 	}

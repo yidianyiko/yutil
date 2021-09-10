@@ -182,12 +182,14 @@ int _dict_expand(dict_t *d, unsigned long size, int *malloc_failed)
 	n.size = realsize;
 	n.size_mask = realsize - 1;
 	if (malloc_failed) {
-		n.table = calloc(1, realsize * sizeof(dict_entry_t *));
+		n.table = (dict_entry_t **)calloc(
+		    1, realsize * sizeof(dict_entry_t *));
 		*malloc_failed = n.table == NULL;
 		if (*malloc_failed)
 			return DICT_ERR;
 	} else
-		n.table = calloc(1, realsize * sizeof(dict_entry_t *));
+		n.table = (dict_entry_t **)calloc(
+		    1, realsize * sizeof(dict_entry_t *));
 
 	n.used = 0;
 
@@ -358,7 +360,7 @@ dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing)
 	 * system it is more likely that recently added entries are accessed
 	 * more frequently. */
 	ht = dict_is_rehashing(d) ? &d->ht[1] : &d->ht[0];
-	entry = malloc(sizeof(*entry));
+	entry = (dict_entry_t *)malloc(sizeof(*entry));
 	if (entry == NULL)
 		return NULL;
 	entry->next = ht->table[index];
@@ -582,10 +584,10 @@ long long dict_fingerprint(dict_t *d)
 	long long integers[6], hash = 0;
 	int j;
 
-	integers[0] = (long)d->ht[0].table;
+	integers[0] = (long)(long long)d->ht[0].table;
 	integers[1] = d->ht[0].size;
 	integers[2] = d->ht[0].used;
-	integers[3] = (long)d->ht[1].table;
+	integers[3] = (long)(long long)d->ht[1].table;
 	integers[4] = d->ht[1].size;
 	integers[5] = d->ht[1].used;
 
@@ -614,7 +616,7 @@ long long dict_fingerprint(dict_t *d)
 
 dict_iterator_t *dict_get_iterator(dict_t *d)
 {
-	dict_iterator_t *iter = malloc(sizeof(*iter));
+	dict_iterator_t *iter = (dict_iterator_t *)malloc(sizeof(*iter));
 	if (iter == NULL)
 		return NULL;
 	iter->d = d;
@@ -1281,7 +1283,7 @@ void dict_get_stats(char *buf, size_t buf_size, dict_t *d)
 
 unsigned int string_key_dict_key_hash(const void *key)
 {
-	const char *buf = key;
+	const char *buf = (const char *)key;
 	unsigned int hash = dict_hash_function_seed;
 	while (*buf) {
 		hash = ((hash << 5) + hash) + (*buf++);
@@ -1293,7 +1295,7 @@ int string_key_dict_key_compare(void *privdata, const void *key1,
 				const void *key2)
 {
 	dict_not_used(privdata);
-	if (strcmp(key1, key2) == 0) {
+	if (strcmp((const char *)key1, (const char *)key2) == 0) {
 		return 1;
 	}
 	return 0;
@@ -1302,10 +1304,11 @@ int string_key_dict_key_compare(void *privdata, const void *key1,
 void *string_key_dict_key_dup(void *privdata, const void *key)
 {
 	dict_not_used(privdata);
-	char *newkey = malloc((strlen(key) + 1) * sizeof(char));
+	char *newkey =
+	    (char *)malloc((strlen((const char *)key) + 1) * sizeof(char));
 	if (newkey == NULL)
 		return NULL;
-	strcpy(newkey, key);
+	strcpy((char *)newkey, (const char *)key);
 	return newkey;
 }
 

@@ -53,7 +53,7 @@ int strlist_sorted_add(strlist_t *strlist, const char *str)
 	} else {
 		n = 2;
 	}
-	newlist = realloc(*strlist, sizeof(char *) * n);
+	newlist = (strlist_t)realloc(*strlist, sizeof(char *) * n);
 	if (!newlist) {
 		return -ENOMEM;
 	}
