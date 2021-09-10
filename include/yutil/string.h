@@ -88,7 +88,7 @@ Y_API int strsplit(const char *instr, const char *sep, char ***outstrs);
 /** 计算字符串占用的内存空间大小 */
 static inline size_t strsize(const char *str)
 {
-	return (!str) ? sizeof(char) : ((strlen(str) + 1) * sizeof(char));
+	return (!str) ? sizeof(char) : (strlen(str) + 1) * sizeof(char);
 }
 
 static inline size_t wcssize(const wchar_t *str)
