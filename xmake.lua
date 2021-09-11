@@ -1,7 +1,7 @@
 -- project
 set_project("yutil")
 
-set_warnings("all")
+set_warnings("all", "error")
 
 -- set language: c99
 stdc = "c99"
@@ -15,11 +15,11 @@ add_rules("mode.release", "mode.debug")
 
 add_defines("_UNICODE")
 
--- for the windows platform (msvc)
 if is_plat("windows") then
     add_defines("Y_EXPORTS", "_CRT_SECURE_NO_WARNINGS")
 else
     add_defines("_GNU_SOURCE=1")
+    add_cxflags("-Wno-error=stringop-truncation")
 end
 
 if is_mode("release") then
