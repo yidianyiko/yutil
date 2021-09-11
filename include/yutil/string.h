@@ -33,6 +33,8 @@
 #ifndef UTIL_STRING_H
 #define UTIL_STRING_H
 
+#include <wchar.h>
+
 Y_BEGIN_DECLS
 
 /** strdup() 的再实现版本，用于清除编译错误 */
