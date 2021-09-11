@@ -39,13 +39,13 @@
 #include "../include/yutil/dirent.h"
 #include "../include/yutil/charset.h"
 
-#define DIRENT_NAME_LEN 256
+#define DIRENT_MAX_LEN 4096
 
 typedef DIR *dir_handle_t;
 
 struct dir_entry_t {
 	struct dirent dirent;
-	wchar_t name[DIRENT_NAME_LEN];
+	wchar_t name[DIRENT_MAX_LEN];
 };
 struct dir_t {
 	dir_handle_t handle;
@@ -104,6 +104,9 @@ dir_entry_t *dir_read_a(dir_t *dir)
 	}
 	dir->entry.dirent = *d;
 	len = sizeof(d->d_name);
+	if (len >= DIRENT_MAX_LEN) {
+		return NULL;
+	}
 	dir->entry.name[len] = 0;
 	return &dir->entry;
 }
@@ -117,8 +120,11 @@ dir_entry_t *dir_read_w(dir_t *dir)
 		return NULL;
 	}
 	dir->entry.dirent = *d;
-	len = decode_string(dir->entry.name, d->d_name, DIRENT_NAME_LEN,
+	len = decode_string(dir->entry.name, d->d_name, DIRENT_MAX_LEN,
 			    ENCODING_UTF8);
+	if (len >= DIRENT_MAX_LEN) {
+		return NULL;
+	}
 	dir->entry.name[len] = 0;
 	return &dir->entry;
 }
