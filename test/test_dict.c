@@ -29,7 +29,7 @@ int compare_callback(void *privdata, const void *key1, const void *key2)
 
 void free_callback(void *privdata, void *val)
 {
-	(privdata);
+	(void)(privdata);
 
 	free(val);
 }

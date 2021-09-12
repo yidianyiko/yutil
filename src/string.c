@@ -185,7 +185,7 @@ size_t strreplace(char *str, size_t max_len, const char *substr,
 	buf[buf_len - 1] = 0;
 	strncpy(str, buf, max_len);
 	free(buf);
-	return min(buf_len, max_len);
+	return y_min(buf_len, max_len);
 }
 
 size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
@@ -210,7 +210,7 @@ size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
 	buf[buf_len - 1] = 0;
 	wcsncpy(str, buf, max_len);
 	free(buf);
-	return min(buf_len, max_len);
+	return y_min(buf_len, max_len);
 }
 
 int cmdsplit(const char *cmd, char ***outargv)

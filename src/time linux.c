@@ -78,7 +78,7 @@ void sleep_ms(unsigned int ms)
 
 void sleep_s(unsigned int s)
 {
-	sleep_ms(s * 1000);
+	sleep(s);
 }
 
 // get the time from 1970-01-01 00:00:00:000

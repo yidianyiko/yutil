@@ -25,15 +25,35 @@ end
 if is_mode("release") then
     set_symbols("none")
 end
--- include project sources
-includes("include")
-includes("test")
 
 -- 'xmake f --optionname=test'
-option("test")
+option("yutil_test")
     set_default(true)
     set_showmenu(true)
     set_category("test")
-    set_description("Enable or disable test option")
+    set_description("Enable or disable yutil_test option")
 option_end()
 
+-- include project sources
+includes("test")
+
+target("yutil")
+    -- make as a static/shared library
+    set_kind("$(kind)")
+     -- export all symbols for windows/dll
+    if is_plat("windows") and is_kind("shared") then
+        if is_mode("release") then
+            set_optimize("fastest")
+        end
+        add_rules("utils.symbols.export_all")
+    end
+    
+    -- add include directories
+    add_includedirs("include", {public = true})
+
+    -- add the header files for installing
+    add_headerfiles("include/yutil.h")
+    add_headerfiles("include/(yutil/*.h)")
+
+    -- add the common source files
+    add_files("src/*.c")

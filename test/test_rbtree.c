@@ -8,7 +8,6 @@
 #include "../include/yutil/time.h"
 
 static const int count = 1 << 20;
-static const int max_len = 15;
 
 void test_rbtree(void)
 {
@@ -45,7 +44,7 @@ void test_rbtree(void)
 	}
 
 	printf("Searching %d nodes among %d spends %lld ms.\n", search_count,
-	       count, get_time_delta(time2));
+	       count, (long long)get_time_delta(time2));
 	it_i("rbtree_search_by_key() should work", c, search_count);
 
 	long long time3 = (long long)get_time_ms();
@@ -54,14 +53,14 @@ void test_rbtree(void)
 	}
 
 	printf("Deleting %d nodes among %d spends %lld ms.\n", delete_count,
-	       count, get_time_delta(time3));
+	       count, (long long)get_time_delta(time3));
 	it_i("rbtree_delete() should work", tree.total_node,
 	     count - delete_count);
 
 	long long time4 = (long long)get_time_ms();
 	rbtree_destroy(&tree);
 	printf("Destroy %d nodes among %d spends %lld ms.\n", count, count,
-	       get_time_delta(time4));
+	       (long long)get_time_delta(time4));
 	c = 0;
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;
