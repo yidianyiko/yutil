@@ -29,8 +29,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/rbtree.h"
+#include "yutil/keywords.h"
+#include "yutil/rbtree.h"
 
 #define rbtree_red(node) ((node)->color = 1)
 #define rbtree_black(node) ((node)->color = 0)

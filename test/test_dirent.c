@@ -5,8 +5,8 @@
 #include <wchar.h>
 #include <string.h>
 #include <stdlib.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/dirent.h"
+#include "yutil/keywords.h"
+#include "yutil/dirent.h"
 
 #if defined(_WIN32)
 #include <windows.h>

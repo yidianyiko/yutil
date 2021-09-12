@@ -34,11 +34,11 @@
 #include <errno.h>
 #include <ctype.h>
 #include <wchar.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/types.h"
-#include "../include/yutil/string.h"
-#include "../include/yutil/strlist.h"
-#include "../include/yutil/math.h"
+#include "yutil/keywords.h"
+#include "yutil/types.h"
+#include "yutil/string.h"
+#include "yutil/strlist.h"
+#include "yutil/math.h"
 
 size_t strtolower(char *outstr, const char *instr)
 {

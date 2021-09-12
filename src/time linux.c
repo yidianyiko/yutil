@@ -34,8 +34,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/time.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 

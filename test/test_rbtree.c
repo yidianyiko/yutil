@@ -3,9 +3,9 @@
 #include <time.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/rbtree.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/rbtree.h"
+#include "yutil/time.h"
 
 static const int count = 1 << 20;
 

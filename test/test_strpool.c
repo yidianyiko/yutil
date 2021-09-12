@@ -6,10 +6,10 @@
 #include <stdlib.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/string.h"
-#include "../include/yutil/strlist.h"
-#include "../include/yutil/strpool.h"
+#include "yutil/keywords.h"
+#include "yutil/string.h"
+#include "yutil/strlist.h"
+#include "yutil/strpool.h"
 
 void test_strpool(void)
 {

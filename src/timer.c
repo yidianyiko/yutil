@@ -32,11 +32,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/types.h"
-#include "../include/yutil/list.h"
-#include "../include/yutil/time.h"
-#include "../include/yutil/timer.h"
+#include "yutil/keywords.h"
+#include "yutil/types.h"
+#include "yutil/list.h"
+#include "yutil/time.h"
+#include "yutil/timer.h"
 
 #define STATE_RUN 1
 #define STATE_PAUSE 0

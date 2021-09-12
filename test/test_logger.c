@@ -1,8 +1,8 @@
 #include <wchar.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/logger.h"
+#include "yutil/keywords.h"
+#include "yutil/logger.h"
 
 #ifdef _WIN32
 #include <windows.h>

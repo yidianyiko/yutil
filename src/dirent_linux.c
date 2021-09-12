@@ -35,9 +35,9 @@
 #include <wchar.h>
 #ifndef _WIN32
 #include <dirent.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/dirent.h"
-#include "../include/yutil/charset.h"
+#include "yutil/keywords.h"
+#include "yutil/dirent.h"
+#include "yutil/charset.h"
 
 #define DIRENT_MAX_LEN 4096
 

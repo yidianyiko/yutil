@@ -1,7 +1,7 @@
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/list_entry.h"
+#include "yutil/keywords.h"
+#include "yutil/list_entry.h"
 
 struct __test_list_entry_t {
 	list_entry_t entry_node;

@@ -42,9 +42,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/time.h"
-#include "../include/yutil/dict.h"
+#include "yutil/keywords.h"
+#include "yutil/time.h"
+#include "yutil/dict.h"
 
 /* ------------------------------- Types ------------------------------------*/
 

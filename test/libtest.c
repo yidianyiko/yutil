@@ -3,8 +3,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/time.h"
 
 #ifdef _WIN32
 #define COLOR_NONE

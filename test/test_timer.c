@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/timer.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/timer.h"
+#include "yutil/time.h"
 
 #ifdef _WIN32
 #include <windows.h>

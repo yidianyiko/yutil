@@ -34,10 +34,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/string.h"
-#include "../include/yutil/strpool.h"
-#include "../include/yutil/dict.h"
+#include "yutil/keywords.h"
+#include "yutil/string.h"
+#include "yutil/strpool.h"
+#include "yutil/dict.h"
 
 #define STRPOOL_MARK 6699
 
