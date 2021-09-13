@@ -16,7 +16,7 @@ add_rules("mode.release", "mode.debug")
 add_defines("_UNICODE")
 
 if is_plat("windows") then
-    add_defines("Y_EXPORTS", "_CRT_SECURE_NO_WARNINGS")
+    add_defines("_CRT_SECURE_NO_WARNINGS")
 else
     add_defines("_GNU_SOURCE=1")
     add_cxflags("-Wno-error=stringop-truncation")
@@ -40,6 +40,7 @@ includes("test")
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
+    
      -- export all symbols for windows/dll
     if is_plat("windows") and is_kind("shared") then
         if is_mode("release") then

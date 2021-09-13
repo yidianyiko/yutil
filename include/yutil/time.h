@@ -37,17 +37,17 @@ Y_BEGIN_DECLS
 
 typedef struct timeval_t_ timeval_t;
 
-Y_API int64_t get_time_ms(void);
+int64_t get_time_ms(void);
 
-Y_API int64_t get_time_us(void);
+int64_t get_time_us(void);
 
-Y_API int64_t get_time_delta(int64_t start);
+int64_t get_time_delta(int64_t start);
 
-Y_API void sleep_s(unsigned int s);
+void sleep_s(unsigned int s);
 
-Y_API void sleep_ms(unsigned int ms);
+void sleep_ms(unsigned int ms);
 
-Y_API void get_time_of_day(timeval_t *tv);
+void get_time_of_day(timeval_t *tv);
 
 Y_END_DECLS
 

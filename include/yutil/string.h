@@ -38,11 +38,11 @@
 Y_BEGIN_DECLS
 
 /** strdup() 的再实现版本，用于清除编译错误 */
-Y_API char *strdup2(const char *str);
-Y_API wchar_t *wcsdup2(const wchar_t *str);
+char *strdup2(const char *str);
+wchar_t *wcsdup2(const wchar_t *str);
 
 /** 将字符串中的字母转成小写字母 */
-Y_API size_t strtolower(char *outstr, const char *instr);
+size_t strtolower(char *outstr, const char *instr);
 
 /**
  * 清除字符串首尾的字符
@@ -51,11 +51,11 @@ Y_API size_t strtolower(char *outstr, const char *instr);
  * @param[in] charlist 需要清除的字符列表，当为NULL时，默认清除空白符
  * @return 处理后的字符串的长度
  */
-Y_API size_t strtrim(char *outstr, const char *instr, const char *charlist);
-Y_API size_t wcstrim(wchar_t *outstr, const wchar_t *instr,
+size_t strtrim(char *outstr, const char *instr, const char *charlist);
+size_t wcstrim(wchar_t *outstr, const wchar_t *instr,
 		     const wchar_t *charlist);
 
-Y_API unsigned strhash(unsigned hash, const char *str);
+unsigned strhash(unsigned hash, const char *str);
 
 /**
  * 字符串替换
@@ -65,10 +65,10 @@ Y_API unsigned strhash(unsigned hash, const char *str);
  * @param[in] newstr 替换的新字符串
  * @returns 替换后的字符串长度，若未替换，则返回 0
  */
-Y_API size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
+size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
 			const wchar_t *newstr);
 
-Y_API size_t strreplace(char *str, size_t max_len, const char *substr,
+size_t strreplace(char *str, size_t max_len, const char *substr,
 			const char *newstr);
 
 /**
@@ -77,7 +77,7 @@ Y_API size_t strreplace(char *str, size_t max_len, const char *substr,
  * @param[out] outargv 分割后的命令行参数列表
  * @return 参数数量
  */
-Y_API int cmdsplit(const char *cmd, char ***outargv);
+int cmdsplit(const char *cmd, char ***outargv);
 
 /**
  * 分割字符串
@@ -85,7 +85,7 @@ Y_API int cmdsplit(const char *cmd, char ***outargv);
  * @param[in] sep 分割标记字符串
  * @param[out] outstrs 分割后的字符串列表
  */
-Y_API int strsplit(const char *instr, const char *sep, char ***outstrs);
+int strsplit(const char *instr, const char *sep, char ***outstrs);
 
 /** 计算字符串占用的内存空间大小 */
 static inline size_t strsize(const char *str)

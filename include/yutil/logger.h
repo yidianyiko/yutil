@@ -46,15 +46,15 @@ enum logger_level_e {
 
 typedef enum logger_level_e logger_level_e;
 
-Y_API void logger_set_level(logger_level_e level);
+void logger_set_level(logger_level_e level);
 
-Y_API int logger_log(logger_level_e level, const char* fmt, ...);
+int logger_log(logger_level_e level, const char* fmt, ...);
 
-Y_API int logger_log_w(logger_level_e level, const wchar_t* fmt, ...);
+int logger_log_w(logger_level_e level, const wchar_t* fmt, ...);
 
-Y_API void logger_set_handler(void (*handler)(const char*));
+void logger_set_handler(void (*handler)(const char*));
 
-Y_API void logger_set_handler_w(void (*handler)(const wchar_t*));
+void logger_set_handler_w(void (*handler)(const wchar_t*));
 
 #define logger_info(fmt, ...) logger_log(LOGGER_LEVEL_INFO, fmt, ##__VA_ARGS__)
 #define logger_debug(fmt, ...) \
