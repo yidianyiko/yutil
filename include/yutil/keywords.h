@@ -11,19 +11,6 @@
 #endif
 #endif
 
-// export
-#ifdef __GNUC__
-#define Y_API extern
-#else
-
-#ifdef Y_EXPORTS
-#define Y_API __declspec(dllexport)
-#else
-#define Y_API __declspec(dllimport)
-#endif
-
-#endif
-
 // extern c
 #ifdef __cplusplus
 

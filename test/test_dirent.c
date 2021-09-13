@@ -3,8 +3,10 @@
 #include <locale.h>
 #include <stdio.h>
 #include <wchar.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/dirent.h"
+#include <string.h>
+#include <stdlib.h>
+#include "yutil/keywords.h"
+#include "yutil/dirent.h"
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -19,7 +21,6 @@ static dir_t* dir;
 static void test_dirent_a()
 {
 	dir_entry_t* entry;
-	size_t len;
 	size_t dir_len = 0;
 	char* name;
 	char path[PATH_LEN] = { 0 };
@@ -40,8 +41,6 @@ static void test_dirent_a()
 		return;
 	}
 #endif
-	len = strlen(path);
-
 	it_b("dir_open_a() should work", dir_open_a(path, dir) == 0, TRUE);
 
 	while ((entry = dir_read_a(dir)) != NULL) {
@@ -60,7 +59,6 @@ static void test_dirent_a()
 static void test_dirent_w(void)
 {
 	dir_entry_t* entry;
-	size_t len;
 	size_t dir_len = 0;
 	wchar_t* name_w;
 
@@ -79,7 +77,6 @@ static void test_dirent_w(void)
 	mbstowcs(path_w, path, PATH_LEN);
 	setlocale(LC_ALL, "C");
 #endif
-	len = wcslen(path_w);
 	it_b("dir_open_w() should work", dir_open_w(path_w, dir) == 0, TRUE);
 
 	while ((entry = dir_read_w(dir)) != NULL) {

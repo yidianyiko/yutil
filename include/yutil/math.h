@@ -33,19 +33,13 @@
 
 Y_BEGIN_DECLS
 
-#ifndef max
-#define max(x, y) (((x) > (y)) ? (x) : (y))
-#endif
+#define y_max(x, y) (((x) > (y)) ? (x) : (y))
 
-#ifndef min
-#define min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
-#endif
+#define y_min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
 
-#ifndef round
-#define round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
-#endif
+#define y_round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
 
-#define pow2(x) ((x) * (x))
+#define y_pow2(x) ((x) * (x))
 
 Y_END_DECLS
 

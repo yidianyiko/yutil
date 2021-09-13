@@ -1,4 +1,4 @@
-#include "../include/yutil/types.h"
+#include "yutil/types.h"
 
 void test_list(void);
 void test_math(void);

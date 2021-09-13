@@ -33,6 +33,7 @@
 #ifndef YUTIL_H
 #define YUTIL_H
 
+#include "yutil/keywords.h"
 #include "yutil/charset.h"
 #include "yutil/dict.h"
 #include "yutil/dirent.h"

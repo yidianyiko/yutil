@@ -32,17 +32,18 @@
 #include <stdint.h>
 #ifndef _WIN32
 #include <time.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/time.h"
+#include <unistd.h>
+#include <sys/time.h>
+#include "yutil/keywords.h"
+#include "yutil/time.h"
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-#include <unistd.h>
-#include <sys/time.h>
 
-struct _timeval_t {
+
+struct timeval_t_ {
 	int64_t tv_sec;
-	signed long tv_usec;
+	int64_t tv_usec;
 };
 
 int64_t get_time_ms(void)
@@ -53,10 +54,11 @@ int64_t get_time_ms(void)
 	return ((int64_t)tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-int64_t get_time_us()
+int64_t get_time_us(void)
 {
-	timeval_t tv = { 0 };
-	get_time_of_day(&tv);
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
 	return ((int64_t)tv.tv_sec * 1000000 + tv.tv_usec);
 }
 
@@ -76,7 +78,7 @@ void sleep_ms(unsigned int ms)
 
 void sleep_s(unsigned int s)
 {
-	sleep_ms(s * 1000);
+	sleep(s);
 }
 
 // get the time from 1970-01-01 00:00:00:000
@@ -87,7 +89,7 @@ void get_time_of_day(timeval_t *tv)
 		return;
 
 	tv->tv_sec = (int64_t)tmp.tv_sec;
-	tv->tv_usec = (signed long)tmp.tv_usec;
+	tv->tv_usec = (int64_t)tmp.tv_usec;
 	return;
 }
 

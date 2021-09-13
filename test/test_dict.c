@@ -5,14 +5,14 @@
 #include <assert.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/dict.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/dict.h"
+#include "yutil/time.h"
 
 unsigned int hash_callback(const void *key)
 {
-	return dict_gen_hash_function((unsigned char *)key,
-				      strlen((char *)key));
+	return dict_gen_hash_function((const unsigned char *)key,
+				      (int)strlen((char *)key));
 }
 
 int compare_callback(void *privdata, const void *key1, const void *key2)
@@ -20,8 +20,8 @@ int compare_callback(void *privdata, const void *key1, const void *key2)
 	(void)privdata;
 	int l1, l2;
 
-	l1 = strlen((char *)key1);
-	l2 = strlen((char *)key2);
+	l1 = (int)strlen((char *)key1);
+	l2 = (int)strlen((char *)key2);
 	if (l1 != l2)
 		return 0;
 	return memcmp(key1, key2, l1) == 0;
@@ -29,7 +29,7 @@ int compare_callback(void *privdata, const void *key1, const void *key2)
 
 void free_callback(void *privdata, void *val)
 {
-	(privdata);
+	(void)(privdata);
 
 	free(val);
 }
@@ -41,7 +41,7 @@ char *string_from_long_long(long long value)
 	char *s;
 
 	len = sprintf(buf, "%lld", value);
-	s = malloc(len + 1);
+	s = (char *)malloc(len + 1);
 	memcpy(s, buf, len);
 	s[len] = '\0';
 	return s;
@@ -60,7 +60,7 @@ dict_type_t BenchmarkDictType = { hash_callback, NULL, NULL, compare_callback,
 /* ./redis-server test dict [<count> | --accurate] */
 void test_dict(void)
 {
-	long j;
+	long long j;
 	long long start, elapsed;
 	dict_t *dict = dict_create(&BenchmarkDictType, NULL);
 	long count = 5000;
@@ -129,7 +129,7 @@ void test_dict(void)
 		int retval = dict_delete(dict, key);
 		assert(retval == DICT_OK);
 		key[0] += 17; /* Change first number to letter. */
-		retval = dict_add(dict, key, (void *)j);
+		retval = (int)dict_add(dict, (void *)key, (void *)j);
 		assert(retval == DICT_OK);
 	}
 	end_benchmark("Removing and adding");

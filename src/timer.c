@@ -32,17 +32,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/types.h"
-#include "../include/yutil/list.h"
-#include "../include/yutil/time.h"
-#include "../include/yutil/timer.h"
+#include "yutil/keywords.h"
+#include "yutil/types.h"
+#include "yutil/list.h"
+#include "yutil/time.h"
+#include "yutil/timer.h"
 
 #define STATE_RUN 1
 #define STATE_PAUSE 0
 
 /*----------------------------- struct * --------------------------------*/
-typedef struct timer_t_ timer_t_;
+typedef struct timer_t_ timer_s_t;
 
 struct timer_t_ {
 	int state;    /**< 状态 */
@@ -70,16 +70,16 @@ struct timer_list_t_ {
 /** 更新定时器在定时器列表中的位置 */
 static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	int64_t t, tt;
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
-	timer = node->data;
+	timer = (timer_s_t *)node->data;
 	t = get_time_delta(timer->start_time);
 	t = timer->total_ms - t + timer->pause_ms;
 	list_for_each(cur, &list->timers)
 	{
-		timer = cur->data;
+		timer = (timer_s_t *)cur->data;
 		tt = get_time_delta(timer->start_time);
 		tt = timer->total_ms - tt + timer->pause_ms;
 		if (t <= tt) {
@@ -90,13 +90,13 @@ static void timer_list_add_node(list_node_t *node, timer_list_t *list)
 	list_append_node(&list->timers, node);
 }
 
-static timer_t_ *timer_find(int timer_id, timer_list_t *list)
+static timer_s_t *timer_find(int timer_id, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	list_node_t *node;
 	list_for_each(node, &list->timers)
 	{
-		timer = node->data;
+		timer = (timer_s_t *)node->data;
 		if (timer && timer->id == timer_id) {
 			return timer;
 		}
@@ -119,15 +119,15 @@ timer_list_t *timer_list_create()
 	return list;
 }
 
-int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
+static int timer_list_add(long int n_ms, timer_callback callback, void *arg,
 		   bool_t reuse, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	if (!list->active) {
 		return -1;
 	}
 
-	timer = (timer_t_ *)malloc(sizeof(timer_t_));
+	timer = (timer_s_t *)malloc(sizeof(timer_s_t));
 	if (timer == NULL)
 		return -1;
 	timer->arg = arg;
@@ -148,7 +148,7 @@ int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
 
 int timer_destroy(int timer_id, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -165,7 +165,7 @@ int timer_destroy(int timer_id, timer_list_t *list)
 
 int timer_pause(int timer_id, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -182,7 +182,7 @@ int timer_pause(int timer_id, timer_list_t *list)
 
 int timer_continue(int timer_id, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -199,7 +199,7 @@ int timer_continue(int timer_id, timer_list_t *list)
 
 int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 {
-	timer_t_ *timer;
+	timer_s_t *timer;
 	if (!list->active) {
 		return -2;
 	}
@@ -213,13 +213,13 @@ int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 
 	return timer ? 0 : -1;
 }
-int timer_list_add_timeout(long int n_ms, TimerCallback callback, void *arg,
+int timer_list_add_timeout(long int n_ms, timer_callback callback, void *arg,
 			   timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, FALSE, list);
 }
 
-int timer_list_add_interval(long int n_ms, TimerCallback callback, void *arg,
+int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
 			    timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, TRUE, list);
@@ -230,12 +230,12 @@ size_t timer_list_process(timer_list_t *list)
 	size_t count = 0;
 	long lost_ms;
 
-	timer_t_ *timer = NULL;
+	timer_s_t *timer = NULL;
 	list_node_t *node;
 	while (list && list->active) {
 		list_for_each(node, &list->timers)
 		{
-			timer = node->data;
+			timer = (timer_s_t *)node->data;
 			if (timer && timer->state == STATE_RUN) {
 				break;
 			}

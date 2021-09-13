@@ -29,8 +29,8 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/rbtree.h"
+#include "yutil/keywords.h"
+#include "yutil/rbtree.h"
 
 #define rbtree_red(node) ((node)->color = 1)
 #define rbtree_black(node) ((node)->color = 0)
@@ -44,19 +44,13 @@ static rbtree_node_t *rbtree_search_(rbtree_t *tree, int key,
 	rbtree_node_t *temp = NULL;
 	while (node) {
 		temp = node;
-		if (keydata && tree->compare) {
-			ret = tree->compare(node->data, keydata);
-			if (ret == 0) {
-				return node;
-			}
-			node = (ret < 0) ? node->right : node->left;
-		} else {
-			ret = key - node->key;
-			if (ret == 0) {
-				return node;
-			}
-			node = (ret < 0) ? node->left : node->right;
+		ret = (keydata && tree->compare)
+			  ? tree->compare(node->data, keydata)
+			  : (node->key - key);
+		if (ret == 0) {
+			return node;
 		}
+		node = (ret < 0) ? node->right : node->left;
 	}
 	if (save) {
 		*save = temp;

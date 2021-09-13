@@ -35,7 +35,7 @@
 
 Y_BEGIN_DECLS
 
-typedef void (*TimerCallback)(void *);
+typedef void (*timer_callback)(void *);
 typedef struct timer_list_t_ timer_list_t;
 
 /* Init the timer list */
@@ -60,15 +60,12 @@ size_t timer_list_process(timer_list_t *list);
  * @return
  *	该定时器的标识符
  **/
-int timer_list_add(long int n_ms, TimerCallback callback, void *arg,
-		   bool_t reuse, timer_list_t *list);
-
 /** repeatedly calls a function, with a fixed time delay between each call. */
-int timer_list_add_timeout(long int n_ms, TimerCallback callback, void *arg,
+int timer_list_add_timeout(long int n_ms, timer_callback callback, void *arg,
 			   timer_list_t *list);
 
 /** set a timer which execute a function once after the timer expires. */
-int timer_list_add_interval(long int n_ms, TimerCallback callback, void *arg,
+int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
 			    timer_list_t *list);
 
 /**

@@ -48,7 +48,7 @@ struct rbtree_t_ {
 	rbtree_node_t *root;    // the pointer of the root of the tree
 	int (*compare)(void *, const void *);
 	void (*destroy)(void *);
-	int total_node;
+	unsigned int total_node;
 };
 
 /* macros */
@@ -60,29 +60,29 @@ struct rbtree_t_ {
 #define rbtree_is_empty(tree) ((tree)->root == NULL)
 
 // public methods
-Y_API void rbtree_init(rbtree_t *tree);
+void rbtree_init(rbtree_t *tree);
 
 // insert
-Y_API void rbtree_insert(rbtree_t *tree, int key, const void *keydata,
+void rbtree_insert(rbtree_t *tree, int key, const void *keydata,
 			 void *data);
-Y_API void rbtree_insert_by_key(rbtree_t *tree, int key, void *data);
-Y_API void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata,
+void rbtree_insert_by_key(rbtree_t *tree, int key, void *data);
+void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata,
 				    void *data);
 
-Y_API void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node);
-Y_API int rbtree_delete(rbtree_t *tree, int key, const void *keydata);
-Y_API int rbtree_delete_by_key(rbtree_t *tree, int key);
-Y_API int rbtree_delete_by_keydata(rbtree_t *tree, const void *keydata);
+void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node);
+int rbtree_delete(rbtree_t *tree, int key, const void *keydata);
+int rbtree_delete_by_key(rbtree_t *tree, int key);
+int rbtree_delete_by_keydata(rbtree_t *tree, const void *keydata);
 
-Y_API rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
-Y_API rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
+rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
+rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
 
-Y_API void *rbtree_get_data_by_keydata(rbtree_t *tree, const void *keydata);
-Y_API void *rbtree_get_data_by_key(rbtree_t *tree, int key);
+void *rbtree_get_data_by_keydata(rbtree_t *tree, const void *keydata);
+void *rbtree_get_data_by_key(rbtree_t *tree, int key);
 
-Y_API void rbtree_destroy(rbtree_t *tree);
+void rbtree_destroy(rbtree_t *tree);
 
-Y_API rbtree_node_t *rbtree_next(const rbtree_node_t *node);
+rbtree_node_t *rbtree_next(const rbtree_node_t *node);
 /* get the minimum key of node in a subtree of the rbtree */
 static inline rbtree_node_t *rbtree_get_min(rbtree_node_t *subtree)
 {

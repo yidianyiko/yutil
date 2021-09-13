@@ -34,10 +34,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/string.h"
-#include "../include/yutil/strpool.h"
-#include "../include/yutil/strlist.h"
+#include "yutil/keywords.h"
+#include "yutil/string.h"
+#include "yutil/strpool.h"
+#include "yutil/strlist.h"
 
 static strpool_t *pool = NULL;
 
@@ -53,7 +53,7 @@ int strlist_sorted_add(strlist_t *strlist, const char *str)
 	} else {
 		n = 2;
 	}
-	newlist = realloc(*strlist, sizeof(char *) * n);
+	newlist = (strlist_t)realloc(*strlist, sizeof(char *) * n);
 	if (!newlist) {
 		return -ENOMEM;
 	}

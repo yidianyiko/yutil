@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include "test.h"
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/timer.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/timer.h"
+#include "yutil/time.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -20,7 +20,7 @@ static int count = 0;
 
 void on_time_out(void *arg)
 {
-	int *timer_id = arg;
+	int *timer_id = (int *)arg;
 
 	it_b("check timer_destroy()", timer_destroy(*timer_id, timer_list) == 0,
 	     TRUE);

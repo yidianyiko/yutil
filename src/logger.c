@@ -33,9 +33,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <wchar.h>
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/list_entry.h"
-#include "../include/yutil/logger.h"
+#include "yutil/keywords.h"
+#include "yutil/list_entry.h"
+#include "yutil/logger.h"
 
 #define BUFFER_SIZE 2048
 

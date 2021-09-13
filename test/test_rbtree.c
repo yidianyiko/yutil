@@ -3,19 +3,18 @@
 #include <time.h>
 #include <stdint.h>
 #include "libtest.h"
-#include "../include/yutil/keywords.h"
-#include "../include/yutil/rbtree.h"
-#include "../include/yutil/time.h"
+#include "yutil/keywords.h"
+#include "yutil/rbtree.h"
+#include "yutil/time.h"
 
 static const int count = 1 << 20;
-static const int max_len = 15;
 
 void test_rbtree(void)
 {
 	int i;
 	int c = 0;
 	const int delete_count = 1024;
-	const int search_count = 1 << 10;
+	const int search_count = 1024;
 	rbtree_t tree = { 0 };
 	rbtree_node_t *s, *node;
 	rbtree_init(&tree);
@@ -31,15 +30,12 @@ void test_rbtree(void)
 	}
 	printf("Inserting %d nodes spends %lld ms.\n", count,
 	       (long long)get_time_delta(time1));
-
-	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
-		c++;
-	}
-	it_i("rbtree_insert() should work", c, count);
+	it_i("rbtree_insert() should work", tree.total_node, count);
 
 	c = 0;
 
 	srand((unsigned int)time(0));
+	long long time2 = (long long)get_time_ms();
 	for (i = 0; i < search_count; i++) {
 		s = rbtree_search_by_key(&tree, (rand() % count) + 1);
 		if (s) {
@@ -47,25 +43,24 @@ void test_rbtree(void)
 		}
 	}
 
-	long long time2 = (long long)get_time_ms();
 	printf("Searching %d nodes among %d spends %lld ms.\n", search_count,
-	       count, get_time_delta(time2));
+	       count, (long long)get_time_delta(time2));
 	it_i("rbtree_search_by_key() should work", c, search_count);
 
+	long long time3 = (long long)get_time_ms();
 	for (i = 1; i <= delete_count; i++) {
 		rbtree_delete(&tree, i, NULL);
 	}
 
-	long long time3 = (long long)get_time_ms();
 	printf("Deleting %d nodes among %d spends %lld ms.\n", delete_count,
-	       count, get_time_delta(time3));
-	c = 0;
-	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
-		c++;
-	}
-	it_i("rbtree_delete() should work", c, count - delete_count);
+	       count, (long long)get_time_delta(time3));
+	it_i("rbtree_delete() should work", tree.total_node,
+	     count - delete_count);
 
+	long long time4 = (long long)get_time_ms();
 	rbtree_destroy(&tree);
+	printf("Destroy %d nodes among %d spends %lld ms.\n", count, count,
+	       (long long)get_time_delta(time4));
 	c = 0;
 	for (node = rbtree_get_min(tree.root); node; node = rbtree_next(node)) {
 		c++;
