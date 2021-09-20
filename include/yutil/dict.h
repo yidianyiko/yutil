@@ -37,6 +37,10 @@
 #ifndef UTIL_DICT_H
 #define UTIL_DICT_H
 
+#include <limits.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 Y_BEGIN_DECLS
 
 /* ------------------------------- Types ------------------------------------*/

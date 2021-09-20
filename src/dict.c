@@ -33,15 +33,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #include <assert.h>
-#include <limits.h>
-#include <stdarg.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
+#include <limits.h>
 #include <ctype.h>
+
 #include "yutil/keywords.h"
 #include "yutil/time.h"
 #include "yutil/dict.h"
