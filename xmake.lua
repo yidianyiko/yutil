@@ -19,7 +19,7 @@ if is_plat("windows") then
     add_defines("_CRT_SECURE_NO_WARNINGS")
 else
     add_defines("_GNU_SOURCE=1")
-    add_cxflags("-Wno-error=stringop-truncation")
+    add_cxflags("-Wno-error=maybe-uninitialized")
 end
 
 if is_mode("release") then
