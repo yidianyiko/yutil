@@ -1,5 +1,5 @@
 ﻿/*
- * rbtree.h -- red-black tree
+ * rbtree.c -- red-black tree
  *
  * Copyright (c) 2021, Li Zihao <yidianyiko@foxmail.com> All rights reserved.
  *
@@ -176,73 +176,81 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 	rbtree_black(tree->root);
 }
 
-static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node)
+static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
+				    rbtree_node_t *parent)
 {
 	rbtree_node_t *brother;
-	while (node != tree->root && (node && rbtree_is_black(node))) {
-		if (node && (node == node->parent->left)) {
-			brother = node->parent->right;
 
+	while ((!node || rbtree_is_black(node)) && node != tree->root) {
+		if (parent->left == node) {
+			brother = parent->right;
 			if (rbtree_is_red(brother)) {
 				rbtree_black(brother);
-				rbtree_red(node->parent);
-				rbtree_left_rotate(tree, node->parent);
-				brother = node->parent->right;
+				rbtree_red(parent);
+				rbtree_left_rotate(tree, parent);
+				brother = parent->right;
 			}
-
-			if ((brother->left && rbtree_is_black(brother->left)) &&
-			    (brother->left &&
+			if ((!brother->left ||
+			     rbtree_is_black(brother->left)) &&
+			    (!brother->right ||
 			     rbtree_is_black(brother->right))) {
 				rbtree_red(brother);
-				node = node->parent;
-
-			} else {
-				if ((brother->right &&
-				     rbtree_is_black(brother->right))) {
+				node = parent;
+				parent = node->parent;
+				continue;
+			}
+			if (!brother->right ||
+			    rbtree_is_black(brother->right)) {
+				if (brother->left) {
 					rbtree_black(brother->left);
-					rbtree_red(brother);
-					rbtree_right_rotate(tree, brother);
-					brother = node->parent->right;
 				}
-				brother->color = node->parent->color;
-				rbtree_black(node->parent);
-				rbtree_black(brother->right);
-				rbtree_left_rotate(tree, node->parent);
-				node = tree->root;
-			}
-
-		} else {
-			brother = node->parent->left;
-
-			if (rbtree_is_red(brother)) {
-				rbtree_black(brother);
-				rbtree_red(node->parent);
-				rbtree_right_rotate(tree, node->parent);
-				brother = node->parent->left;
-			}
-
-			if ((brother->left && rbtree_is_black(brother->left)) &&
-			    (brother->left &&
-			     rbtree_is_black(brother->right))) {
 				rbtree_red(brother);
-				node = node->parent;
-			} else {
-				if ((brother->right &&
-				     rbtree_is_black(brother->left))) {
-					rbtree_black(brother->right);
-					rbtree_red(brother);
-					rbtree_left_rotate(tree, brother);
-					brother = node->parent->left;
-				}
-
-				brother->color = node->parent->color;
-				rbtree_black(node->parent);
-				rbtree_black(brother->left);
-				rbtree_right_rotate(tree, node->parent);
-				node = tree->root;
+				rbtree_right_rotate(tree, brother);
+				brother = parent->right;
 			}
+			brother->color = parent->color;
+			rbtree_black(parent);
+			if (brother->right) {
+				rbtree_black(brother->right);
+			}
+			rbtree_left_rotate(tree, parent);
+			node = tree->root;
+			break;
 		}
+
+		brother = parent->left;
+		if (rbtree_red(brother)) {
+			rbtree_black(brother);
+			rbtree_red(parent);
+			rbtree_right_rotate(tree, parent);
+			brother = parent->left;
+		}
+		if ((!brother->left || rbtree_is_black(brother->left)) &&
+		    (!brother->right || rbtree_is_black(brother->right))) {
+			rbtree_red(brother);
+			node = parent;
+			parent = node->parent;
+			continue;
+		}
+
+		if (!brother->left || rbtree_is_black(brother->left)) {
+			if (brother->right) {
+				rbtree_black(brother->right);
+			}
+			rbtree_red(brother);
+			rbtree_left_rotate(tree, brother);
+			brother = parent->left;
+		}
+		brother->color = parent->color;
+		rbtree_black(parent);
+		if (brother->left) {
+			rbtree_black(brother->left);
+		}
+		rbtree_right_rotate(tree, parent);
+		node = tree->root;
+		break;
 	}
+
 	if (node) {
 		rbtree_black(node);
 	}
@@ -342,6 +350,7 @@ void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata, void *data)
 
 void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 {
+	unsigned char is_red;
 	rbtree_node_t *parent = NULL;
 	rbtree_node_t *temp = NULL;
 	rbtree_node_t *old = node;
@@ -349,23 +358,24 @@ void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 	if (node->left && node->right) {
 		node = rbtree_get_min(node->right);
 		temp = node->right;
+		parent = node->parent;
+		is_red = node->color;
 
-		if (node->right) {
-			node->right->parent = node->parent;
+		if (temp) {
+			temp->parent = parent;
 		}
-
-		if (node->parent) {
-			if (node->parent->left == node) {
-				node->parent->left = node->right;
+		if (parent) {
+			if (parent->left == node) {
+				parent->left = temp;
 			} else {
-				node->parent->right = node->right;
+				parent->right = temp;
 			}
 		} else {
-			tree->root = node->right;
+			tree->root = temp;
 		}
 
 		if (node->parent == old) {
-			temp->parent = node;
+			parent = node;
 		}
 
 		node->parent = old->parent;
@@ -394,13 +404,14 @@ void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 			temp = node->left;
 		}
 		parent = node->parent;
+		is_red = node->color;
 
 		if (temp) {
-			temp->parent = node->parent;
+			temp->parent = parent;
 		}
-		if (node->parent) {
-			if (node->parent->left == node) {
-				node->parent->left = temp;
+		if (parent) {
+			if (parent->left == node) {
+				parent->left = temp;
 			} else {
 				parent->right = temp;
 			}
@@ -413,12 +424,12 @@ void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node)
 		tree->destroy(old->data);
 	}
 	free(old);
-
-	if (rbtree_is_black(node)) {
-		rbtree_delete_rebalance(tree, temp);
+	tree->total_node--;
+	if (is_red) {
+		return;
 	}
 
-	tree->total_node--;
+	rbtree_delete_rebalance(tree, temp, parent);
 }
 
 /** 删除红黑树中的结点 */
