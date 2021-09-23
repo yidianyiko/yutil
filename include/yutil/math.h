@@ -37,7 +37,7 @@ Y_BEGIN_DECLS
 
 #define y_min(x, y) ((((x) - (y)) < 0) ? (x) : (y))
 
-#define y_round(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
+#define y_iround(x) ((x) > 0 ? (int)((x) + 0.5) : (int)((x)-0.5))
 
 #define y_pow2(x) ((x) * (x))
 
