@@ -179,7 +179,7 @@ static void rbtree_insert_rebalance(rbtree_t *tree, rbtree_node_t *node)
 static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 				    rbtree_node_t *parent)
 {
-	rbtree_node_t *brother;
+	rbtree_node_t *brother, *brother_left, *brother_right;
 
 	while ((!node || rbtree_is_black(node)) && node != tree->root) {
 		if (parent->left == node) {
@@ -201,8 +201,8 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 			}
 			if (!brother->right ||
 			    rbtree_is_black(brother->right)) {
-				if (brother->left) {
-					rbtree_black(brother->left);
+				if ((brother_left = brother->left)) {
+					rbtree_black(brother_left);
 				}
 				rbtree_red(brother);
 				rbtree_right_rotate(tree, brother);
@@ -219,7 +219,7 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 		}
 
 		brother = parent->left;
-		if (rbtree_red(brother)) {
+		if (rbtree_is_red(brother)) {
 			rbtree_black(brother);
 			rbtree_red(parent);
 			rbtree_right_rotate(tree, parent);
@@ -234,8 +234,8 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 		}
 
 		if (!brother->left || rbtree_is_black(brother->left)) {
-			if (brother->right) {
-				rbtree_black(brother->right);
+			if ((brother_right = brother->right)) {
+				rbtree_black(brother_right);
 			}
 			rbtree_red(brother);
 			rbtree_left_rotate(tree, brother);
@@ -254,7 +254,6 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 	if (node) {
 		rbtree_black(node);
 	}
-
 	return;
 }
 
