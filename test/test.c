@@ -7,6 +7,7 @@ int main()
 
 	describe("test_list", test_list);
 	describe("test_math", test_math);
+	describe("test_time", test_time);
 	describe("test_logger", test_logger);
 	describe("test_list_entry", test_list_entry);
 	describe("test_dirent", test_dirent);

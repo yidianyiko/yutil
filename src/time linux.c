@@ -39,13 +39,6 @@
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-
-
-struct timeval_t_ {
-	int64_t tv_sec;
-	int64_t tv_usec;
-};
-
 int64_t get_time_ms(void)
 {
 	struct timeval tv;
@@ -82,15 +75,15 @@ void sleep_s(unsigned int s)
 }
 
 // get the time from 1970-01-01 00:00:00:000
-void get_time_of_day(timeval_t *tv)
+int get_time_of_day(timeval_t *tv)
 {
 	struct timeval tmp = { 0 };
 	if (gettimeofday(&tmp, NULL))
-		return;
+		return 0;
 
 	tv->tv_sec = (int64_t)tmp.tv_sec;
 	tv->tv_usec = (int64_t)tmp.tv_usec;
-	return;
+	return 1;
 }
 
 #endif

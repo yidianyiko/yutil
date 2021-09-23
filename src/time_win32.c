@@ -37,11 +37,6 @@
 
 #define TIME_WRAP_VALUE (~(int64_t)0)
 
-struct timeval_t_ {
-	int64_t tv_sec;
-	int64_t tv_usec;
-};
-
 int64_t get_time_ms(void)
 {
 	int64_t time;
@@ -86,7 +81,7 @@ void sleep_s(unsigned int s)
 }
 
 // get the time from 1970-01-01 00:00:00:000
-void get_time_of_day(timeval_t *tv)
+int get_time_of_day(timeval_t *tv)
 {
 	union {
 		uint64_t ns100;
@@ -100,7 +95,7 @@ void get_time_of_day(timeval_t *tv)
 				       10000000ULL);
 		tv->tv_usec = (int64_t)((now.ns100 / 10ULL) % 1000000ULL);
 	}
-	return;
+	return 1;
 }
 
 #endif

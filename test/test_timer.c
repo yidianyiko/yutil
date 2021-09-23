@@ -93,7 +93,7 @@ void test_timer(void)
 	WaitForSingleObject(mutex, INFINITE);
 	timer_reset(timer_id, 70, timer_list);
 	ReleaseMutex(mutex);
-	sleep_ms(60L);
+	sleep_ms(50L);
 	it_i("check timer_reset()", count, 0);
 
 	sleep_ms(70L);
