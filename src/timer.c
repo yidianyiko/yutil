@@ -68,7 +68,7 @@ struct timer_list_t_ {
 /*----------------------------- Private ------------------------------*/
 
 /** 更新定时器在定时器列表中的位置 */
-static void timer_list_add_node(list_node_t *node, timer_list_t *list)
+static void timer_list_set_node(list_node_t *node, timer_list_t *list)
 {
 	timer_s_t *timer;
 	int64_t t, tt;
@@ -141,7 +141,7 @@ static int timer_list_add(long int n_ms, timer_callback callback, void *arg,
 	timer->node.next = NULL;
 	timer->node.prev = NULL;
 	timer->node.data = timer;
-	timer_list_add_node(&timer->node, list);
+	timer_list_set_node(&timer->node, list);
 
 	return timer->id;
 }
@@ -213,13 +213,13 @@ int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 
 	return timer ? 0 : -1;
 }
-int timer_list_add_timeout(long int n_ms, timer_callback callback, void *arg,
+int timer_list_set_timeout(long int n_ms, timer_callback callback, void *arg,
 			   timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, FALSE, list);
 }
 
-int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
+int timer_list_set_interval(long int n_ms, timer_callback callback, void *arg,
 			    timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, TRUE, list);
@@ -255,7 +255,7 @@ size_t timer_list_process(timer_list_t *list)
 		if (timer->reuse) {
 			timer->pause_ms = 0;
 			timer->start_time = get_time_ms();
-			timer_list_add_node(node, list);
+			timer_list_set_node(node, list);
 		} else {
 			free(timer);
 		}
