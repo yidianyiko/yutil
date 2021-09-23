@@ -115,12 +115,12 @@ timer_list_t *timer_list_create()
 	}
 	list->active = TRUE;
 	list->id_count = 0;
-	list_init(&list->timers);
+	list_create(&list->timers);
 	return list;
 }
 
 static int timer_list_add(long int n_ms, timer_callback callback, void *arg,
-		   bool_t reuse, timer_list_t *list)
+			  bool_t reuse, timer_list_t *list)
 {
 	timer_s_t *timer;
 	if (!list->active) {

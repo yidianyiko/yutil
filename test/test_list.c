@@ -9,8 +9,8 @@ void test_list_concat(void)
 {
 	list_t list1;
 	list_t list2;
-	list_init(&list1);
-	list_init(&list2);
+	list_create(&list1);
+	list_create(&list2);
 	list_append(&list1, (void *)0);
 	// list_concat(&list1, &list2);
 	list_append(&list2, (void *)10);
@@ -20,8 +20,8 @@ void test_list_concat(void)
 	     (int)(&list1)->length == 2 && (int)(&list2)->length == 0 &&
 		 !list2.head.next && !list2.tail.prev,
 	     TRUE);
-	list_clear(&list1, NULL);
-	list_clear(&list2, NULL);
+	list_destroy(&list1, NULL);
+	list_destroy(&list2, NULL);
 }
 
 void test_list(void)
@@ -33,8 +33,8 @@ void test_list(void)
 	list_t list;
 	list_node_t *node;
 
-	list_init(&list);
-	it_b("list_init() should work",
+	list_create(&list);
+	it_b("list_create() should work",
 	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
 	     TRUE);
 
@@ -47,9 +47,9 @@ void test_list(void)
 
 	// delete data
 	for (i = 0; i < n; ++i) {
-		list_delete_by_pos(&list, 0);
+		list_delete(&list, 0);
 	}
-	it_i("list_delete_by_pos() should work", (int)(&list)->length, (int)0);
+	it_i("list_delete() should work", (int)(&list)->length, (int)0);
 	it_i("list_delete_node() should work", (int)(&list)->length, (int)0);
 	it_i("list_unlink() should work", (int)(&list)->length, (int)0);
 	it_i("list_node_free() should work", (int)(&list)->length, (int)0);
@@ -113,8 +113,8 @@ void test_list(void)
 
 	test_list_concat();
 
-	list_clear(&list, NULL);
-	it_b("list_clear() should work",
+	list_destroy(&list, NULL);
+	it_b("list_destroy() should work",
 	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
 	     TRUE);
 }
