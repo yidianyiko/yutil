@@ -177,7 +177,7 @@ list_node_t *list_append(list_t *list, void *data)
 	return node;
 }
 
-void list_node_delete(list_node_t *node)
+void list_node_free(list_node_t *node)
 {
 	free(node);
 }

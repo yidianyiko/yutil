@@ -270,6 +270,6 @@ void timer_list_destroy(timer_list_t *list)
 		return;
 	}
 	list->active = FALSE;
-	list_clear_data(&list->timers, free);
+	list_destroy_without_node(&list->timers, free);
 	free(list);
 }
