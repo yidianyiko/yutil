@@ -79,23 +79,4 @@ void sleep_s(unsigned int s)
 {
 	sleep_ms(s * 1000);
 }
-
-// get the time from 1970-01-01 00:00:00:000
-int get_time_of_day(timeval_t *tv)
-{
-	union {
-		uint64_t ns100;
-		FILETIME ft;
-
-	} now;
-
-	if (tv) {
-		GetSystemTimeAsFileTime(&now.ft);
-		tv->tv_sec = (int64_t)((now.ns100 - 116444736000000000ULL) /
-				       10000000ULL);
-		tv->tv_usec = (int64_t)((now.ns100 / 10ULL) % 1000000ULL);
-	}
-	return 1;
-}
-
 #endif
