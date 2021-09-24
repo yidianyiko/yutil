@@ -20,6 +20,7 @@ if is_plat("windows") then
 else
     add_defines("_GNU_SOURCE=1")
     add_cxflags("-Wno-error=maybe-uninitialized")
+    add_cxflags("-Wno-error=stringop-truncation")
 end
 
 if is_mode("release") then
