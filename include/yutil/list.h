@@ -88,11 +88,11 @@ void list_delete_node(list_t *list, list_node_t *node);
 #define list_delete_last(list) list_delete_node(list, (list)->tail.prev)
 
 void list_node_free(list_node_t *node);
-void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node);
+void list_destroy_ex(list_t *list, void (*on_destroy)(void *), int free_node);
 void list_concat(list_t *list1, list_t *list2);
 
-#define list_destroy(list, func) list_clear_ex(list, func, 1)
-#define list_destroy_without_node(list, func) list_clear_ex(list, func, 0)
+#define list_destroy(list, func) list_destroy_ex(list, func, 1)
+#define list_destroy_without_node(list, func) list_destroy_ex(list, func, 0)
 
 static inline list_node_t *list_get_first_node(const list_t *list)
 {

@@ -58,7 +58,7 @@ void list_unlink(list_t *list, list_node_t *node)
 	node->next = NULL;
 }
 
-void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node)
+void list_destroy_ex(list_t *list, void (*on_destroy)(void *), int free_node)
 {
 	list_node_t *prev, *node;
 	node = list->tail.prev;
