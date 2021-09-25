@@ -6,7 +6,6 @@
 
 void test_time(void)
 {
-	timeval_t *tv = NULL;
 	int64_t time1 = get_time_ms();
 	it_b("get_time_ms() should work", time1 != 0, TRUE);
 
@@ -21,6 +20,4 @@ void test_time(void)
 	sleep_ms(100);
 
 	it_b("sleep_ms() should work", get_time_delta(time2) >= 90, TRUE);
-
-	it_b("get_time_of_day() should work", get_time_of_day(tv), TRUE);
 }
