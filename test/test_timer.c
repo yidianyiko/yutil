@@ -59,13 +59,13 @@ void test_timer(void)
 
 	it_b("check timer_list_new()",
 	     (timer_list = timer_list_create()) != NULL, TRUE);
-	it_b("check timer_list_set_interval()",
+	it_b("check timer_list_add_interval()",
 	     (timer_id =
-		  timer_list_set_interval(10, on_interval, 0, timer_list)) == 1,
+		  timer_list_add_interval(10, on_interval, 0, timer_list)) == 1,
 	     TRUE);
 
-	it_b("check timer_list_set_timeout()",
-	     timer_list_set_timeout(250, on_time_out, &timer_id, timer_list) ==
+	it_b("check timer_list_set_interval()",
+	     timer_list_set_interval(250, on_time_out, &timer_id, timer_list) ==
 		 2,
 	     TRUE);
 

@@ -61,11 +61,11 @@ size_t timer_list_process(timer_list_t *list);
  *	该定时器的标识符
  **/
 /** repeatedly calls a function, with a fixed time delay between each call. */
-int timer_list_set_timeout(long int n_ms, timer_callback callback, void *arg,
-			   timer_list_t *list);
+int timer_list_set_interval(long int n_ms, timer_callback callback, void *arg,
+			    timer_list_t *list);
 
 /** set a timer which execute a function once after the timer expires. */
-int timer_list_set_interval(long int n_ms, timer_callback callback, void *arg,
+int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
 			    timer_list_t *list);
 
 /**

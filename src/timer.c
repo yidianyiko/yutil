@@ -213,13 +213,13 @@ int timer_reset(int timer_id, long int n_ms, timer_list_t *list)
 
 	return timer ? 0 : -1;
 }
-int timer_list_set_timeout(long int n_ms, timer_callback callback, void *arg,
-			   timer_list_t *list)
+int timer_list_set_interval(long int n_ms, timer_callback callback, void *arg,
+			    timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, FALSE, list);
 }
 
-int timer_list_set_interval(long int n_ms, timer_callback callback, void *arg,
+int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
 			    timer_list_t *list)
 {
 	return timer_list_add(n_ms, callback, arg, TRUE, list);
