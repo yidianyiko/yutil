@@ -22,7 +22,7 @@ void on_time_out(void *arg)
 {
 	int *timer_id = (int *)arg;
 
-	it_b("check timer_destroy()", timer_destroy(*timer_id, timer_list) == 0,
+	it_b("check timer_destroy()", timer_destroy(timer_list, *timer_id) == 0,
 	     TRUE);
 	timer_list_destroy(timer_list);
 	count = -1;
@@ -61,11 +61,11 @@ void test_timer(void)
 	     (timer_list = timer_list_create()) != NULL, TRUE);
 	it_b("check timer_list_add_interval()",
 	     (timer_id =
-		  timer_list_add_interval(10, on_interval, 0, timer_list)) == 1,
+		  timer_list_add_interval(timer_list, 10, on_interval, 0)) == 1,
 	     TRUE);
 
-	it_b("check timer_list_set_interval()",
-	     timer_list_set_interval(250, on_time_out, &timer_id, timer_list) ==
+	it_b("check timer_list_add_timeout()",
+	     timer_list_add_timeout(timer_list, 250, on_time_out, &timer_id) ==
 		 2,
 	     TRUE);
 
@@ -75,7 +75,7 @@ void test_timer(void)
 
 	// test pause
 	WaitForSingleObject(mutex, INFINITE);
-	timer_pause(timer_id, timer_list);
+	timer_pause(timer_list, timer_id);
 	ReleaseMutex(mutex);
 	ret = count;
 	sleep_ms(50L);
@@ -83,7 +83,7 @@ void test_timer(void)
 
 	// test continue
 	WaitForSingleObject(mutex, INFINITE);
-	timer_continue(timer_id, timer_list);
+	timer_continue(timer_list, timer_id);
 	ReleaseMutex(mutex);
 	sleep_ms(50L);
 	it_b("check timer_continue()", ret < count, TRUE);
@@ -91,7 +91,7 @@ void test_timer(void)
 	count = 0;
 	// test reset
 	WaitForSingleObject(mutex, INFINITE);
-	timer_reset(timer_id, 70, timer_list);
+	timer_reset(timer_list, timer_id, 70);
 	ReleaseMutex(mutex);
 	sleep_ms(50L);
 	it_i("check timer_reset()", count, 0);
