@@ -11,3 +11,4 @@ void test_strpool(void);
 void test_timer(void);
 void test_rbtree(void);
 void test_charset(void);
+void test_time(void);

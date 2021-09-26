@@ -89,7 +89,7 @@ static size_t utf8_to_ucs2(const char *utf8, wchar_t *ucs2)
 	size_t i, count;
 	wchar_t unicode;
 	const unsigned char *byte;
-	unsigned char buf[MAX_SAVE_NUM];
+	unsigned char buf[MAX_SAVE_NUM] = { 0 };
 
 	byte = (unsigned char *)utf8;
 	if ((*byte >> 7) == 0) {    // 0xxxxxxx
@@ -217,7 +217,7 @@ static size_t encode_to_utf8(char *str, const wchar_t *wcs, size_t max_len)
 	size_t count = 0;
 
 	char *p = str;
-	unsigned char buf[MAX_SAVE_NUM];
+	unsigned char buf[MAX_SAVE_NUM] = { 0 };
 
 	const wchar_t *wp = wcs;
 

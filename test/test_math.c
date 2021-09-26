@@ -15,7 +15,7 @@ static void test_math_min(void)
 
 static void test_math_round(void)
 {
-	it_b("y_round() should work", (int)y_round(2.3) == 2, TRUE);
+	it_b("y_iround() should work", (int)y_iround(2.3) == 2, TRUE);
 }
 
 static void test_math_pow2(void)

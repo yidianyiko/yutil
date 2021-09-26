@@ -61,12 +61,12 @@ size_t timer_list_process(timer_list_t *list);
  *	该定时器的标识符
  **/
 /** repeatedly calls a function, with a fixed time delay between each call. */
-int timer_list_add_timeout(long int n_ms, timer_callback callback, void *arg,
-			   timer_list_t *list);
+int timer_list_add_interval(timer_list_t *list, long int n_ms,
+			    timer_callback callback, void *arg);
 
 /** set a timer which execute a function once after the timer expires. */
-int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
-			    timer_list_t *list);
+int timer_list_add_timeout(timer_list_t *list, long int n_ms,
+			   timer_callback callback, void *arg);
 
 /**
  * 释放定时器
@@ -77,7 +77,7 @@ int timer_list_add_interval(long int n_ms, timer_callback callback, void *arg,
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  */
-int timer_destroy(int timer_id, timer_list_t *list);
+int timer_destroy(timer_list_t *list, int timer_id);
 
 /**
  * 暂停定时器的倒计时
@@ -87,7 +87,7 @@ int timer_destroy(int timer_id, timer_list_t *list);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_pause(int timer_id, timer_list_t *list);
+int timer_pause(timer_list_t *list, int timer_id);
 
 /**
  * 继续定时器的倒计时
@@ -96,7 +96,7 @@ int timer_pause(int timer_id, timer_list_t *list);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_continue(int timer_id, timer_list_t *list);
+int timer_continue(timer_list_t *list, int timer_id);
 
 /**
  * 重设定时器的等待时间
@@ -107,7 +107,7 @@ int timer_continue(int timer_id, timer_list_t *list);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_reset(int timer_id, long int n_ms, timer_list_t *list);
+int timer_reset(timer_list_t *list, int timer_id, long int n_ms);
 
 Y_END_DECLS
 

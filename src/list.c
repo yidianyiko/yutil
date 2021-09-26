@@ -32,7 +32,7 @@
 #include "yutil/keywords.h"
 #include "yutil/list.h"
 
-void list_init(list_t *list)
+void list_create(list_t *list)
 {
 	list->length = 0;
 	list->head.next = list->tail.next = NULL;
@@ -40,13 +40,46 @@ void list_init(list_t *list)
 	list->head.prev = list->tail.prev = NULL;
 }
 
-void *list_get(const list_t *list, size_t pos)
+void list_unlink(list_t *list, list_node_t *node)
 {
-	list_node_t *node = list_get_node_by_pos(list, pos);
-	return node ? node->data : NULL;
+	if (list->length > 0) {
+		list->length -= 1;
+	}
+	if (node->next) {
+		node->next->prev = node->prev;
+	}
+	if (node == list->tail.prev) {
+		list->tail.prev = node->prev;
+	}
+	if (node->prev) {
+		node->prev->next = node->next;
+	}
+	node->prev = NULL;
+	node->next = NULL;
 }
 
-list_node_t *list_get_node_by_pos(const list_t *list, size_t pos)
+void list_destroy_ex(list_t *list, void (*on_destroy)(void *), int free_node)
+{
+	list_node_t *prev, *node;
+	node = list->tail.prev;
+	list->head.next = NULL;
+	list->tail.prev = NULL;
+	list->length = 0;
+	while (node && node != &list->head) {
+		prev = node->prev;
+		node->prev = NULL;
+		node->next = NULL;
+		if (node->data && on_destroy) {
+			on_destroy(node->data);
+		}
+		if (free_node) {
+			free(node);
+		}
+		node = prev;
+	}
+}
+
+list_node_t *list_get_node(const list_t *list, size_t pos)
 {
 	list_node_t *node;
 	if (pos >= list->length) {
@@ -68,17 +101,6 @@ list_node_t *list_get_node_by_pos(const list_t *list, size_t pos)
 	return node;
 }
 
-list_node_t *list_insert(list_t *list, size_t pos, void *data)
-{
-	list_node_t *node;
-	node = (list_node_t *)malloc(sizeof(list_node_t));
-	if (node == NULL)
-		return NULL;
-	node->data = data;
-	list_insert_node(list, pos, node);
-	return node;
-}
-
 void list_link(list_t *list, list_node_t *cur, list_node_t *node)
 {
 	node->prev = cur;
@@ -93,7 +115,7 @@ void list_link(list_t *list, list_node_t *cur, list_node_t *node)
 void list_insert_node(list_t *list, size_t pos, list_node_t *node)
 {
 	list_node_t *target;
-	target = list_get_node_by_pos(list, pos);
+	target = list_get_node(list, pos);
 	if (target) {
 		list_link(list, target->prev, node);
 	} else {
@@ -101,16 +123,21 @@ void list_insert_node(list_t *list, size_t pos, list_node_t *node)
 	}
 }
 
-list_node_t *list_append(list_t *list, void *data)
+list_node_t *list_insert(list_t *list, size_t pos, void *data)
 {
 	list_node_t *node;
 	node = (list_node_t *)malloc(sizeof(list_node_t));
-	if (node == NULL)
-		return NULL;
 	node->data = data;
-	node->next = NULL;
-	list_append_node(list, node);
+	list_insert_node(list, pos, node);
 	return node;
+}
+
+void list_delete_node(list_t *list, list_node_t *node)
+{
+	list_unlink(list, node);
+	node->data = NULL;
+	free(node);
+	node = NULL;
 }
 
 void list_append_node(list_t *list, list_node_t *node)
@@ -128,57 +155,26 @@ void list_append_node(list_t *list, list_node_t *node)
 	list->length += 1;
 }
 
-void list_unlink(list_t *list, list_node_t *node)
+void list_delete(list_t *list, size_t pos)
 {
-	if (list->length > 0) {
-		list->length -= 1;
-	}
-	if (node->next) {
-		node->next->prev = node->prev;
-	}
-	if (node == list->tail.prev) {
-		list->tail.prev = node->prev;
-	}
-	if (node->prev) {
-		node->prev->next = node->next;
-	}
-	node->prev = NULL;
-	node->next = NULL;
-}
-
-void list_clear_ex(list_t *list, void (*on_destroy)(void *), int free_node)
-{
-	list_node_t *prev, *node;
-	node = list->tail.prev;
-	list->head.next = NULL;
-	list->tail.prev = NULL;
-	list->length = 0;
-	while (node && node != &list->head) {
-		prev = node->prev;
-		node->prev = NULL;
-		node->next = NULL;
-		if (node->data && on_destroy) {
-			on_destroy(node->data);
-		}
-		if (free_node) {
-			free(node);
-		}
-		node = prev;
-	}
-}
-
-void list_delete_node(list_t *list, list_node_t *node)
-{
-	list_unlink(list, node);
-	node->data = NULL;
-	free(node);
-	node = NULL;
-}
-
-void list_delete_by_pos(list_t *list, size_t pos)
-{
-	list_node_t *node = list_get_node_by_pos(list, pos);
+	list_node_t *node = list_get_node(list, pos);
 	list_delete_node(list, node);
+}
+
+void *list_get(const list_t *list, size_t pos)
+{
+	list_node_t *node = list_get_node(list, pos);
+	return node ? node->data : NULL;
+}
+
+list_node_t *list_append(list_t *list, void *data)
+{
+	list_node_t *node;
+	node = (list_node_t *)malloc(sizeof(list_node_t));
+	node->data = data;
+	node->next = NULL;
+	list_append_node(list, node);
+	return node;
 }
 
 void list_node_free(list_node_t *node)

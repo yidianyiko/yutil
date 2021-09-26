@@ -33,15 +33,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #include <assert.h>
-#include <limits.h>
-#include <stdarg.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdarg.h>
+#include <limits.h>
 #include <ctype.h>
+
 #include "yutil/keywords.h"
 #include "yutil/time.h"
 #include "yutil/dict.h"
@@ -71,43 +71,36 @@ static int _dict_init(dict_t *ht, dict_type_t *type, void *priv_data_ptr);
 
 /* -------------------------- hash functions -------------------------------- */
 
-/*
- * the hash function keep the old code (unsigned int)
- * for reduce siphash.c (uint8_t)
- */
+static uint8_t dict_hash_function_seed[16];
 
-static int dict_hash_function_seed = 5381;
-
-void dict_set_hash_function_seed(unsigned int seed)
+void dict_set_hash_function_seed(uint8_t seed)
 {
-	dict_hash_function_seed = seed;
+	memcpy(dict_hash_function_seed, (const void *)(long long)seed,
+	       sizeof(dict_hash_function_seed));
 }
 
-unsigned int dict_get_hash_function_seed(void)
+uint8_t dict_get_hash_function_seed(void)
 {
-	return dict_hash_function_seed;
+	return (uint8_t)(long long)dict_hash_function_seed;
 }
 
-/* Generic hash function (a popular one from Bernstein).
- * I tested a few and this was the best. */
-unsigned int dict_gen_hash_function(const unsigned char *buf, int len)
+/* The default hashing function uses SipHash implementation
+ * in siphash.c. */
+
+uint64_t siphash(const uint8_t *in, const size_t inlen, const uint8_t *k);
+uint64_t siphash_nocase(const uint8_t *in, const size_t inlen,
+			const uint8_t *k);
+
+uint64_t dict_gen_hash_function(const void *key, int len)
 {
-	unsigned int hash = dict_hash_function_seed;
-	while (len--) {
-		hash = ((hash << 5) + hash) + (*buf++); /* hash * 33 + c */
-	}
-	return hash;
+	return siphash((const uint8_t *)key, len, dict_hash_function_seed);
 }
 
 /* And a case insensitive version */
-unsigned int dict_gen_case_hash_function(const unsigned char *buf, int len)
+uint64_t dict_gen_case_hash_function(const unsigned char *buf, int len)
 {
-	unsigned int hash = dict_hash_function_seed;
-	while (len--) {
-		hash = ((hash << 5) + hash) +
-		       (tolower(*buf++)); /* hash * 33 + c */
-	}
-	return hash;
+	return siphash_nocase((const uint8_t *)buf, len,
+			      dict_hash_function_seed);
 }
 
 /* ----------------------------- API implementation ------------------------- */
@@ -361,8 +354,6 @@ dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing)
 	 * more frequently. */
 	ht = dict_is_rehashing(d) ? &d->ht[1] : &d->ht[0];
 	entry = (dict_entry_t *)malloc(sizeof(*entry));
-	if (entry == NULL)
-		return NULL;
 	entry->next = ht->table[index];
 	ht->table[index] = entry;
 	ht->used++;
@@ -1281,27 +1272,18 @@ void dict_get_stats(char *buf, size_t buf_size, dict_t *d)
 		orig_buf[orig_bufsize - 1] = '\0';
 }
 
-unsigned int string_key_dict_key_hash(const void *key)
+uint64_t dict_string_hash(const void *key)
 {
-	const char *buf = (const char *)key;
-	unsigned int hash = dict_hash_function_seed;
-	while (*buf) {
-		hash = ((hash << 5) + hash) + (*buf++);
-	}
-	return hash;
+	return dict_gen_hash_function(key, (int)strlen((const char *)key));
 }
 
-int string_key_dict_key_compare(void *privdata, const void *key1,
-				const void *key2)
+int dict_string_key_compare(void *privdata, const void *key1, const void *key2)
 {
 	dict_not_used(privdata);
-	if (strcmp((const char *)key1, (const char *)key2) == 0) {
-		return 1;
-	}
-	return 0;
+	return strcmp((const char *)key1, (const char *)key2) == 0;
 }
 
-void *string_key_dict_key_dup(void *privdata, const void *key)
+void *dict_string_key_dup(void *privdata, const void *key)
 {
 	dict_not_used(privdata);
 	char *newkey =
@@ -1312,7 +1294,7 @@ void *string_key_dict_key_dup(void *privdata, const void *key)
 	return newkey;
 }
 
-void string_key_dict_key_destructor(void *privdata, void *key)
+void dict_string_key_destructor(void *privdata, void *key)
 {
 	dict_not_used(privdata);
 	free(key);
@@ -1320,20 +1302,23 @@ void string_key_dict_key_destructor(void *privdata, void *key)
 
 void dict_init_string_key_type(dict_type_t *t)
 {
-	t->hash_function = string_key_dict_key_hash;
+	t->hash_function = dict_string_hash;
 	t->key_dup = NULL;
 	t->val_dup = NULL;
-	t->key_compare = string_key_dict_key_compare;
+	t->key_compare = dict_string_key_compare;
 	t->key_destructor = NULL;
 	t->val_destructor = NULL;
+	t->expand_allowed = NULL;
 }
 
 void dict_init_string_copy_key_type(dict_type_t *t)
 {
-	t->hash_function = string_key_dict_key_hash;
-	t->key_dup = string_key_dict_key_dup;
+	t->hash_function = dict_string_hash;
+	t->key_dup = dict_string_key_dup;
 	t->val_dup = NULL;
-	t->key_compare = string_key_dict_key_compare;
-	t->key_destructor = string_key_dict_key_destructor;
+	t->key_compare = dict_string_key_compare;
+	t->key_destructor = dict_string_key_destructor;
 	t->val_destructor = NULL;
+	t->expand_allowed = 0;
+	t->expand_allowed = NULL;
 }

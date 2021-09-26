@@ -9,9 +9,9 @@
 #include "yutil/dict.h"
 #include "yutil/time.h"
 
-unsigned int hash_callback(const void *key)
+uint64_t hash_callback(const void *key)
 {
-	return dict_gen_hash_function((const unsigned char *)key,
+	return dict_gen_hash_function((unsigned char *)key,
 				      (int)strlen((char *)key));
 }
 

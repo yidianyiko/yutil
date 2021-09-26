@@ -37,6 +37,10 @@
 #ifndef UTIL_DICT_H
 #define UTIL_DICT_H
 
+#include <limits.h>
+#include <stdint.h>
+#include <stdlib.h>
+
 Y_BEGIN_DECLS
 
 /* ------------------------------- Types ------------------------------------*/
@@ -71,7 +75,7 @@ struct dict_entry_t {
 };
 
 struct dict_type_t {
-	unsigned int (*hash_function)(const void *key);
+	uint64_t (*hash_function)(const void *key);
 	void *(*key_dup)(void *priv_data, const void *key);
 	void *(*val_dup)(void *priv_data, const void *obj);
 	int (*key_compare)(void *priv_data, const void *key1, const void *key2);
@@ -198,32 +202,28 @@ void dict_destroy_iterator(dict_iterator_t *iter);
 dict_entry_t *dict_get_random_key(dict_t *d);
 dict_entry_t *dict_get_fair_random_key(dict_t *d);
 unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
-				      unsigned int count);
+				unsigned int count);
 void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
-unsigned int dict_gen_hash_function(const unsigned char *buf, int len);
-unsigned int dict_gen_case_hash_function(const unsigned char *buf,
-					       int len);
+uint64_t dict_gen_hash_function(const void *key, int len);
+uint64_t dict_gen_case_hash_function(const unsigned char *buf, int len);
 void dict_empty(dict_t *d, void(callback)(void *));
 void dict_enable_resize(void);
 void dict_disable_resize(void);
 int dict_rehash(dict_t *d, int n);
 int dict_rehash_milliseconds(dict_t *d, int ms);
-void dict_set_hash_function_seed(unsigned int seed);
-unsigned int dict_get_hash_function_seed(void);
-unsigned long dict_scan(dict_t *d, unsigned long v,
-			      dict_scan_function *fn,
-			      dict_scan_bucket_function *bucketfn,
-			      void *priv_data);
+void dict_set_hash_function_seed(uint8_t seed);
+uint8_t dict_get_hash_function_seed(void);
+unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
+			dict_scan_bucket_function *bucketfn, void *priv_data);
 uint64_t dict_get_hash(dict_t *d, const void *key);
 dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
-							 const void *old_ptr,
-							 uint64_t hash);
+						   const void *old_ptr,
+						   uint64_t hash);
 
-unsigned int string_key_dict_key_hash(const void *key);
-int string_key_dict_key_compare(void *privdata, const void *key1,
-				      const void *key2);
-void *string_key_dict_key_dup(void *privdata, const void *key);
-void string_key_dict_key_destructor(void *privdata, void *key);
+uint64_t dict_string_hash(const void *key);
+int dict_string_key_compare(void *privdata, const void *key1, const void *key2);
+void *dict_string_key_dup(void *privdata, const void *key);
+void dict_string_key_destructor(void *privdata, void *key);
 void dict_init_string_key_type(dict_type_t *t);
 void dict_init_string_copy_key_type(dict_type_t *t);
 
