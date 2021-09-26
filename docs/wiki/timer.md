@@ -6,13 +6,11 @@ timer 需要开发者基于定时器接口自己实现一个定时器线程。
 
 下面以 LCUI 中实现的主线程定时器为例：
 
-简单的例子
-这个例子展示了如何设置和释放定时器：
 ```c
 /*----------------------------- Timer --------------------------------*/
 
-static timer_list_t* main_timer_list = NULL;
-static LCUI_Mutex mutex;     /**< 定时器记录操作互斥锁 */
+static timer_list_t *main_timer_list = NULL;
+static LCUI_Mutex mutex; /**< 定时器记录操作互斥锁 */
 
 /*----------------------------- Private ------------------------------*/
 
@@ -36,7 +34,7 @@ void lcui_timer_list_create(void)
 //销毁定时器列表
 void lcui_timer_list_destroy()
 {
-	if(!main_timer_list){
+	if (!main_timer_list) {
 		return;
 	}
 	timer_list_destroy(main_timer_list);
@@ -48,7 +46,7 @@ void lcui_timer_list_destroy()
 int lcui_timer_destroy(int timer_id)
 {
 	int ret;
-    //加锁
+	//加锁
 	LCUIMutex_Lock(&mutex);
 	ret = timer_destroy(timer_id, main_timer_list);
 	LCUIMutex_Unlock(&mutex);
@@ -86,15 +84,15 @@ int lcui_timer_reset(int timer_id, long int n_ms)
 }
 
 //添加执行一次的定时器
-int lcui_timer_set_timeout(long int n_ms, void(*callback)(void *), void *arg)
+int lcui_timer_set_timeout(long int n_ms, void (*callback)(void *), void *arg)
 {
-	return timer_list_set_timeout(n_ms, callback, arg, main_timer_list);
+	return timer_list_set_interval(n_ms, callback, arg, main_timer_list);
 }
 
 //添加定时重复的定时器
-int lcui_timer_set_interval(long int n_ms, void(*callback)(void *), void *arg)
+int lcui_timer_set_interval(long int n_ms, void (*callback)(void *), void *arg)
 {
-	return timer_list_set_interval(n_ms, callback, arg, main_timer_list);
+	return timer_list_add_interval(n_ms, callback, arg, main_timer_list);
 }
 
 ```

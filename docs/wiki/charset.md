@@ -9,7 +9,7 @@ void charset(void)
 	char str[64];
 	wchar_t wcs[64];
 
-  //返回实际转换字符的长度
+	//返回实际转换字符的长度
 	len = decode_string(wcs, "简体中文", 64, ENCODING_ANSI);
 
 	len = encode_string(str, L"简体中文

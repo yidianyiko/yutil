@@ -24,10 +24,10 @@ static void test_dirent()
 	}
 #endif
 
-    //成功打开返回 0
-    dir_open_a(path, dir)
+	//成功打开返回 0
+	dir_open_a(path, dir);
 
-    //遍历目录
+	//遍历目录
 	while ((entry = dir_read_a(dir)) != NULL) {
 		dir_len++;
 		//获取目录名
@@ -44,11 +44,10 @@ static void test_dirent()
 
 void test_dirent(void)
 {
-    //初始化 *dir
-    dir = dir_create()
-	test_dirent_a();
+	//初始化 *dir
+	dir = dir_create() test_dirent_a();
 	test_dirent_w();
-    //销毁 *dir
+	//销毁 *dir
 	dir_destroy(dir);
 }
 ```

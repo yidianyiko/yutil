@@ -20,31 +20,29 @@ void test_list(void)
 	//初始化链表
 	list_create(&list);
 
-	//append data
+	// append data
 	for (i = 0; i < n; ++i) {
 		list_append(&list, arr + i);
 	}
 
-	//delete data
+	// delete data
 	for (i = 0; i < n; ++i) {
 		list_delete(&list, 0);
 	}
 
-	//insert data
+	// insert data
 	for (i = 0; i < n; ++i) {
 		list_insert(&list, i, arr + i);
 	}
 
-	//insert head
+	// insert head
 	list_insert_head(&list, 0);
-	it_i("list_insert_head() should work", (int)(&list)->length,
-	     (int)n + 1);
-	//delete head
+	// delete head
 	list_delete_head(&list);
 
 	list_append(&list, 0);
 
-	//delete tail
+	// delete tail
 	list_delete_last(&list);
 
 	//遍历
