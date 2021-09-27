@@ -134,6 +134,7 @@ static size_t utf8_to_ucs2(const char *utf8, wchar_t *ucs2)
 
 static size_t ucs2_to_utf8(int32_t ucs2, unsigned char *utf8)
 {
+	utf8[0] = 0;
 	if (ucs2 < 0x80) {
 		utf8[0] = ucs2;
 		utf8[1] = '\0';
@@ -229,7 +230,7 @@ static size_t encode_to_utf8(char *str, const wchar_t *wcs, size_t max_len)
 				count -= n;
 				break;
 			}
-			strncpy(p, (char *)buf, MAX_SAVE_NUM - 1);
+			strcpy(p, (char *)buf);
 			p += n;
 			++wp;
 		}
