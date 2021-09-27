@@ -135,18 +135,18 @@ static size_t utf8_to_ucs2(const char *utf8, wchar_t *ucs2)
 static size_t ucs2_to_utf8(int32_t ucs2, unsigned char *utf8)
 {
 	if (ucs2 < 0x80) {
-		utf8[0] = (unsigned char)ucs2;
+		utf8[0] = ucs2;
 		utf8[1] = '\0';
 		return 1;
 	}
 	if (ucs2 < 0x800) {
-		utf8[0] = (unsigned char)((ucs2 >> 6) | 0xC0);
+		utf8[0] = (ucs2 >> 6) | 0xC0;
 		utf8[1] = (ucs2 & 0x3F) | 0x80;
 		utf8[2] = '\0';
 		return 2;
 	}
 	if (ucs2 < 0xFFFF) {
-		utf8[0] = (unsigned char)(((ucs2 >> 12)) | 0xE0);
+		utf8[0] = ((ucs2 >> 12)) | 0xE0;
 		utf8[1] = ((ucs2 >> 6) & 0x3F) | 0x80;
 		utf8[2] = ((ucs2)&0x3F) | 0x80;
 		utf8[3] = '\0';
@@ -159,7 +159,7 @@ static size_t ucs2_to_utf8(int32_t ucs2, unsigned char *utf8)
 	if (ucs2 <= UNICODE_UTF8_4) {
 		/* http://tidy.sourceforge.net/cgi-bin/lxr/source/src/utf8.c#L380
 		 */
-		utf8[0] = (unsigned char)(0xF0 | (ucs2 >> 18));
+		utf8[0] = 0xF0 | (ucs2 >> 18);
 		utf8[1] = 0x80 | ((ucs2 >> 12) & 0x3F);
 		utf8[2] = 0x80 | ((ucs2 >> 6) & 0x3F);
 		utf8[3] = 0x80 | ((ucs2 & 0x3F));
@@ -229,7 +229,7 @@ static size_t encode_to_utf8(char *str, const wchar_t *wcs, size_t max_len)
 				count -= n;
 				break;
 			}
-			strncpy(p, (char *)buf, 19);
+			strncpy(p, (char *)buf, n);
 			p += n;
 			++wp;
 		}
