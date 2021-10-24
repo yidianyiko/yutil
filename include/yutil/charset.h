@@ -32,6 +32,8 @@
 #ifndef UTIL_CHARSET_H
 #define UTIL_CHARSET_H
 
+#include <wchar.h>
+
 Y_BEGIN_DECLS
 
 enum encoding_e { ENCODING_ANSI, ENCODING_UTF8 };
