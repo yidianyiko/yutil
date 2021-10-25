@@ -96,7 +96,7 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 	while (!list_entry_is_empty(&logger_buffer_head)) {
 		unsigned int i = 0;
 		list_entry_t* entry = NULL;
-		logger_buffer_t* output = { 0 };
+		logger_buffer_t* output = NULL;
 		list_entry_head_t logger_buffer_head_copy;
 
 		logger_buffer_head_copy = logger_buffer_head;
@@ -105,6 +105,9 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 		list_entry_for_each_by_length(&logger_buffer_head_copy, i,
 					      entry)
 		{
+			if (output) {
+				free(output);
+			}
 			output = list_entry(&logger_buffer_head_copy, entry,
 					    logger_buffer_t);
 
@@ -113,6 +116,8 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 			} else {
 				printf("%s", output->buffer);
 			}
+		}
+		if (output) {
 			free(output);
 		}
 		list_entry_exit(&logger_buffer_head_copy);
