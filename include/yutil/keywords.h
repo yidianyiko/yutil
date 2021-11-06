@@ -1,6 +1,16 @@
 #ifndef YUTIL_KEYWORDS_H
 #define YUTIL_KEYWORDS_H
 
+#if defined(__GNUC__)
+	#define YUTIL_API extern __attribute__((visibility("default")))
+#else
+	#ifdef YUTIL_EXPORTS
+		#define YUTIL_API __declspec(dllexport)
+	#else
+		#define YUTIL_API __declspec(dllimport)
+	#endif
+#endif
+
 // inline
 #ifndef __cplusplus
 #ifdef _MSC_VER

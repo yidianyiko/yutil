@@ -39,13 +39,13 @@ typedef void (*timer_callback)(void *);
 typedef struct timer_list_t_ timer_list_t;
 
 /* Init the timer list */
-timer_list_t *timer_list_create();
+YUTIL_API timer_list_t *timer_list_create();
 
 /* Free the timer list */
-void timer_list_destroy(timer_list_t *list);
+YUTIL_API void timer_list_destroy(timer_list_t *list);
 
 /* Process all active timer */
-size_t timer_list_process(timer_list_t *list);
+YUTIL_API size_t timer_list_process(timer_list_t *list);
 
 /**
  * 设置定时器
@@ -61,11 +61,11 @@ size_t timer_list_process(timer_list_t *list);
  *	该定时器的标识符
  **/
 /** repeatedly calls a function, with a fixed time delay between each call. */
-int timer_list_add_interval(timer_list_t *list, long int n_ms,
+YUTIL_API int timer_list_add_interval(timer_list_t *list, long int n_ms,
 			    timer_callback callback, void *arg);
 
 /** set a timer which execute a function once after the timer expires. */
-int timer_list_add_timeout(timer_list_t *list, long int n_ms,
+YUTIL_API int timer_list_add_timeout(timer_list_t *list, long int n_ms,
 			   timer_callback callback, void *arg);
 
 /**
@@ -77,7 +77,7 @@ int timer_list_add_timeout(timer_list_t *list, long int n_ms,
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  */
-int timer_destroy(timer_list_t *list, int timer_id);
+YUTIL_API int timer_destroy(timer_list_t *list, int timer_id);
 
 /**
  * 暂停定时器的倒计时
@@ -87,7 +87,7 @@ int timer_destroy(timer_list_t *list, int timer_id);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_pause(timer_list_t *list, int timer_id);
+YUTIL_API int timer_pause(timer_list_t *list, int timer_id);
 
 /**
  * 继续定时器的倒计时
@@ -96,7 +96,7 @@ int timer_pause(timer_list_t *list, int timer_id);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_continue(timer_list_t *list, int timer_id);
+YUTIL_API int timer_continue(timer_list_t *list, int timer_id);
 
 /**
  * 重设定时器的等待时间
@@ -107,7 +107,7 @@ int timer_continue(timer_list_t *list, int timer_id);
  * @return
  *	正常返回0，指定ID的定时器不存在则返回-1.
  * */
-int timer_reset(timer_list_t *list, int timer_id, long int n_ms);
+YUTIL_API int timer_reset(timer_list_t *list, int timer_id, long int n_ms);
 
 Y_END_DECLS
 

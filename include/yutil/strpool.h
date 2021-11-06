@@ -37,15 +37,15 @@ Y_BEGIN_DECLS
 
 typedef struct strpool_t strpool_t;
 
-strpool_t *strpool_create(void);
+YUTIL_API strpool_t *strpool_create(void);
 
-char *strpool_alloc_str(strpool_t *pool, const char *str);
+YUTIL_API char *strpool_alloc_str(strpool_t *pool, const char *str);
 
-int strpool_free_str(char *str);
+YUTIL_API int strpool_free_str(char *str);
 
-size_t strpool_size(strpool_t *pool);
+YUTIL_API size_t strpool_size(strpool_t *pool);
 
-void strpool_destroy(strpool_t *pool);
+YUTIL_API void strpool_destroy(strpool_t *pool);
 
 Y_END_DECLS
 

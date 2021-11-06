@@ -13,7 +13,7 @@ add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-
 -- add build modes
 add_rules("mode.release", "mode.debug")
 
-add_defines("_UNICODE")
+add_defines("_UNICODE", "YUTIL_EXPORTS")
 
 if is_plat("windows") then
     add_defines("_CRT_SECURE_NO_WARNINGS")
@@ -39,7 +39,7 @@ includes("test")
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
-    
+
      -- export all symbols for windows/dll
     if is_plat("windows") and is_kind("shared") then
         if is_mode("release") then
@@ -47,7 +47,7 @@ target("yutil")
         end
         add_rules("utils.symbols.export_all")
     end
-    
+
     -- add include directories
     add_includedirs("include", {public = true})
 

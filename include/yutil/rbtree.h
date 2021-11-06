@@ -60,29 +60,29 @@ struct rbtree_t_ {
 #define rbtree_is_empty(tree) ((tree)->root == NULL)
 
 // public methods
-void rbtree_init(rbtree_t *tree);
+YUTIL_API void rbtree_init(rbtree_t *tree);
 
 // insert
-void rbtree_insert(rbtree_t *tree, int key, const void *keydata,
+YUTIL_API void rbtree_insert(rbtree_t *tree, int key, const void *keydata,
 			 void *data);
-void rbtree_insert_by_key(rbtree_t *tree, int key, void *data);
-void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata,
+YUTIL_API void rbtree_insert_by_key(rbtree_t *tree, int key, void *data);
+YUTIL_API void rbtree_insert_by_keydata(rbtree_t *tree, const void *keydata,
 				    void *data);
 
-void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node);
-int rbtree_delete(rbtree_t *tree, int key, const void *keydata);
-int rbtree_delete_by_key(rbtree_t *tree, int key);
-int rbtree_delete_by_keydata(rbtree_t *tree, const void *keydata);
+YUTIL_API void rbtree_delete_by_node(rbtree_t *tree, rbtree_node_t *node);
+YUTIL_API int rbtree_delete(rbtree_t *tree, int key, const void *keydata);
+YUTIL_API int rbtree_delete_by_key(rbtree_t *tree, int key);
+YUTIL_API int rbtree_delete_by_keydata(rbtree_t *tree, const void *keydata);
 
-rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
-rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
+YUTIL_API rbtree_node_t *rbtree_search_by_key(rbtree_t *tree, int key);
+YUTIL_API rbtree_node_t *rbtree_search_by_data(rbtree_t *tree, const void *keydata);
 
-void *rbtree_get_data_by_keydata(rbtree_t *tree, const void *keydata);
-void *rbtree_get_data_by_key(rbtree_t *tree, int key);
+YUTIL_API void *rbtree_get_data_by_keydata(rbtree_t *tree, const void *keydata);
+YUTIL_API void *rbtree_get_data_by_key(rbtree_t *tree, int key);
 
-void rbtree_destroy(rbtree_t *tree);
+YUTIL_API void rbtree_destroy(rbtree_t *tree);
 
-rbtree_node_t *rbtree_next(const rbtree_node_t *node);
+YUTIL_API rbtree_node_t *rbtree_next(const rbtree_node_t *node);
 /* get the minimum key of node in a subtree of the rbtree */
 static inline rbtree_node_t *rbtree_get_min(rbtree_node_t *subtree)
 {

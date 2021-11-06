@@ -181,51 +181,51 @@ struct dict_iterator_t {
 #define random_u_long() rand()
 
 /* API */
-dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
-int dict_expand(dict_t *d, unsigned long size);
-int dict_try_expand(dict_t *d, unsigned long size);
-int dict_add(dict_t *d, void *key, void *val);
-dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing);
-dict_entry_t *dict_add_or_find(dict_t *d, void *key);
-int dict_replace(dict_t *d, void *key, void *val);
-int dict_delete(dict_t *d, const void *key);
-dict_entry_t *dict_unlink(dict_t *ht, const void *key);
-void dict_free_unlinked_entry(dict_t *d, dict_entry_t *he);
-void dict_destroy(dict_t *d);
-dict_entry_t *dict_find(dict_t *d, const void *key);
-void *dict_fetch_value(dict_t *d, const void *key);
-int dict_resize(dict_t *d);
-dict_iterator_t *dict_get_iterator(dict_t *d);
-dict_iterator_t *dict_get_safe_iterator(dict_t *d);
-dict_entry_t *dict_next(dict_iterator_t *iter);
-void dict_destroy_iterator(dict_iterator_t *iter);
-dict_entry_t *dict_get_random_key(dict_t *d);
-dict_entry_t *dict_get_fair_random_key(dict_t *d);
-unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
+YUTIL_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
+YUTIL_API int dict_expand(dict_t *d, unsigned long size);
+YUTIL_API int dict_try_expand(dict_t *d, unsigned long size);
+YUTIL_API int dict_add(dict_t *d, void *key, void *val);
+YUTIL_API dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing);
+YUTIL_API dict_entry_t *dict_add_or_find(dict_t *d, void *key);
+YUTIL_API int dict_replace(dict_t *d, void *key, void *val);
+YUTIL_API int dict_delete(dict_t *d, const void *key);
+YUTIL_API dict_entry_t *dict_unlink(dict_t *ht, const void *key);
+YUTIL_API void dict_free_unlinked_entry(dict_t *d, dict_entry_t *he);
+YUTIL_API void dict_destroy(dict_t *d);
+YUTIL_API dict_entry_t *dict_find(dict_t *d, const void *key);
+YUTIL_API void *dict_fetch_value(dict_t *d, const void *key);
+YUTIL_API int dict_resize(dict_t *d);
+YUTIL_API dict_iterator_t *dict_get_iterator(dict_t *d);
+YUTIL_API dict_iterator_t *dict_get_safe_iterator(dict_t *d);
+YUTIL_API dict_entry_t *dict_next(dict_iterator_t *iter);
+YUTIL_API void dict_destroy_iterator(dict_iterator_t *iter);
+YUTIL_API dict_entry_t *dict_get_random_key(dict_t *d);
+YUTIL_API dict_entry_t *dict_get_fair_random_key(dict_t *d);
+YUTIL_API unsigned int dict_get_some_keys(dict_t *d, dict_entry_t **des,
 				unsigned int count);
-void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
-uint64_t dict_gen_hash_function(const void *key, int len);
-uint64_t dict_gen_case_hash_function(const unsigned char *buf, int len);
-void dict_empty(dict_t *d, void(callback)(void *));
-void dict_enable_resize(void);
-void dict_disable_resize(void);
-int dict_rehash(dict_t *d, int n);
-int dict_rehash_milliseconds(dict_t *d, int ms);
-void dict_set_hash_function_seed(uint8_t seed);
-uint8_t dict_get_hash_function_seed(void);
-unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
+YUTIL_API void dict_get_stats(char *buf, size_t buf_size, dict_t *d);
+YUTIL_API uint64_t dict_gen_hash_function(const void *key, int len);
+YUTIL_API uint64_t dict_gen_case_hash_function(const unsigned char *buf, int len);
+YUTIL_API void dict_empty(dict_t *d, void(callback)(void *));
+YUTIL_API void dict_enable_resize(void);
+YUTIL_API void dict_disable_resize(void);
+YUTIL_API int dict_rehash(dict_t *d, int n);
+YUTIL_API int dict_rehash_milliseconds(dict_t *d, int ms);
+YUTIL_API void dict_set_hash_function_seed(uint8_t seed);
+YUTIL_API uint8_t dict_get_hash_function_seed(void);
+YUTIL_API unsigned long dict_scan(dict_t *d, unsigned long v, dict_scan_function *fn,
 			dict_scan_bucket_function *bucketfn, void *priv_data);
-uint64_t dict_get_hash(dict_t *d, const void *key);
-dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
+YUTIL_API uint64_t dict_get_hash(dict_t *d, const void *key);
+YUTIL_API dict_entry_t **dict_find_entry_ref_by_ptr_and_hash(dict_t *d,
 						   const void *old_ptr,
 						   uint64_t hash);
 
-uint64_t dict_string_hash(const void *key);
-int dict_string_key_compare(void *privdata, const void *key1, const void *key2);
-void *dict_string_key_dup(void *privdata, const void *key);
-void dict_string_key_destructor(void *privdata, void *key);
-void dict_init_string_key_type(dict_type_t *t);
-void dict_init_string_copy_key_type(dict_type_t *t);
+YUTIL_API uint64_t dict_string_hash(const void *key);
+YUTIL_API int dict_string_key_compare(void *privdata, const void *key1, const void *key2);
+YUTIL_API void *dict_string_key_dup(void *privdata, const void *key);
+YUTIL_API void dict_string_key_destructor(void *privdata, void *key);
+YUTIL_API void dict_init_string_key_type(dict_type_t *t);
+YUTIL_API void dict_init_string_copy_key_type(dict_type_t *t);
 
 Y_END_DECLS
 

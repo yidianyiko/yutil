@@ -61,35 +61,35 @@ struct list_t {
 #define list_for_each(node, list) for (list_each(node, list))
 #define list_for_each_reverse(node, list) for (list_each_reverse(node, list))
 
-void list_create(list_t *list);
+YUTIL_API void list_create(list_t *list);
 
 // append data at tail
-list_node_t *list_append(list_t *list, void *data);
+YUTIL_API list_node_t *list_append(list_t *list, void *data);
 // append node at tail
-void list_append_node(list_t *list, list_node_t *node);
+YUTIL_API void list_append_node(list_t *list, list_node_t *node);
 
 // insert data by pos
-list_node_t *list_insert(list_t *list, size_t pos, void *data);
+YUTIL_API list_node_t *list_insert(list_t *list, size_t pos, void *data);
 // insert node after cur
-void list_link(list_t *list, list_node_t *cur, list_node_t *node);
+YUTIL_API void list_link(list_t *list, list_node_t *cur, list_node_t *node);
 // insert node by pos
-void list_insert_node(list_t *list, size_t pos, list_node_t *node);
+YUTIL_API void list_insert_node(list_t *list, size_t pos, list_node_t *node);
 
 #define list_insert_head(list, data) list_insert(list, 0, data)
 
-void *list_get(const list_t *list, size_t pos);
-list_node_t *list_get_node(const list_t *list, size_t pos);
+YUTIL_API void *list_get(const list_t *list, size_t pos);
+YUTIL_API list_node_t *list_get_node(const list_t *list, size_t pos);
 
-void list_unlink(list_t *list, list_node_t *node);
-void list_delete(list_t *list, size_t pos);
-void list_delete_node(list_t *list, list_node_t *node);
+YUTIL_API void list_unlink(list_t *list, list_node_t *node);
+YUTIL_API void list_delete(list_t *list, size_t pos);
+YUTIL_API void list_delete_node(list_t *list, list_node_t *node);
 
 #define list_delete_head(list) list_delete_node(list, (list)->head.next)
 #define list_delete_last(list) list_delete_node(list, (list)->tail.prev)
 
-void list_node_free(list_node_t *node);
-void list_destroy_ex(list_t *list, void (*on_destroy)(void *), int free_node);
-void list_concat(list_t *list1, list_t *list2);
+YUTIL_API void list_node_free(list_node_t *node);
+YUTIL_API void list_destroy_ex(list_t *list, void (*on_destroy)(void *), int free_node);
+YUTIL_API void list_concat(list_t *list1, list_t *list2);
 
 #define list_destroy(list, func) list_destroy_ex(list, func, 1)
 #define list_destroy_without_node(list, func) list_destroy_ex(list, func, 0)

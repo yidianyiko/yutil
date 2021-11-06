@@ -46,11 +46,11 @@ typedef enum encoding_e encoding_e;
 #define encode_utf8(STR, WSTR, MAX_LEN) \
 	encode_string(STR, WSTR, MAX_LEN, ENCODING_UTF8)
 
-size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
-			   encoding_e encoding);
+YUTIL_API size_t decode_string(wchar_t *wstr, const char *str, size_t max_len,
+			       encoding_e encoding);
 
-size_t encode_string(char *str, const wchar_t *wstr, size_t max_len,
-			   encoding_e encoding);
+YUTIL_API size_t encode_string(char *str, const wchar_t *wstr, size_t max_len,
+			       encoding_e encoding);
 Y_END_DECLS
 
 #endif

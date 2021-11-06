@@ -37,18 +37,18 @@ Y_BEGIN_DECLS
 
 typedef char** strlist_t;
 
-int strlist_sorted_add(strlist_t *strlist, const char *str);
+YUTIL_API int strlist_sorted_add(strlist_t *strlist, const char *str);
 
-int strlist_add_one(strlist_t *strlist, const char *str);
+YUTIL_API int strlist_add_one(strlist_t *strlist, const char *str);
 
-int strlist_remove_one(strlist_t *strlist, const char *str);
+YUTIL_API int strlist_remove_one(strlist_t *strlist, const char *str);
 
 /**
  * 向字符串组添加字符串
  * @param[in][out] strlist 字符串组
  * @param[in] str 字符串
  */
-int strlist_add(strlist_t *strlist, const char *str);
+YUTIL_API int strlist_add(strlist_t *strlist, const char *str);
 
 /**
  * 判断字符串组中是否包含指定字符串
@@ -56,7 +56,7 @@ int strlist_add(strlist_t *strlist, const char *str);
  * @param[in] str 字符串
  * @returns 如果包含则返回 1， 否则返回 0
  */
-int strlist_has(strlist_t strlist, const char *str);
+YUTIL_API int strlist_has(strlist_t strlist, const char *str);
 
 /**
  * 从字符串组中移除指定字符串
@@ -64,17 +64,10 @@ int strlist_has(strlist_t strlist, const char *str);
  * @param[in] str 字符串
  * @returns 如果删除成功则返回 1， 否则返回 0
  */
-int strlist_remove(strlist_t *strlist, const char *str);
-
-/**
- * 向已排序的字符串组添加字符串
- * @param[in][out] strlist 字符串组
- * @param[in] str 字符串
- */
-int sortedstrlist_add(strlist_t *strlist, const char *str);
+YUTIL_API int strlist_remove(strlist_t *strlist, const char *str);
 
 /** 释放字符串组 */
-void strlist_free(strlist_t strs);
+YUTIL_API void strlist_free(strlist_t strs);
 
 Y_END_DECLS
 
