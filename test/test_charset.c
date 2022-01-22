@@ -15,6 +15,7 @@ void test_charset(void)
 	it_b("test decode ascii string", len == 5 && wcscmp(wcs, L"hello") == 0,
 	     TRUE);
 #ifdef _WIN32
+#ifndef CI_ENV
 	len = decode_string(wcs, "简体中文", 64, ENCODING_ANSI);
 	it_b("test decode ansi string",
 	     len == 4 && wcscmp(wcs, L"简体中文") == 0, TRUE);
@@ -22,6 +23,7 @@ void test_charset(void)
 	len = encode_string(str, L"简体中文", 64, ENCODING_ANSI);
 	it_b("test encode unicode string to ansi",
 	     len == strlen("简体中文") && strcmp(str, "简体中文") == 0, TRUE);
+#endif
 #else
 	len = decode_utf8(wcs, "简体中文", 64);
 	it_b("test decode utf-8 string",
