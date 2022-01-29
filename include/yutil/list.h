@@ -38,6 +38,8 @@ Y_BEGIN_DECLS
 typedef struct list_node_t list_node_t;
 typedef struct list_t list_t;
 
+typedef void (*list_item_destructor_t)(void*);
+
 struct list_node_t {
 	void *data;
 	list_node_t *prev, *next;
