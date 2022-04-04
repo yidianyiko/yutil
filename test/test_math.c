@@ -10,7 +10,16 @@ static void test_math_max(void)
 
 static void test_math_min(void)
 {
-	it_b("y_min() should work", (int)y_min(1, 2) == 1, TRUE);
+	int ix = 1, iy = 2;
+	unsigned ux = 1, uy = 2;
+	double dx = 1.0, dy = 1.0000001;
+
+	it_b("y_min() should work for int", (int)y_min(ix, iy) == ix,
+	     TRUE);
+	it_b("y_min() should work for unsigned int",
+	     (int)y_min(ux, uy) == ux, TRUE);
+	it_b("y_min() should work for double",
+	     (int)y_min(dx, dy) == dx, TRUE);
 }
 
 static void test_math_round(void)
