@@ -1,14 +1,18 @@
 #ifndef YUTIL_KEYWORDS_H
 #define YUTIL_KEYWORDS_H
 
+#include "config.h"
+
 #if defined(__GNUC__)
 	#define YUTIL_API extern __attribute__((visibility("default")))
-#else
+#elif !defined(YUTIL_STATIC_BUILD)
 	#ifdef YUTIL_EXPORTS
 		#define YUTIL_API __declspec(dllexport)
 	#else
 		#define YUTIL_API __declspec(dllimport)
 	#endif
+#else
+#define YUTIL_API
 #endif
 
 // inline

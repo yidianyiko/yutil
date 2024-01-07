@@ -39,13 +39,16 @@ includes("test")
 target("yutil")
     -- make as a static/shared library
     set_kind("$(kind)")
-
-     -- export all symbols for windows/dll
-    if is_plat("windows") and is_kind("shared") then
-        if is_mode("release") then
-            set_optimize("fastest")
+    if is_kind("shared") then
+        -- export all symbols for windows/dll
+        if is_plat("windows") then
+            if is_mode("release") then
+                set_optimize("fastest")
+            end
+            add_rules("utils.symbols.export_all")
         end
-        add_rules("utils.symbols.export_all")
+    else
+        set_configvar("YUTIL_STATIC_BUILD", 1)
     end
 
     -- add include directories
@@ -54,6 +57,8 @@ target("yutil")
     -- add the header files for installing
     add_headerfiles("include/yutil.h")
     add_headerfiles("include/(yutil/*.h)")
+    set_configdir("include/yutil")
+    add_configfiles("include/yutil/config.h.in")
 
     -- add the common source files
     add_files("src/*.c")
