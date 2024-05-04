@@ -39,7 +39,23 @@
 #include "yutil/strpool.h"
 #include "yutil/strlist.h"
 
+#define STRLIST_TOKEN_MAX_LEN 256
+
 static strpool_t *pool = NULL;
+
+static const char *parse_next_token(const char *str, char *token,
+				    size_t token_max_len)
+{
+	size_t i;
+	const char *p = str;
+
+	for (; *p == ' '; ++p);
+	for (i = 0; i < token_max_len && *p && *p != ' '; ++i, ++p) {
+		token[i] = *p;
+	}
+	token[i] = 0;
+	return p;
+}
 
 int strlist_sorted_add(strlist_t *strlist, const char *str)
 {
@@ -47,8 +63,7 @@ int strlist_sorted_add(strlist_t *strlist, const char *str)
 	strlist_t newlist;
 
 	if (*strlist) {
-		for (i = 0; (*strlist)[i]; ++i)
-			;
+		for (i = 0; (*strlist)[i]; ++i);
 		n = i + 2;
 	} else {
 		n = 2;
@@ -116,7 +131,7 @@ check_done:
 
 int strlist_add(strlist_t *strlist, const char *str)
 {
-	char buff[256];
+	char buff[STRLIST_TOKEN_MAX_LEN];
 	int count = 0, i, head;
 
 	for (head = 0, i = 0; str[i]; ++i) {
@@ -145,12 +160,18 @@ int strlist_add(strlist_t *strlist, const char *str)
 int strlist_has(strlist_t strlist, const char *str)
 {
 	int i;
+	const char *p = str;
+	char token[STRLIST_TOKEN_MAX_LEN];
+
 	if (!strlist) {
 		return 0;
 	}
-	for (i = 0; strlist[i]; ++i) {
-		if (strcmp(strlist[i], str) == 0) {
-			return 1;
+	while (*p) {
+		p = parse_next_token(p, token, STRLIST_TOKEN_MAX_LEN - 1);
+		for (i = 0; strlist[i]; ++i) {
+			if (strcmp(strlist[i], token) == 0) {
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -164,8 +185,7 @@ int strlist_remove_one(strlist_t *strlist, const char *str)
 	if (!*strlist) {
 		return 0;
 	}
-	for (len = 0; (*strlist)[len]; ++len)
-		;
+	for (len = 0; (*strlist)[len]; ++len);
 	for (pos = -1, i = 0; i < len; ++i) {
 		if (strcmp((*strlist)[i], str) == 0) {
 			pos = i;
@@ -196,7 +216,7 @@ int strlist_remove_one(strlist_t *strlist, const char *str)
 
 int strlist_remove(strlist_t *strlist, const char *str)
 {
-	char buff[256];
+	char token[STRLIST_TOKEN_MAX_LEN];
 	int count = 0, i, head;
 
 	for (head = 0, i = 0; str[i]; ++i) {
@@ -204,16 +224,16 @@ int strlist_remove(strlist_t *strlist, const char *str)
 			continue;
 		}
 		if (i - 1 > head) {
-			strncpy(buff, &str[head], i - head);
-			buff[i - head] = 0;
-			count += strlist_remove_one(strlist, buff);
+			strncpy(token, &str[head], i - head);
+			token[i - head] = 0;
+			count += strlist_remove_one(strlist, token);
 		}
 		head = i + 1;
 	}
 	if (i - 1 > head) {
-		strncpy(buff, &str[head], i - head);
-		buff[i - head] = 0;
-		count += strlist_remove_one(strlist, buff);
+		strncpy(token, &str[head], i - head);
+		token[i - head] = 0;
+		count += strlist_remove_one(strlist, token);
 	}
 	return count;
 }
