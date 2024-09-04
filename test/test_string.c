@@ -38,28 +38,28 @@ void test_strs(void)
 	strlist_add(&strs, "last-child");
 	strlist_add(&strs, "one two");
 	it_b("check first-child is in the list",
-	     strlist_has(strs, "first-child"), TRUE);
+	     strlist_has(strs, "first-child"), true);
 	it_b("check last-child is in the list", strlist_has(strs, "last-child"),
-	     TRUE);
-	it_b("check one is in the list", strlist_has(strs, "one"), TRUE);
-	it_b("check two is in the list", strlist_has(strs, "two"), TRUE);
+	     true);
+	it_b("check one is in the list", strlist_has(strs, "one"), true);
+	it_b("check two is in the list", strlist_has(strs, "two"), true);
 	it_b("check remove(last_child)", strlist_remove(&strs, "last-child"),
-	     TRUE);
+	     true);
 	it_b("check remove(first-child", strlist_remove(&strs, "first-child"),
-	     TRUE);
-	it_b("check remove(one)", strlist_remove(&strs, "one"), TRUE);
+	     true);
+	it_b("check remove(one)", strlist_remove(&strs, "one"), true);
 	it_b("check first-child is removed", strlist_has(strs, "first-child"),
-	     FALSE);
-	it_b("check one is removed", strlist_has(strs, "one"), FALSE);
-	it_b("check two is still in the list", strlist_has(strs, "two"), TRUE);
+	     false);
+	it_b("check one is removed", strlist_has(strs, "one"), false);
+	it_b("check two is still in the list", strlist_has(strs, "two"), true);
 	it_i("check strhash(123, \"123\") is consistent", strhash(123, "123"),
 	     strhash(123, "123"));
 	it_b("check strhash(123, \"123\") != strhash(123, \"312\")",
-	     strhash(123, "123") == strhash(123, "312"), FALSE);
+	     strhash(123, "123") == strhash(123, "312"), false);
 	it_b("check strhash(100, \"123\") != strhash(123, \"123\")",
-	     strhash(100, "123") == strhash(123, "123"), FALSE);
+	     strhash(100, "123") == strhash(123, "123"), false);
 	it_b("check adding first-child", strlist_add(&strs, "first-child"),
-	     TRUE);
+	     true);
 	strlist_free(strs);
 }
 

@@ -41,7 +41,7 @@ static void test_dirent_a()
 		return;
 	}
 #endif
-	it_b("dir_open_a() should work", dir_open_a(path, dir) == 0, TRUE);
+	it_b("dir_open_a() should work", dir_open_a(path, dir) == 0, true);
 
 	while ((entry = dir_read_a(dir)) != NULL) {
 		dir_len++;
@@ -50,11 +50,11 @@ static void test_dirent_a()
 			continue;
 		} else {
 			it_b("dir_get_file_name_a() should work", name != NULL,
-			     TRUE);
+			     true);
 			break;
 		}
 	}
-	it_b("dir_read_a() should work", dir_len != 0, TRUE);
+	it_b("dir_read_a() should work", dir_len != 0, true);
 }
 static void test_dirent_w(void)
 {
@@ -77,7 +77,7 @@ static void test_dirent_w(void)
 	mbstowcs(path_w, path, PATH_LEN);
 	setlocale(LC_ALL, "C");
 #endif
-	it_b("dir_open_w() should work", dir_open_w(path_w, dir) == 0, TRUE);
+	it_b("dir_open_w() should work", dir_open_w(path_w, dir) == 0, true);
 
 	while ((entry = dir_read_w(dir)) != NULL) {
 		dir_len++;
@@ -86,29 +86,29 @@ static void test_dirent_w(void)
 			continue;
 		} else {
 			it_b("dir_get_file_name_w() should work",
-			     name_w != NULL, TRUE);
+			     name_w != NULL, true);
 
 			if (dir_entry_is_directory(entry)) {
 				it_b("dir_entry_is_directory() should work",
-				     dir_entry_is_directory(entry), TRUE);
+				     dir_entry_is_directory(entry), true);
 				it_b("dir_entry_is_regular() should work",
-				     !dir_entry_is_regular(entry), TRUE);
+				     !dir_entry_is_regular(entry), true);
 				break;
 			} else {
 				it_b("dir_entry_is_directory() should work",
-				     !dir_entry_is_directory(entry), TRUE);
+				     !dir_entry_is_directory(entry), true);
 				it_b("dir_entry_is_regular() should work",
-				     dir_entry_is_regular(entry), TRUE);
+				     dir_entry_is_regular(entry), true);
 				break;
 			}
 		}
 	}
-	it_b("dir_read_w() should work", dir_len != 0, TRUE);
+	it_b("dir_read_w() should work", dir_len != 0, true);
 }
 
 void test_dirent(void)
 {
-	it_b("dir_create() should work", (dir = dir_create()) != NULL, TRUE);
+	it_b("dir_create() should work", (dir = dir_create()) != NULL, true);
 	test_dirent_a();
 	test_dirent_w();
 	dir_destroy(dir);

@@ -21,7 +21,7 @@ void test_list_entry(void)
 	list_entry_head_t list;
 	list_entry_head_init(&list, test_list_entry_t, entry_node);
 	it_b("list_entry_head_init() should work",
-	     &list.next != NULL && !list.length, TRUE);
+	     &list.next != NULL && !list.length, true);
 
 	// entry init
 	list_entry_t list_entry1;
@@ -44,15 +44,15 @@ void test_list_entry(void)
 	// get entry
 	test_list_entry_t* node =
 	    list_entry(&list, &entries[1].entry_node, test_list_entry_t);
-	it_b("list_entry() should work", node->data == entries[1].data, TRUE);
+	it_b("list_entry() should work", node->data == entries[1].data, true);
 	it_b("list_entry_get_first_entry() should work",
 	     list_entry_get_first_entry(&list, test_list_entry_t)->data ==
 		 entries[1].data,
-	     TRUE);
+	     true);
 	it_b("list_entry_get_last_entry() should work",
 	     list_entry_get_last_entry(&list, test_list_entry_t)->data ==
 		 entries[6].data,
-	     TRUE);
+	     true);
 
 	it_b("list_entry_size() should work", (int)list_entry_size(&list), 6);
 
@@ -64,7 +64,7 @@ void test_list_entry(void)
 		node = list_entry(&list, entry, test_list_entry_t);
 		i++;
 	}
-	it_b("list_entry_for_each() should work", (i - 1) == 6, TRUE);
+	it_b("list_entry_for_each() should work", (i - 1) == 6, true);
 
 	// list_entry_for_each_reverse
 	i = 6;
@@ -74,7 +74,7 @@ void test_list_entry(void)
 		i--;
 	}
 	it_b("list_entry_for_each_reverse() should work",
-	     &node->entry_node == list.next && i == 0, TRUE);
+	     &node->entry_node == list.next && i == 0, true);
 
 	// list_entry_for_each_by_length
 	i = 0;
@@ -83,7 +83,7 @@ void test_list_entry(void)
 		node = list_entry(&list, entry, test_list_entry_t);
 	}
 	it_b("list_entry_for_each_by_length() should work",
-	     &node->entry_node == list.prev && i == list.length, TRUE);
+	     &node->entry_node == list.prev && i == list.length, true);
 
 	// list_entry_for_each_reverse_by_length
 	i = 0;
@@ -92,7 +92,7 @@ void test_list_entry(void)
 		node = list_entry(&list, entry, test_list_entry_t);
 	}
 	it_b("list_entry_for_each_reverse_by_length() should work",
-	     &node->entry_node == list.next && i == list.length, TRUE);
+	     &node->entry_node == list.next && i == list.length, true);
 
 	// list_entry_for_each_entry
 	i = 0;
@@ -101,7 +101,7 @@ void test_list_entry(void)
 		i++;
 	}
 	it_b("list_entry_for_each_entry() should work", node != NULL && i == 6,
-	     TRUE);
+	     true);
 	// list_entry_for_each_entry_reverse
 	i = 6;
 	list_entry_for_each_entry_reverse(&list, node, entry_node,
@@ -110,18 +110,18 @@ void test_list_entry(void)
 		i--;
 	}
 	it_b("list_entry_for_each_entry_reverse() should work",
-	     node != NULL && i == 0, TRUE);
+	     node != NULL && i == 0, true);
 	it_b("list_entry_is_empty() should work", !list_entry_is_empty(&list),
-	     TRUE);
-	it_b("list_is_singular() should work", !list_is_singular(&list), TRUE);
+	     true);
+	it_b("list_is_singular() should work", !list_is_singular(&list), true);
 
 	// repalce entries
 	list_entry_replace_head(&list, &entries[0].entry_node);
 	list_entry_replace_last(&list, &entries[7].entry_node);
 	it_b("list_entry_replace_head() should work",
-	     (int)list_entry_size(&list) == 6, TRUE);
+	     (int)list_entry_size(&list) == 6, true);
 	it_b("list_entry_replace_last() should work",
-	     (int)list_entry_size(&list) == 6, TRUE);
+	     (int)list_entry_size(&list) == 6, true);
 
 	// delete entries
 	list_entry_delete_head(&list);
@@ -132,20 +132,20 @@ void test_list_entry(void)
 	list_entry_t* head = list_entry_get_head(&list);
 	list_entry_t* tail = list_entry_get_last(&list);
 	it_b("list_entry_get_head() should work",
-	     list_entry_is_head(&list, head), TRUE);
+	     list_entry_is_head(&list, head), true);
 	it_b("list_entry_get_last() should work",
-	     list_entry_is_last(&list, tail), TRUE);
+	     list_entry_is_last(&list, tail), true);
 
 	list_entry_move_head(&list, tail);
 	list_entry_move_tail(&list, head);
 	it_b("list_entry_move_head() should work",
-	     tail == list_entry_get_head(&list), TRUE);
+	     tail == list_entry_get_head(&list), true);
 	it_b("list_entry_move_tail() should work",
-	     head == list_entry_get_last(&list), TRUE);
+	     head == list_entry_get_last(&list), true);
 
 	list_rotate_left(&list);
 	it_b("list_rotate_left() should work",
-	     tail == list_entry_get_last(&list), TRUE);
+	     tail == list_entry_get_last(&list), true);
 
 	list_entry_head_t new_list;
 	list_entry_head_init(&new_list, test_list_entry_t, entry_node);
@@ -154,20 +154,20 @@ void test_list_entry(void)
 	it_b("list_entry_splice_head() should work",
 	     (int)list_entry_size(&list) == 0 && (list.next == list.prev) &&
 		 new_list.length != 0,
-	     TRUE);
+	     true);
 	list_entry_splice_tail(&list, &new_list);
 	it_b("list_entry_splice_tail() should work",
 	     (int)list_entry_size(&new_list) == 0 &&
 		 (new_list.next == new_list.prev) && list.length != 0,
-	     TRUE);
+	     true);
 	// clear entries
 	list_entry_clear(&list);
 	it_b("list_entry_clear() should work",
 	     (int)list_entry_size(&list) == 0 && (list.next == list.prev),
-	     TRUE);
+	     true);
 
 	list_entry_exit(&list);
 	it_b("list_entry_exit() should work",
 	     (int)list_entry_size(&list) == 0 && !list.next && !list.prev,
-	     TRUE);
+	     true);
 }

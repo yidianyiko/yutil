@@ -19,7 +19,7 @@ void test_list_concat(void)
 	it_b("list_concat() should work",
 	     (int)(&list1)->length == 2 && (int)(&list2)->length == 0 &&
 		 !list2.head.next && !list2.tail.prev,
-	     TRUE);
+	     true);
 	list_destroy(&list1, NULL);
 	list_destroy(&list2, NULL);
 }
@@ -36,7 +36,7 @@ void test_list(void)
 	list_create(&list);
 	it_b("list_create() should work",
 	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
-	     TRUE);
+	     true);
 
 	// append data
 	for (i = 0; i < n; ++i) {
@@ -85,7 +85,7 @@ void test_list(void)
 		++i;
 	}
 	it_b("list_for_each() should work",
-	     node == NULL && i == sizeof(arr) / sizeof(int), TRUE);
+	     node == NULL && i == sizeof(arr) / sizeof(int), true);
 
 	// list_for_each_reverse
 	i = n - 1;
@@ -104,17 +104,17 @@ void test_list(void)
 
 	it_i("list_get_size() should work", (int)(&list)->length, (int)n);
 
-	it_b("list_get() should work", list_get(&list, 3) == (arr + 3), TRUE);
+	it_b("list_get() should work", list_get(&list, 3) == (arr + 3), true);
 
 	it_b("list_get_first_node() should work",
-	     list_get_first_node(&list)->data == (arr), TRUE);
+	     list_get_first_node(&list)->data == (arr), true);
 	it_b("list_get_last_node() should work",
-	     list_get_last_node(&list)->data == (arr + n - 1), TRUE);
+	     list_get_last_node(&list)->data == (arr + n - 1), true);
 
 	test_list_concat();
 
 	list_destroy(&list, NULL);
 	it_b("list_destroy() should work",
 	     (int)(&list)->length == 0 && !list.head.next && !list.tail.prev,
-	     TRUE);
+	     true);
 }

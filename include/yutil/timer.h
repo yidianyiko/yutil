@@ -56,7 +56,7 @@ YUTIL_API size_t timer_list_process(timer_list_t *list);
  *	用于响应定时器的回调函数
  * @param reuse
  *	指示该定时器是否重复使用，如果要用于循环定时处理某些任
- *	务，可将它置为 TRUE，否则置于 FALSE。
+ *	务，可将它置为 true，否则置于 false。
  * @return
  *	该定时器的标识符
  **/

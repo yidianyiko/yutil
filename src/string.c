@@ -75,7 +75,7 @@ wchar_t *wcsdup2(const wchar_t *str)
 
 size_t strtrim(char *outstr, const char *instr, const char *charlist)
 {
-	bool_t clear, clear_left = TRUE;
+	bool clear, clear_left = true;
 	char *op = outstr, *last_blank = NULL;
 	const char *default_charlist = "\t\n\r ", *ip = instr, *c;
 
@@ -83,9 +83,9 @@ size_t strtrim(char *outstr, const char *instr, const char *charlist)
 		charlist = default_charlist;
 	}
 	for (; *ip; ip++) {
-		for (clear = FALSE, c = charlist; *c; ++c) {
+		for (clear = false, c = charlist; *c; ++c) {
 			if (*ip == *c) {
-				clear = TRUE;
+				clear = true;
 				break;
 			}
 		}
@@ -100,7 +100,7 @@ size_t strtrim(char *outstr, const char *instr, const char *charlist)
 			continue;
 		}
 		if (clear_left) {
-			clear_left = FALSE;
+			clear_left = false;
 		}
 		last_blank = NULL;
 		*op = *ip;
@@ -115,7 +115,7 @@ size_t strtrim(char *outstr, const char *instr, const char *charlist)
 
 size_t wcstrim(wchar_t *outstr, const wchar_t *instr, const wchar_t *charlist)
 {
-	bool_t clear, clear_left = TRUE;
+	bool clear, clear_left = true;
 	wchar_t *op = outstr, *last_blank = NULL;
 	const wchar_t *default_charlist = L"\t\n\r ", *ip = instr, *c;
 
@@ -123,9 +123,9 @@ size_t wcstrim(wchar_t *outstr, const wchar_t *instr, const wchar_t *charlist)
 		charlist = default_charlist;
 	}
 	for (; *ip; ip++) {
-		for (clear = FALSE, c = charlist; *c; ++c) {
+		for (clear = false, c = charlist; *c; ++c) {
 			if (*ip == *c) {
-				clear = TRUE;
+				clear = true;
 				break;
 			}
 		}
@@ -140,7 +140,7 @@ size_t wcstrim(wchar_t *outstr, const wchar_t *instr, const wchar_t *charlist)
 			continue;
 		}
 		if (clear_left) {
-			clear_left = FALSE;
+			clear_left = false;
 		}
 		last_blank = NULL;
 		*op = *ip;

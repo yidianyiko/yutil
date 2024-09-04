@@ -59,7 +59,7 @@ static logger_t logger = { 0 };
 static list_entry_head_t logger_buffer_head = { 0 };
 
 /* buffered output enabled flag */
-static bool_t is_enabled = FALSE;
+static bool is_enabled = false;
 
 void logger_set_level(logger_level_e level)
 {
@@ -92,7 +92,7 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 	if (is_enabled) {
 		return 0;
 	}
-	is_enabled = TRUE;
+	is_enabled = true;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
 		unsigned int i = 0;
 		list_entry_t* entry = NULL;
@@ -122,7 +122,7 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 		}
 		list_entry_exit(&logger_buffer_head_copy);
 	}
-	is_enabled = FALSE;
+	is_enabled = false;
 	return len;
 }
 
@@ -153,7 +153,7 @@ int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 	if (is_enabled) {
 		return 0;
 	}
-	is_enabled = TRUE;
+	is_enabled = true;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
 		unsigned int i = 0;
 		list_entry_t* entry = NULL;
@@ -178,7 +178,7 @@ int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 			free(output);
 		}
 	}
-	is_enabled = FALSE;
+	is_enabled = false;
 	return len;
 }
 

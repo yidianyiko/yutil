@@ -47,7 +47,7 @@ typedef struct timer_t_ timer_s_t;
 struct timer_t_ {
 	int state;    /**< 状态 */
 	long int id;  /**< 定时器ID */
-	bool_t reuse; /**< 是否重复使用该定时器 */
+	bool reuse; /**< 是否重复使用该定时器 */
 
 	int64_t start_time; /**< 定时器启动时的时间 */
 	int64_t pause_time; /**< 定时器暂停时的时间 */
@@ -62,7 +62,7 @@ struct timer_t_ {
 struct timer_list_t_ {
 	int id_count;  /**< 定时器ID计数 */
 	list_t timers; /**< 定时器数据记录 */
-	bool_t active; /**< 定时器线程是否正在运行 */
+	bool active; /**< 定时器线程是否正在运行 */
 };
 
 /*----------------------------- Private ------------------------------*/
@@ -105,7 +105,7 @@ static timer_s_t *timer_find(timer_list_t *list, int timer_id)
 }
 
 static int timer_list_add(timer_list_t *list, long int n_ms,
-			  timer_callback callback, void *arg, bool_t reuse)
+			  timer_callback callback, void *arg, bool reuse)
 {
 	timer_s_t *timer;
 	if (!list->active) {
@@ -140,7 +140,7 @@ timer_list_t *timer_list_create()
 	if (!list) {
 		return NULL;
 	}
-	list->active = TRUE;
+	list->active = true;
 	list->id_count = 0;
 	list_create(&list->timers);
 	return list;
@@ -217,13 +217,13 @@ int timer_reset(timer_list_t *list, int timer_id, long int n_ms)
 int timer_list_add_timeout(timer_list_t *list, long int n_ms,
 			   timer_callback callback, void *arg)
 {
-	return timer_list_add(list, n_ms, callback, arg, FALSE);
+	return timer_list_add(list, n_ms, callback, arg, false);
 }
 
 int timer_list_add_interval(timer_list_t *list, long int n_ms,
 			    timer_callback callback, void *arg)
 {
-	return timer_list_add(list, n_ms, callback, arg, TRUE);
+	return timer_list_add(list, n_ms, callback, arg, true);
 }
 
 size_t timer_list_process(timer_list_t *list)
@@ -270,7 +270,7 @@ void timer_list_destroy(timer_list_t *list)
 	if (!list->active) {
 		return;
 	}
-	list->active = FALSE;
+	list->active = false;
 	list_destroy_without_node(&list->timers, free);
 	free(list);
 }

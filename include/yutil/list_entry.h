@@ -151,18 +151,18 @@ static inline list_entry_t* list_entry_get_last(list_entry_head_t* head)
 	return head->prev;
 }
 
-static inline bool_t list_entry_is_empty(list_entry_head_t* head)
+static inline bool list_entry_is_empty(list_entry_head_t* head)
 {
 	return !(head->length);
 }
 
-static inline bool_t list_entry_is_head(list_entry_head_t* head,
+static inline bool list_entry_is_head(list_entry_head_t* head,
 					list_entry_t* entry)
 {
 	return head->next == entry;
 }
 
-static inline bool_t list_entry_is_last(list_entry_head_t* head,
+static inline bool list_entry_is_last(list_entry_head_t* head,
 					list_entry_t* entry)
 {
 	return head->prev == entry;
@@ -174,7 +174,7 @@ static inline int list_is_singular(list_entry_head_t* head)
 	return !list_entry_is_empty(head) && (head->length == 1);
 }
 
-static inline bool_t list_entry_is_valid(list_entry_head_t* list)
+static inline bool list_entry_is_valid(list_entry_head_t* list)
 {
 	return (list->next && list->next->prev == (list_entry_t*)list) &&
 	       (list->prev && list->prev->next == (list_entry_t*)list);
