@@ -38,16 +38,18 @@
 #include "yutil/time.h"
 #include "yutil/timer.h"
 
-#define STATE_RUN 1
-#define STATE_PAUSE 0
+typedef enum {
+	TIMER_STATE_RUN,
+	TIMER_STATE_PAUSE,
+	TIMER_STATE_DELETED
+} timer_state_t;
 
 /*----------------------------- struct * --------------------------------*/
-typedef struct timer_t_ timer_s_t;
 
-struct timer_t_ {
-	int state;    /**< 状态 */
-	long int id;  /**< 定时器ID */
-	bool reuse; /**< 是否重复使用该定时器 */
+typedef struct {
+	timer_state_t state; /**< 状态 */
+	long int id;         /**< 定时器ID */
+	bool reuse;        /**< 是否重复使用该定时器 */
 
 	int64_t start_time; /**< 定时器启动时的时间 */
 	int64_t pause_time; /**< 定时器暂停时的时间 */
@@ -58,11 +60,11 @@ struct timer_t_ {
 	void *arg;                /**< 函数的参数 */
 
 	list_node_t node; /**< 位于定时器列表中的节点 */
-};
-struct timer_list_t_ {
+} timer_t;
+
+struct timer_list {
 	int id_count;  /**< 定时器ID计数 */
 	list_t timers; /**< 定时器数据记录 */
-	bool active; /**< 定时器线程是否正在运行 */
 };
 
 /*----------------------------- Private ------------------------------*/
@@ -70,16 +72,16 @@ struct timer_list_t_ {
 /** 更新定时器在定时器列表中的位置 */
 static void timer_list_set_node(timer_list_t *list, list_node_t *node)
 {
-	timer_s_t *timer;
+	timer_t *timer;
 	int64_t t, tt;
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
-	timer = (timer_s_t *)node->data;
+	timer = (timer_t *)node->data;
 	t = get_time_delta(timer->start_time);
 	t = timer->total_ms - t + timer->pause_ms;
 	list_for_each(cur, &list->timers)
 	{
-		timer = (timer_s_t *)cur->data;
+		timer = (timer_t *)cur->data;
 		tt = get_time_delta(timer->start_time);
 		tt = timer->total_ms - tt + timer->pause_ms;
 		if (t <= tt) {
@@ -90,13 +92,13 @@ static void timer_list_set_node(timer_list_t *list, list_node_t *node)
 	list_append_node(&list->timers, node);
 }
 
-static timer_s_t *timer_find(timer_list_t *list, int timer_id)
+static timer_t *timer_find(timer_list_t *list, int timer_id)
 {
-	timer_s_t *timer;
+	timer_t *timer;
 	list_node_t *node;
 	list_for_each(node, &list->timers)
 	{
-		timer = (timer_s_t *)node->data;
+		timer = (timer_t *)node->data;
 		if (timer && timer->id == timer_id) {
 			return timer;
 		}
@@ -107,12 +109,9 @@ static timer_s_t *timer_find(timer_list_t *list, int timer_id)
 static int timer_list_add(timer_list_t *list, long int n_ms,
 			  timer_callback callback, void *arg, bool reuse)
 {
-	timer_s_t *timer;
-	if (!list->active) {
-		return -1;
-	}
+	timer_t *timer;
 
-	timer = (timer_s_t *)malloc(sizeof(timer_s_t));
+	timer = (timer_t *)malloc(sizeof(timer_t));
 	if (timer == NULL)
 		return -1;
 	timer->arg = arg;
@@ -120,7 +119,7 @@ static int timer_list_add(timer_list_t *list, long int n_ms,
 	timer->reuse = reuse;
 	timer->pause_ms = 0;
 	timer->total_ms = n_ms;
-	timer->state = STATE_RUN;
+	timer->state = TIMER_STATE_RUN;
 	timer->id = ++list->id_count;
 	timer->start_time = get_time_ms();
 	timer->node.next = NULL;
@@ -135,12 +134,10 @@ static int timer_list_add(timer_list_t *list, long int n_ms,
 
 timer_list_t *timer_list_create()
 {
-	timer_list_t *list;
-	list = (timer_list_t *)malloc(sizeof(timer_list_t));
+	timer_list_t *list = (timer_list_t *)malloc(sizeof(timer_list_t));
 	if (!list) {
 		return NULL;
 	}
-	list->active = true;
 	list->id_count = 0;
 	list_create(&list->timers);
 	return list;
@@ -148,33 +145,21 @@ timer_list_t *timer_list_create()
 
 int timer_destroy(timer_list_t *list, int timer_id)
 {
-	timer_s_t *timer;
-	if (!list->active) {
-		return -2;
+	timer_t *timer = timer_find(list, timer_id);
+	if (timer) {
+		timer->state = TIMER_STATE_DELETED;
+		return 0;
 	}
-
-	timer = timer_find(list, timer_id);
-	if (!timer) {
-		return -1;
-	}
-	list_unlink(&list->timers, &timer->node);
-	free(timer);
-
-	return 0;
+	return -1;
 }
 
 int timer_pause(timer_list_t *list, int timer_id)
 {
-	timer_s_t *timer;
-	if (!list->active) {
-		return -2;
-	}
-
-	timer = timer_find(list, timer_id);
+	timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		/* 记录暂停时的时间 */
 		timer->pause_time = get_time_ms();
-		timer->state = STATE_PAUSE;
+		timer->state = TIMER_STATE_PAUSE;
 	}
 
 	return timer ? 0 : -1;
@@ -182,16 +167,11 @@ int timer_pause(timer_list_t *list, int timer_id)
 
 int timer_continue(timer_list_t *list, int timer_id)
 {
-	timer_s_t *timer;
-	if (!list->active) {
-		return -2;
-	}
-
-	timer = timer_find(list, timer_id);
+	timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		/* 计算处于暂停状态的时长 */
 		timer->pause_ms += (long int)get_time_delta(timer->pause_time);
-		timer->state = STATE_RUN;
+		timer->state = TIMER_STATE_RUN;
 	}
 
 	return timer ? 0 : -1;
@@ -199,12 +179,7 @@ int timer_continue(timer_list_t *list, int timer_id)
 
 int timer_reset(timer_list_t *list, int timer_id, long int n_ms)
 {
-	timer_s_t *timer;
-	if (!list->active) {
-		return -2;
-	}
-
-	timer = timer_find(list, timer_id);
+	timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		timer->pause_ms = 0;
 		timer->total_ms = n_ms;
@@ -231,14 +206,23 @@ size_t timer_list_process(timer_list_t *list)
 	size_t count = 0;
 	long lost_ms;
 
-	timer_s_t *timer = NULL;
-	list_node_t *node;
-	while (list && list->active) {
+	timer_t *timer = NULL;
+	list_node_t *node, *prev_node;
+	while (list) {
 		list_for_each(node, &list->timers)
 		{
-			timer = (timer_s_t *)node->data;
-			if (timer && timer->state == STATE_RUN) {
-				break;
+			timer = (timer_t *)node->data;
+			if (timer) {
+				if (timer->state == TIMER_STATE_DELETED) {
+					prev_node = node->prev;
+					list_unlink(&list->timers, node);
+					free(timer);
+					node = prev_node;
+					continue;
+				}
+				if (timer->state == TIMER_STATE_RUN) {
+					break;
+				}
 			}
 		}
 		if (!node) {
@@ -250,9 +234,9 @@ size_t timer_list_process(timer_list_t *list)
 		if (lost_ms - timer->pause_ms < timer->total_ms) {
 			break;
 		}
-		/* 若需要重复使用，则重置剩余等待时间 */
-		list_unlink(&list->timers, node);
 		timer->callback(timer->arg);
+		list_unlink(&list->timers, node);
+		/* 若需要重复使用，则重置剩余等待时间 */
 		if (timer->reuse) {
 			timer->pause_ms = 0;
 			timer->start_time = get_time_ms();
@@ -261,16 +245,11 @@ size_t timer_list_process(timer_list_t *list)
 			free(timer);
 		}
 	}
-
 	return count;
 }
 
 void timer_list_destroy(timer_list_t *list)
 {
-	if (!list->active) {
-		return;
-	}
-	list->active = false;
 	list_destroy_without_node(&list->timers, free);
 	free(list);
 }

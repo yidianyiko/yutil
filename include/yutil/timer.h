@@ -36,7 +36,7 @@
 Y_BEGIN_DECLS
 
 typedef void (*timer_callback)(void *);
-typedef struct timer_list_t_ timer_list_t;
+typedef struct timer_list timer_list_t;
 
 /* Init the timer list */
 YUTIL_API timer_list_t *timer_list_create();
