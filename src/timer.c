@@ -60,7 +60,7 @@ typedef struct {
 	void *arg;                /**< 函数的参数 */
 
 	list_node_t node; /**< 位于定时器列表中的节点 */
-} timer_t;
+} y_timer_t;
 
 struct timer_list {
 	int id_count;  /**< 定时器ID计数 */
@@ -72,16 +72,16 @@ struct timer_list {
 /** 更新定时器在定时器列表中的位置 */
 static void timer_list_set_node(timer_list_t *list, list_node_t *node)
 {
-	timer_t *timer;
+	y_timer_t *timer;
 	int64_t t, tt;
 	list_node_t *cur;
 	/* 计算该定时器的剩余定时时长 */
-	timer = (timer_t *)node->data;
+	timer = (y_timer_t *)node->data;
 	t = get_time_delta(timer->start_time);
 	t = timer->total_ms - t + timer->pause_ms;
 	list_for_each(cur, &list->timers)
 	{
-		timer = (timer_t *)cur->data;
+		timer = (y_timer_t *)cur->data;
 		tt = get_time_delta(timer->start_time);
 		tt = timer->total_ms - tt + timer->pause_ms;
 		if (t <= tt) {
@@ -92,13 +92,13 @@ static void timer_list_set_node(timer_list_t *list, list_node_t *node)
 	list_append_node(&list->timers, node);
 }
 
-static timer_t *timer_find(timer_list_t *list, int timer_id)
+static y_timer_t *timer_find(timer_list_t *list, int timer_id)
 {
-	timer_t *timer;
+	y_timer_t *timer;
 	list_node_t *node;
 	list_for_each(node, &list->timers)
 	{
-		timer = (timer_t *)node->data;
+		timer = (y_timer_t *)node->data;
 		if (timer && timer->id == timer_id) {
 			return timer;
 		}
@@ -109,9 +109,9 @@ static timer_t *timer_find(timer_list_t *list, int timer_id)
 static int timer_list_add(timer_list_t *list, long int n_ms,
 			  timer_callback callback, void *arg, bool reuse)
 {
-	timer_t *timer;
+	y_timer_t *timer;
 
-	timer = (timer_t *)malloc(sizeof(timer_t));
+	timer = (y_timer_t *)malloc(sizeof(y_timer_t));
 	if (timer == NULL)
 		return -1;
 	timer->arg = arg;
@@ -145,7 +145,7 @@ timer_list_t *timer_list_create()
 
 int timer_destroy(timer_list_t *list, int timer_id)
 {
-	timer_t *timer = timer_find(list, timer_id);
+	y_timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		timer->state = TIMER_STATE_DELETED;
 		return 0;
@@ -155,7 +155,7 @@ int timer_destroy(timer_list_t *list, int timer_id)
 
 int timer_pause(timer_list_t *list, int timer_id)
 {
-	timer_t *timer = timer_find(list, timer_id);
+	y_timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		/* 记录暂停时的时间 */
 		timer->pause_time = get_time_ms();
@@ -167,7 +167,7 @@ int timer_pause(timer_list_t *list, int timer_id)
 
 int timer_continue(timer_list_t *list, int timer_id)
 {
-	timer_t *timer = timer_find(list, timer_id);
+	y_timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		/* 计算处于暂停状态的时长 */
 		timer->pause_ms += (long int)get_time_delta(timer->pause_time);
@@ -179,7 +179,7 @@ int timer_continue(timer_list_t *list, int timer_id)
 
 int timer_reset(timer_list_t *list, int timer_id, long int n_ms)
 {
-	timer_t *timer = timer_find(list, timer_id);
+	y_timer_t *timer = timer_find(list, timer_id);
 	if (timer) {
 		timer->pause_ms = 0;
 		timer->total_ms = n_ms;
@@ -206,12 +206,12 @@ size_t timer_list_process(timer_list_t *list)
 	size_t count = 0;
 	long lost_ms;
 
-	timer_t *timer = NULL;
+	y_timer_t *timer = NULL;
 	list_node_t *node, *prev_node;
 	while (list) {
 		list_for_each(node, &list->timers)
 		{
-			timer = (timer_t *)node->data;
+			timer = (y_timer_t *)node->data;
 			if (timer) {
 				if (timer->state == TIMER_STATE_DELETED) {
 					prev_node = node->prev;
