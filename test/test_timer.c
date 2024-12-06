@@ -52,9 +52,10 @@ void process(void *ignored)
 
 void test_timer(void)
 {
+#ifdef _WIN32
 	int timer_id;
 	int ret = count;
-#ifdef _WIN32
+
 	mutex = CreateMutex(NULL, false, NULL);
 
 	it_b("check timer_list_new()",
