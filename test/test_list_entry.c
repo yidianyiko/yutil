@@ -20,8 +20,7 @@ void test_list_entry(void)
 	// head init
 	list_entry_head_t list;
 	list_entry_head_init(&list, test_list_entry_t, entry_node);
-	it_b("list_entry_head_init() should work",
-	     &list.next != NULL && !list.length, true);
+	it_b("list_entry_head_init() should work", !list.length, true);
 
 	// entry init
 	list_entry_t list_entry1;
