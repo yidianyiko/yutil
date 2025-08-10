@@ -94,33 +94,17 @@ int logger_log(logger_level_e level, const char* fmt, ...)
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		unsigned int i = 0;
-		list_entry_t* entry = NULL;
-		logger_buffer_t* output = NULL;
-		list_entry_head_t logger_buffer_head_copy;
+		list_entry_t* entry = list_entry_get_head(&logger_buffer_head);
+		list_entry_delete_head(&logger_buffer_head);
+		logger_buffer_t* output =
+		    list_entry(&logger_buffer_head, entry, logger_buffer_t);
 
-		logger_buffer_head_copy = logger_buffer_head;
-		list_entry_clear(&logger_buffer_head);
-
-		list_entry_for_each_by_length(&logger_buffer_head_copy, i,
-					      entry)
-		{
-			if (output) {
-				free(output);
-			}
-			output = list_entry(&logger_buffer_head_copy, entry,
-					    logger_buffer_t);
-
-			if (logger.handler) {
-				logger.handler((const char*)&output->buffer);
-			} else {
-				printf("%s", output->buffer);
-			}
+		if (logger.handler) {
+			logger.handler((const char*)&output->buffer);
+		} else {
+			printf("%s", output->buffer);
 		}
-		if (output) {
-			free(output);
-		}
-		list_entry_exit(&logger_buffer_head_copy);
+		free(output);
 	}
 	is_enabled = FALSE;
 	return len;
@@ -155,28 +139,16 @@ int logger_log_w(logger_level_e level, const wchar_t* fmt, ...)
 	}
 	is_enabled = TRUE;
 	while (!list_entry_is_empty(&logger_buffer_head)) {
-		unsigned int i = 0;
-		list_entry_t* entry = NULL;
-		logger_buffer_t* output = { 0 };
-		list_entry_head_t logger_buffer_head_copy;
-
-		logger_buffer_head_copy = logger_buffer_head;
-		list_entry_clear(&logger_buffer_head);
-
-		list_entry_for_each_by_length(&logger_buffer_head_copy, i,
-					      entry)
-		{
-			output = list_entry(&logger_buffer_head_copy, entry,
-					    logger_buffer_t);
-
-			if (logger.handler) {
-				logger.handler_w(
-				    (const wchar_t*)&output->buffer_w);
-			} else {
-				wprintf(L"%s", output->buffer_w);
-			}
-			free(output);
+		list_entry_t* entry = list_entry_get_head(&logger_buffer_head);
+		list_entry_delete_head(&logger_buffer_head);
+		logger_buffer_t* output =
+		    list_entry(&logger_buffer_head, entry, logger_buffer_t);
+		if (logger.handler) {
+			logger.handler_w((const wchar_t*)&output->buffer_w);
+		} else {
+			wprintf(L"%s", output->buffer_w);
 		}
+		free(output);
 	}
 	is_enabled = FALSE;
 	return len;

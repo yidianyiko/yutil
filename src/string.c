@@ -58,7 +58,7 @@ char *strdup2(const char *str)
 	if (!out) {
 		return NULL;
 	}
-	strcpy(out, str);
+	memcpy(out, str, len);
 	return out;
 }
 
@@ -166,26 +166,42 @@ unsigned strhash(unsigned hash, const char *str)
 size_t strreplace(char *str, size_t max_len, const char *substr,
 		  const char *newstr)
 {
-	size_t len, buf_len;
-	char *buf, *pout, *pin;
-
-	pin = strstr(str, substr);
+	char *pin = strstr(str, substr);
 	if (!pin) {
 		return 0;
 	}
-	len = strlen(newstr);
-	buf_len = strlen(str) + len + 1;
-	buf = (char *)malloc(buf_len * sizeof(wchar_t));
-	strcpy(buf, str);
-	pout = buf + (pin - str);
-	strcpy(pout, newstr);
-	pin += strlen(substr);
-	pout += len;
-	strcpy(pout, pin);
-	buf[buf_len - 1] = 0;
-	strncpy(str, buf, max_len);
+
+	size_t str_len = strlen(str);
+	size_t substr_len = strlen(substr);
+	size_t newstr_len = strlen(newstr);
+	size_t buf_len = str_len - substr_len + newstr_len + 1;
+
+	char *buf = (char *)malloc(buf_len);
+	if (!buf) {
+		return 0;
+	}
+
+	char *pout = buf;
+	size_t head_len = pin - str;
+	memcpy(pout, str, head_len);
+	pout += head_len;
+
+	memcpy(pout, newstr, newstr_len);
+	pout += newstr_len;
+
+	size_t tail_len = str_len - (head_len + substr_len);
+	memcpy(pout, pin + substr_len, tail_len + 1);
+
+	size_t final_len = buf_len - 1;
+	if (final_len > max_len - 1) {
+		final_len = max_len - 1;
+	}
+
+	memcpy(str, buf, final_len);
+	str[final_len] = '\0';
+
 	free(buf);
-	return y_min(buf_len, max_len);
+	return final_len;
 }
 
 size_t wcsreplace(wchar_t *str, size_t max_len, const wchar_t *substr,
@@ -321,6 +337,7 @@ int strsplit(const char *instr, const char *sep, char ***outstrs)
 		str = (char *)malloc(sizeof(char) * len);
 		tmp = (char **)realloc(newstrs, sizeof(char *) * (i + 2));
 		if (!tmp) {
+			free(str);
 			strlist_free(newstrs);
 			return 0;
 		}

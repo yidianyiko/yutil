@@ -88,6 +88,9 @@ static inline void rbtree_left_rotate(rbtree_t *tree, rbtree_node_t *node)
 {
 	rbtree_node_t *temp = node->right;
 
+	if (!temp) {
+		return;
+	}
 	node->right = temp->left;
 	if (temp->left) {
 		temp->left->parent = node;
@@ -110,6 +113,9 @@ static inline void rbtree_right_rotate(rbtree_t *tree, rbtree_node_t *node)
 {
 	rbtree_node_t *temp = node->left;
 
+	if (!temp) {
+		return;
+	}
 	node->left = temp->right;
 	if (temp->right) {
 		temp->right->parent = node;
@@ -182,14 +188,57 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 	rbtree_node_t *brother, *brother_left, *brother_right;
 
 	while ((!node || rbtree_is_black(node)) && node != tree->root) {
+		if (!parent) {
+			break;
+		}
 		if (parent->left == node) {
 			brother = parent->right;
-			if (rbtree_is_red(brother)) {
+			if (brother && rbtree_is_red(brother)) {
 				rbtree_black(brother);
 				rbtree_red(parent);
 				rbtree_left_rotate(tree, parent);
 				brother = parent->right;
 			}
+			if (brother) {
+				if ((!brother->left ||
+				     rbtree_is_black(brother->left)) &&
+				    (!brother->right ||
+				     rbtree_is_black(brother->right))) {
+					rbtree_red(brother);
+					node = parent;
+					parent = node->parent;
+					continue;
+				}
+				if (!brother->right ||
+				    rbtree_is_black(brother->right)) {
+					if ((brother_left = brother->left)) {
+						rbtree_black(brother_left);
+					}
+					rbtree_red(brother);
+					rbtree_right_rotate(tree, brother);
+					brother = parent->right;
+				}
+				if (brother) {
+					brother->color = parent->color;
+					if (brother->right) {
+						rbtree_black(brother->right);
+					}
+				}
+			}
+			rbtree_black(parent);
+			rbtree_left_rotate(tree, parent);
+			node = tree->root;
+			break;
+		}
+
+		brother = parent->left;
+		if (brother && rbtree_is_red(brother)) {
+			rbtree_black(brother);
+			rbtree_red(parent);
+			rbtree_right_rotate(tree, parent);
+			brother = parent->left;
+		}
+		if (brother) {
 			if ((!brother->left ||
 			     rbtree_is_black(brother->left)) &&
 			    (!brother->right ||
@@ -199,53 +248,23 @@ static void rbtree_delete_rebalance(rbtree_t *tree, rbtree_node_t *node,
 				parent = node->parent;
 				continue;
 			}
-			if (!brother->right ||
-			    rbtree_is_black(brother->right)) {
-				if ((brother_left = brother->left)) {
-					rbtree_black(brother_left);
+
+			if (!brother->left || rbtree_is_black(brother->left)) {
+				if ((brother_right = brother->right)) {
+					rbtree_black(brother_right);
 				}
 				rbtree_red(brother);
-				rbtree_right_rotate(tree, brother);
-				brother = parent->right;
+				rbtree_left_rotate(tree, brother);
+				brother = parent->left;
 			}
-			brother->color = parent->color;
-			rbtree_black(parent);
-			if (brother->right) {
-				rbtree_black(brother->right);
+			if (brother) {
+				brother->color = parent->color;
+				if (brother->left) {
+					rbtree_black(brother->left);
+				}
 			}
-			rbtree_left_rotate(tree, parent);
-			node = tree->root;
-			break;
 		}
-
-		brother = parent->left;
-		if (rbtree_is_red(brother)) {
-			rbtree_black(brother);
-			rbtree_red(parent);
-			rbtree_right_rotate(tree, parent);
-			brother = parent->left;
-		}
-		if ((!brother->left || rbtree_is_black(brother->left)) &&
-		    (!brother->right || rbtree_is_black(brother->right))) {
-			rbtree_red(brother);
-			node = parent;
-			parent = node->parent;
-			continue;
-		}
-
-		if (!brother->left || rbtree_is_black(brother->left)) {
-			if ((brother_right = brother->right)) {
-				rbtree_black(brother_right);
-			}
-			rbtree_red(brother);
-			rbtree_left_rotate(tree, brother);
-			brother = parent->left;
-		}
-		brother->color = parent->color;
 		rbtree_black(parent);
-		if (brother->left) {
-			rbtree_black(brother->left);
-		}
 		rbtree_right_rotate(tree, parent);
 		node = tree->root;
 		break;

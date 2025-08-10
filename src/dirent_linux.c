@@ -83,7 +83,7 @@ int dir_open_w(const wchar_t *path, dir_t *dir)
 	char *newpath;
 
 	len = encode_string(NULL, path, 0, ENCODING_UTF8) + 1;
-	newpath = malloc(len * sizeof(wchar_t));
+	newpath = malloc(len * sizeof(char));
 	encode_string(newpath, path, len, ENCODING_UTF8);
 
 	dir->handle = opendir(newpath);

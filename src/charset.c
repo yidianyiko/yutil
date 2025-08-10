@@ -230,7 +230,7 @@ static size_t encode_to_utf8(char *str, const wchar_t *wcs, size_t max_len)
 				count -= n;
 				break;
 			}
-			strcpy(p, (char *)buf);
+			memcpy(p, buf, n);
 			p += n;
 			++wp;
 		}

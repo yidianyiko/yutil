@@ -205,14 +205,6 @@ int dict_expand(dict_t *d, unsigned long size)
 	return _dict_expand(d, size, NULL);
 }
 
-/* return DICT_ERR if expand failed due to memory allocation failure */
-int dict_try_expand(dict_t *d, unsigned long size)
-{
-	int malloc_failed;
-	_dict_expand(d, size, &malloc_failed);
-	return malloc_failed ? DICT_ERR : DICT_OK;
-}
-
 /* Performs N steps of incremental rehashing. Returns 1 if there are still
  * keys to move from the old to the new hash table, otherwise 0 is returned.
  *
@@ -717,7 +709,7 @@ dict_entry_t *dict_get_random_key(dict_t *d)
 	}
 	listele = rand() % listlen;
 	he = orighe;
-	while (listele--) he = he->next;
+	while (listele-- && he) he = he->next;
 	return he;
 }
 
@@ -1286,11 +1278,12 @@ int dict_string_key_compare(void *privdata, const void *key1, const void *key2)
 void *dict_string_key_dup(void *privdata, const void *key)
 {
 	dict_not_used(privdata);
-	char *newkey =
-	    (char *)malloc((strlen((const char *)key) + 1) * sizeof(char));
-	if (newkey == NULL)
+	size_t len = strlen((const char *)key);
+	char *newkey = (char *)malloc(len + 1);
+	if (newkey == NULL) {
 		return NULL;
-	strcpy((char *)newkey, (const char *)key);
+	}
+	memcpy(newkey, key, len + 1);
 	return newkey;
 }
 
@@ -1319,6 +1312,5 @@ void dict_init_string_copy_key_type(dict_type_t *t)
 	t->key_compare = dict_string_key_compare;
 	t->key_destructor = dict_string_key_destructor;
 	t->val_destructor = NULL;
-	t->expand_allowed = 0;
 	t->expand_allowed = NULL;
 }

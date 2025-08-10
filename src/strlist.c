@@ -43,44 +43,38 @@ static strpool_t *pool = NULL;
 
 int strlist_sorted_add(strlist_t *strlist, const char *str)
 {
-	int i, pos, n;
+	int i, pos = -1, n = 0;
 	strlist_t newlist;
 
 	if (*strlist) {
-		for (i = 0; (*strlist)[i]; ++i)
-			;
-		n = i + 2;
-	} else {
-		n = 2;
+		for (i = 0; (*strlist)[i]; ++i) {
+			int tmp = strcmp((*strlist)[i], str);
+			if (tmp == 0) {
+				return 1;
+			}
+			if (tmp > 0) {
+				pos = i;
+				break;
+			}
+		}
+		n = i;
 	}
-	newlist = (strlist_t)realloc(*strlist, sizeof(char *) * n);
+	newlist = (strlist_t)realloc(*strlist, sizeof(char *) * (n + 2));
 	if (!newlist) {
 		return -ENOMEM;
-	}
-	newlist[n - 2] = NULL;
-	for (i = 0, pos = -1; newlist[i]; ++i) {
-		int tmp = strcmp(newlist[i], str);
-		if (tmp < 0) {
-			continue;
-		} else if (tmp == 0) {
-			return 1;
-		} else {
-			pos = i;
-			break;
-		}
 	}
 	if (!pool) {
 		pool = strpool_create();
 	}
-	if (pos >= 0) {
-		for (i = n - 2; i > pos; --i) {
+	if (pos != -1) {
+		for (i = n; i > pos; --i) {
 			newlist[i] = newlist[i - 1];
 		}
 	} else {
-		pos = n - 2;
+		pos = n;
 	}
 	newlist[pos] = strpool_alloc_str(pool, str);
-	newlist[n - 1] = NULL;
+	newlist[n + 1] = NULL;
 	*strlist = newlist;
 	return 0;
 }

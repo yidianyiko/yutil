@@ -90,7 +90,7 @@ char *strpool_alloc_str(strpool_t *pool, const char *str)
 		entry->count = 0;
 		entry->length = length;
 		entry->string = ((char *)entry) + sizeof(strpool_entry_t);
-		strcpy(entry->string, str);
+		memcpy(entry->string, str, length + 1);
 		if (dict_add(pool->dict, entry->string, entry) != 0) {
 			free(entry);
 			return NULL;

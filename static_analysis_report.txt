@@ -1,0 +1,362 @@
+[1/14] Processing file /app/src/siphash.c.
+[2/14] Processing file /app/src/string.c.
+[3/14] Processing file /app/src/rbtree.c.
+2 warnings generated.
+[4/14] Processing file /app/src/strlist.c.
+2 warnings generated.
+[5/14] Processing file /app/src/list.c.
+2 warnings generated.
+[6/14] Processing file /app/src/charset.c.
+2 warnings generated.
+[7/14] Processing file /app/src/time_win32.c.
+2 warnings generated.
+[8/14] Processing file /app/src/time_linux.c.
+2 warnings generated.
+[9/14] Processing file /app/src/logger.c.
+4 warnings generated.
+[10/14] Processing file /app/src/dirent_linux.c.
+4 warnings generated.
+[11/14] Processing file /app/src/timer.c.
+4 warnings generated.
+[12/14] Processing file /app/src/dirent_win32.c.
+4 warnings generated.
+[13/14] Processing file /app/src/strpool.c.
+4 warnings generated.
+[14/14] Processing file /app/src/dict.c.
+5 warnings generated.
+src/dict.c:184:30: warning: Call to 'calloc' has an allocation size of 0 bytes [clang-analyzer-optin.portability.UnixAPI]
+  184 |                 n.table = (dict_entry_t **)calloc(
+      |                                            ^
+src/dict.c:145:6: note: Assuming 'dict_can_resize' is not equal to 0
+  145 |         if (!dict_can_resize || dict_is_rehashing(d))
+      |             ^~~~~~~~~~~~~~~~
+src/dict.c:145:6: note: Left side of '||' is false
+src/dict.c:145:26: note: Assuming the condition is false
+  145 |         if (!dict_can_resize || dict_is_rehashing(d))
+      |                                 ^
+include/yutil/dict.h:176:31: note: expanded from macro 'dict_is_rehashing'
+  176 | #define dict_is_rehashing(d) ((d)->rehash_index != -1)
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~
+src/dict.c:145:2: note: Taking false branch
+  145 |         if (!dict_can_resize || dict_is_rehashing(d))
+      |         ^
+src/dict.c:148:6: note: Assuming 'minimal' is >= DICT_HT_INITIAL_SIZE
+  148 |         if (minimal < DICT_HT_INITIAL_SIZE)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dict.c:148:2: note: Taking false branch
+  148 |         if (minimal < DICT_HT_INITIAL_SIZE)
+      |         ^
+src/dict.c:150:9: note: Calling 'dict_expand'
+  150 |         return dict_expand(d, minimal);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~
+src/dict.c:205:9: note: Calling '_dict_expand'
+  205 |         return _dict_expand(d, size, NULL);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/dict.c:159:6: note: 'malloc_failed' is null
+  159 |         if (malloc_failed)
+      |             ^~~~~~~~~~~~~
+src/dict.c:159:2: note: Taking false branch
+  159 |         if (malloc_failed)
+      |         ^
+src/dict.c:164:6: note: Left side of '||' is false
+  164 |         if (dict_is_rehashing(d) || d->ht[0].used > size)
+      |             ^
+include/yutil/dict.h:176:30: note: expanded from macro 'dict_is_rehashing'
+  176 | #define dict_is_rehashing(d) ((d)->rehash_index != -1)
+      |                              ^
+src/dict.c:164:46: note: 'size' is >= field 'used'
+  164 |         if (dict_is_rehashing(d) || d->ht[0].used > size)
+      |                                                     ^~~~
+src/dict.c:164:2: note: Taking false branch
+  164 |         if (dict_is_rehashing(d) || d->ht[0].used > size)
+      |         ^
+src/dict.c:171:6: note: Assuming 'realsize' is not equal to field 'size'
+  171 |         if (realsize == d->ht[0].size)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~
+src/dict.c:171:2: note: Taking false branch
+  171 |         if (realsize == d->ht[0].size)
+      |         ^
+src/dict.c:177:6: note: 'malloc_failed' is null
+  177 |         if (malloc_failed) {
+      |             ^~~~~~~~~~~~~
+src/dict.c:177:2: note: Taking false branch
+  177 |         if (malloc_failed) {
+      |         ^
+src/dict.c:184:30: note: Call to 'calloc' has an allocation size of 0 bytes
+  184 |                 n.table = (dict_entry_t **)calloc(
+      |                                            ^
+  185 |                     1, realsize * sizeof(dict_entry_t *));
+      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/logger.c:87:8: warning: Function 'vsnprintf' is called with an uninitialized va_list argument [clang-analyzer-valist.Uninitialized]
+   87 |         len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/logger.c:71:6: note: Assuming 'level' is >= field 'level'
+   71 |         if (level < logger.level) {
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/logger.c:71:2: note: Taking false branch
+   71 |         if (level < logger.level) {
+      |         ^
+src/logger.c:74:6: note: Assuming field 'inited' is not equal to 0
+   74 |         if (!logger.inited) {
+      |             ^~~~~~~~~~~~~~
+src/logger.c:74:2: note: Taking false branch
+   74 |         if (!logger.inited) {
+      |         ^
+src/logger.c:83:6: note: Assuming 'node' is not equal to NULL
+   83 |         if (node == NULL)
+      |             ^~~~~~~~~~~~
+src/logger.c:83:2: note: Taking false branch
+   83 |         if (node == NULL)
+      |         ^
+src/logger.c:87:8: note: Function 'vsnprintf' is called with an uninitialized va_list argument
+   87 |         len = vsnprintf(node->buffer, BUFFER_SIZE, fmt, args);
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/logger.c:132:6: warning: Function 'vswprintf' is called with an uninitialized va_list argument [clang-analyzer-valist.Uninitialized]
+  132 |             vswprintf((wchar_t* const)&node->buffer_w, BUFFER_SIZE, fmt, args);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/logger.c:115:6: note: Assuming 'level' is >= field 'level'
+  115 |         if (level < logger.level) {
+      |             ^~~~~~~~~~~~~~~~~~~~
+src/logger.c:115:2: note: Taking false branch
+  115 |         if (level < logger.level) {
+      |         ^
+src/logger.c:118:6: note: Assuming field 'inited' is not equal to 0
+  118 |         if (!logger.inited) {
+      |             ^~~~~~~~~~~~~~
+src/logger.c:118:2: note: Taking false branch
+  118 |         if (!logger.inited) {
+      |         ^
+src/logger.c:127:6: note: Assuming 'node' is not equal to NULL
+  127 |         if (node == NULL)
+      |             ^~~~~~~~~~~~
+src/logger.c:127:2: note: Taking false branch
+  127 |         if (node == NULL)
+      |         ^
+src/logger.c:132:6: note: Function 'vswprintf' is called with an uninitialized va_list argument
+  132 |             vswprintf((wchar_t* const)&node->buffer_w, BUFFER_SIZE, fmt, args);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:91:16: warning: Access to field 'left' results in a dereference of a null pointer (loaded from variable 'temp') [clang-analyzer-core.NullDereference]
+   91 |         node->right = temp->left;
+      |                       ^
+src/rbtree.c:466:9: note: Calling 'rbtree_delete'
+  466 |         return rbtree_delete(tree, 0, keydata);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:452:6: note: Assuming 'node' is non-null
+  452 |         if (!node) {
+      |             ^~~~~
+src/rbtree.c:452:2: note: Taking false branch
+  452 |         if (!node) {
+      |         ^
+src/rbtree.c:455:2: note: Calling 'rbtree_delete_by_node'
+  455 |         rbtree_delete_by_node(tree, node);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:370:6: note: Assuming field 'left' is null
+  370 |         if (node->left && node->right) {
+      |             ^~~~~~~~~~
+src/rbtree.c:370:17: note: Left side of '&&' is false
+  370 |         if (node->left && node->right) {
+      |                        ^
+src/rbtree.c:413:14: note: Field 'left' is null
+  413 |                 if (!node->left) {
+      |                            ^
+src/rbtree.c:413:3: note: Taking true branch
+  413 |                 if (!node->left) {
+      |                 ^
+src/rbtree.c:421:7: note: Assuming 'temp' is null
+  421 |                 if (temp) {
+      |                     ^~~~
+src/rbtree.c:421:3: note: Taking false branch
+  421 |                 if (temp) {
+      |                 ^
+src/rbtree.c:424:7: note: Assuming 'parent' is non-null
+  424 |                 if (parent) {
+      |                     ^~~~~~
+src/rbtree.c:424:3: note: Taking true branch
+  424 |                 if (parent) {
+      |                 ^
+src/rbtree.c:425:8: note: Assuming 'node' is equal to field 'left'
+  425 |                         if (parent->left == node) {
+      |                             ^~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:425:4: note: Taking true branch
+  425 |                         if (parent->left == node) {
+      |                         ^
+src/rbtree.c:435:6: note: Assuming field 'destroy' is null
+  435 |         if (tree->destroy && old->data) {
+      |             ^~~~~~~~~~~~~
+src/rbtree.c:435:20: note: Left side of '&&' is false
+  435 |         if (tree->destroy && old->data) {
+      |                           ^
+src/rbtree.c:440:6: note: Assuming 'is_red' is 0
+  440 |         if (is_red) {
+      |             ^~~~~~
+src/rbtree.c:440:2: note: Taking false branch
+  440 |         if (is_red) {
+      |         ^
+src/rbtree.c:444:2: note: Calling 'rbtree_delete_rebalance'
+  444 |         rbtree_delete_rebalance(tree, temp, parent);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:184:11: note: 'node' is null
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                  ^~~~
+src/rbtree.c:184:16: note: Left side of '||' is true
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                       ^
+src/rbtree.c:184:45: note: Assuming 'node' is not equal to field 'root'
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                                                    ^~~~~~~~~~~~~~~~~~
+src/rbtree.c:184:2: note: Loop condition is true.  Entering loop body
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |         ^
+src/rbtree.c:185:8: note: 'parent' is non-null
+  185 |                 if (!parent) {
+      |                      ^~~~~~
+src/rbtree.c:185:3: note: Taking false branch
+  185 |                 if (!parent) {
+      |                 ^
+src/rbtree.c:188:23: note: 'node' is equal to field 'left'
+  188 |                 if (parent->left == node) {
+      |                                     ^~~~
+src/rbtree.c:188:3: note: Taking true branch
+  188 |                 if (parent->left == node) {
+      |                 ^
+src/rbtree.c:190:8: note: Assuming pointer value is null
+  190 |                         if (brother && rbtree_is_red(brother)) {
+      |                             ^~~~~~~
+src/rbtree.c:190:8: note: Assuming 'brother' is null
+  190 |                         if (brother && rbtree_is_red(brother)) {
+      |                             ^~~~~~~
+src/rbtree.c:190:16: note: Left side of '&&' is false
+  190 |                         if (brother && rbtree_is_red(brother)) {
+      |                                     ^
+src/rbtree.c:196:8: note: 'brother' is null
+  196 |                         if (brother) {
+      |                             ^~~~~~~
+src/rbtree.c:196:4: note: Taking false branch
+  196 |                         if (brother) {
+      |                         ^
+src/rbtree.c:223:4: note: Calling 'rbtree_left_rotate'
+  223 |                         rbtree_left_rotate(tree, parent);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:89:2: note: 'temp' initialized to a null pointer value
+   89 |         rbtree_node_t *temp = node->right;
+      |         ^~~~~~~~~~~~~~~~~~~
+src/rbtree.c:91:16: note: Access to field 'left' results in a dereference of a null pointer (loaded from variable 'temp')
+   91 |         node->right = temp->left;
+      |                       ^~~~
+src/rbtree.c:113:15: warning: Access to field 'right' results in a dereference of a null pointer (loaded from variable 'temp') [clang-analyzer-core.NullDereference]
+  113 |         node->left = temp->right;
+      |                      ^
+src/rbtree.c:466:9: note: Calling 'rbtree_delete'
+  466 |         return rbtree_delete(tree, 0, keydata);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:452:6: note: Assuming 'node' is non-null
+  452 |         if (!node) {
+      |             ^~~~~
+src/rbtree.c:452:2: note: Taking false branch
+  452 |         if (!node) {
+      |         ^
+src/rbtree.c:455:2: note: Calling 'rbtree_delete_by_node'
+  455 |         rbtree_delete_by_node(tree, node);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:370:6: note: Assuming field 'left' is null
+  370 |         if (node->left && node->right) {
+      |             ^~~~~~~~~~
+src/rbtree.c:370:17: note: Left side of '&&' is false
+  370 |         if (node->left && node->right) {
+      |                        ^
+src/rbtree.c:413:14: note: Field 'left' is null
+  413 |                 if (!node->left) {
+      |                            ^
+src/rbtree.c:413:3: note: Taking true branch
+  413 |                 if (!node->left) {
+      |                 ^
+src/rbtree.c:421:7: note: Assuming 'temp' is non-null
+  421 |                 if (temp) {
+      |                     ^~~~
+src/rbtree.c:421:3: note: Taking true branch
+  421 |                 if (temp) {
+      |                 ^
+src/rbtree.c:424:7: note: Assuming 'parent' is non-null
+  424 |                 if (parent) {
+      |                     ^~~~~~
+src/rbtree.c:424:3: note: Taking true branch
+  424 |                 if (parent) {
+      |                 ^
+src/rbtree.c:425:8: note: Assuming 'node' is not equal to field 'left'
+  425 |                         if (parent->left == node) {
+      |                             ^~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:425:4: note: Taking false branch
+  425 |                         if (parent->left == node) {
+      |                         ^
+src/rbtree.c:435:6: note: Assuming field 'destroy' is null
+  435 |         if (tree->destroy && old->data) {
+      |             ^~~~~~~~~~~~~
+src/rbtree.c:435:20: note: Left side of '&&' is false
+  435 |         if (tree->destroy && old->data) {
+      |                           ^
+src/rbtree.c:440:6: note: Assuming 'is_red' is 0
+  440 |         if (is_red) {
+      |             ^~~~~~
+src/rbtree.c:440:2: note: Taking false branch
+  440 |         if (is_red) {
+      |         ^
+src/rbtree.c:444:2: note: Calling 'rbtree_delete_rebalance'
+  444 |         rbtree_delete_rebalance(tree, temp, parent);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:184:11: note: 'node' is non-null
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                  ^~~~
+src/rbtree.c:184:10: note: Left side of '||' is false
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                 ^
+src/rbtree.c:184:19: note: Assuming field 'color' is 0
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                          ^
+include/yutil/rbtree.h:59:32: note: expanded from macro 'rbtree_is_black'
+   59 | #define rbtree_is_black(node) (!((node)->color))
+      |                                ^~~~~~~~~~~~~~~~
+src/rbtree.c:184:9: note: Left side of '&&' is true
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                ^
+src/rbtree.c:184:45: note: Assuming 'node' is not equal to field 'root'
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |                                                    ^~~~~~~~~~~~~~~~~~
+src/rbtree.c:184:2: note: Loop condition is true.  Entering loop body
+  184 |         while ((!node || rbtree_is_black(node)) && node != tree->root) {
+      |         ^
+src/rbtree.c:185:8: note: 'parent' is non-null
+  185 |                 if (!parent) {
+      |                      ^~~~~~
+src/rbtree.c:185:3: note: Taking false branch
+  185 |                 if (!parent) {
+      |                 ^
+src/rbtree.c:188:7: note: Assuming 'node' is not equal to field 'left'
+  188 |                 if (parent->left == node) {
+      |                     ^~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:188:3: note: Taking false branch
+  188 |                 if (parent->left == node) {
+      |                 ^
+src/rbtree.c:229:7: note: Assuming pointer value is null
+  229 |                 if (brother && rbtree_is_red(brother)) {
+      |                     ^~~~~~~
+src/rbtree.c:229:7: note: Assuming 'brother' is null
+  229 |                 if (brother && rbtree_is_red(brother)) {
+      |                     ^~~~~~~
+src/rbtree.c:229:15: note: Left side of '&&' is false
+  229 |                 if (brother && rbtree_is_red(brother)) {
+      |                             ^
+src/rbtree.c:235:7: note: 'brother' is null
+  235 |                 if (brother) {
+      |                     ^~~~~~~
+src/rbtree.c:235:3: note: Taking false branch
+  235 |                 if (brother) {
+      |                 ^
+src/rbtree.c:262:3: note: Calling 'rbtree_right_rotate'
+  262 |                 rbtree_right_rotate(tree, parent);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/rbtree.c:111:2: note: 'temp' initialized to a null pointer value
+  111 |         rbtree_node_t *temp = node->left;
+      |         ^~~~~~~~~~~~~~~~~~~
+src/rbtree.c:113:15: note: Access to field 'right' results in a dereference of a null pointer (loaded from variable 'temp')
+  113 |         node->left = temp->right;
+      |                      ^~~~

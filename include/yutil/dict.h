@@ -183,7 +183,6 @@ struct dict_iterator_t {
 /* API */
 YUTIL_API dict_t *dict_create(dict_type_t *type, void *priv_data_ptr);
 YUTIL_API int dict_expand(dict_t *d, unsigned long size);
-YUTIL_API int dict_try_expand(dict_t *d, unsigned long size);
 YUTIL_API int dict_add(dict_t *d, void *key, void *val);
 YUTIL_API dict_entry_t *dict_add_raw(dict_t *d, void *key, dict_entry_t **existing);
 YUTIL_API dict_entry_t *dict_add_or_find(dict_t *d, void *key);

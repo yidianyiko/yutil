@@ -1,0 +1,141 @@
+[
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/siphash.c.o", "src/siphash.c"],
+  "file": "src/siphash.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/string.c.o", "src/string.c"],
+  "file": "src/string.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/rbtree.c.o", "src/rbtree.c"],
+  "file": "src/rbtree.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/strlist.c.o", "src/strlist.c"],
+  "file": "src/strlist.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/list.c.o", "src/list.c"],
+  "file": "src/list.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/charset.c.o", "src/charset.c"],
+  "file": "src/charset.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/time_win32.c.o", "src/time_win32.c"],
+  "file": "src/time_win32.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/time_linux.c.o", "src/time_linux.c"],
+  "file": "src/time_linux.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/logger.c.o", "src/logger.c"],
+  "file": "src/logger.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/dirent_linux.c.o", "src/dirent_linux.c"],
+  "file": "src/dirent_linux.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/timer.c.o", "src/timer.c"],
+  "file": "src/timer.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/dirent_win32.c.o", "src/dirent_win32.c"],
+  "file": "src/dirent_win32.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/strpool.c.o", "src/strpool.c"],
+  "file": "src/strpool.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-DNDEBUG", "-o", "build/.objs/yutil/linux/x86_64/release/src/dict.c.o", "src/dict.c"],
+  "file": "src/dict.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_math.c.o", "test/test_math.c"],
+  "file": "test/test_math.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_dirent.c.o", "test/test_dirent.c"],
+  "file": "test/test_dirent.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_list.c.o", "test/test_list.c"],
+  "file": "test/test_list.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_charset.c.o", "test/test_charset.c"],
+  "file": "test/test_charset.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_rbtree.c.o", "test/test_rbtree.c"],
+  "file": "test/test_rbtree.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/libtest.c.o", "test/libtest.c"],
+  "file": "test/libtest.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_time.c.o", "test/test_time.c"],
+  "file": "test/test_time.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_string.c.o", "test/test_string.c"],
+  "file": "test/test_string.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_timer.c.o", "test/test_timer.c"],
+  "file": "test/test_timer.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test.c.o", "test/test.c"],
+  "file": "test/test.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_logger.c.o", "test/test_logger.c"],
+  "file": "test/test_logger.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_dict.c.o", "test/test_dict.c"],
+  "file": "test/test_dict.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_strpool.c.o", "test/test_strpool.c"],
+  "file": "test/test_strpool.c"
+},
+{
+  "directory": "/app",
+  "arguments": ["/usr/bin/gcc", "-c", "-m64", "-Wall", "-Werror", "-O3", "-std=c99", "-Iinclude", "-D_UNICODE", "-DYUTIL_EXPORTS", "-D_GNU_SOURCE=1", "-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined", "-Wno-error=unused-variable", "-Wno-error=unused-but-set-variable", "-DNDEBUG", "-o", "build/.objs/yutil_test/linux/x86_64/release/test/test_list_entry.c.o", "test/test_list_entry.c"],
+  "file": "test/test_list_entry.c"
+}]
